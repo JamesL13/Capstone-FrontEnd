@@ -11,16 +11,8 @@ You will need the following installed in the GitHub Capstone-FrontEnd directory:
 	<li>AngularJS</li>
 	<li>AngularJS Bootstrap</li>
 	<li>SocketIO</li>
-	
-
 	<li>grunt</li>
-	<p><i>npm install -g grunt-cli</i></p>
-	<p><i>grunt package</i></p>
-
 	<li>bower</li>
-	<p><i>npm install -g bower</i></p>
-	<p><i>bower install</i></p>
-	<p>If that doesn't work try <i>bower init</i></p>
 
 </ul>
 
