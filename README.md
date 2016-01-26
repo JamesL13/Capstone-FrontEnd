@@ -19,7 +19,7 @@ You will need the following installed in the GitHub Capstone-FrontEnd directory:
 <h4>How to set everything up</h4>
 <ul>
 	<li>Install NodeJs</li>
-		<p><i>Use nodejs.org installer</i></p>
+		<p>Use nodejs.org installer</p>
 	
 	<li>Install AngularJS</li>
 		<p><i>npm install angular</i></p>
@@ -36,7 +36,7 @@ You will need the following installed in the GitHub Capstone-FrontEnd directory:
 	<li>Install bower</li>
 		<p><i>npm install -g bower</i></p>
 		<p><i>bower install</i></p>
-		<p>If that doesn't work try <i>bower init</i> then try <i>bower install</i>again</p>
+		<p>If that doesn't work try <i>bower init</i> then try <i>bower install</i> again</p>
 
 	<p><i>grunt package</i></p>
 
