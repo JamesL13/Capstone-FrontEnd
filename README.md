@@ -1,8 +1,6 @@
 # Capstone
 Song[s]
 
-<h1>DON'T DO THIS YET</h1>
-
 <h2>Dependencies</h2>
 You will need the following installed in the GitHub Capstone-FrontEnd directory:
 
@@ -44,6 +42,9 @@ You will need the following installed in the GitHub Capstone-FrontEnd directory:
 	<!--<p><i><b>grunt package</b></i></p>-->
 
 </ul>
+
+<h2>To Run the server</h2>
+Run the command <i><b>cd FrontEnd</b></i> then <i><b>node index.js</b></i>
 
 <h3>TIPS</h3>
 <ul>
