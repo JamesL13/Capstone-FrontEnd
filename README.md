@@ -10,6 +10,8 @@ You will need the following installed in the GitHub Capstone-FrontEnd directory:
 	<li>AngularJS Bootstrap</li>
 	<li>SocketIO</li>
 	<li>grunt</li>
+    <li>grunt-cli</li>
+    <li>grunt-contrib-uglify</li>
 	<li>bower</li>
 
 </ul>
