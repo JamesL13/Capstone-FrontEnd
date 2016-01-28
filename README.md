@@ -12,6 +12,7 @@ You will need the following installed in the GitHub Capstone-FrontEnd directory:
 	<li>grunt</li>
     <li>grunt-cli</li>
     <li>grunt-contrib-uglify</li>
+    <li>grunt-sass</li>
 	<li>bower</li>
 
 </ul>
@@ -45,8 +46,14 @@ You will need the following installed in the GitHub Capstone-FrontEnd directory:
 
 </ul>
 
-<h2>To Run the server</h2>
-Run the command <i><b>cd FrontEnd</b></i> then <i><b>node index.js</b></i>
+<h2>Commands to Remember</h2>
+To start get in the correct directory <i><b>cd FrontEnd</b></i>
+</br>
+To run the server <i><b>node index.js</b></i>
+</br>
+To compile Sass to CSS <i><b>sass main.scss main.css</b></i> or setup the scss file as a watcher which wil compile automatically for you
+</br>
+If you are ever confused about what node modules you have installed <i><b>npm ls --depth=0</b></i>
 
 <h3>TIPS</h3>
 <ul>
