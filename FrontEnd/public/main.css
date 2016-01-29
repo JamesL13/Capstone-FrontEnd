@@ -34,6 +34,10 @@ a {
   margin: 10px 0px;
   padding: 5px 0px; }
 
+.newBarItem {
+  text-align: left;
+  left: 8.5%; }
+
 .topBar {
   width: 95%;
   height: 5%;
@@ -89,4 +93,5 @@ input[type="search"]:focus {
   padding: 1px; }
 
 .shrink {
-  width: 80%; }
+  width: 80%;
+  left: 20%; }

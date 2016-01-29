@@ -45,6 +45,11 @@ a {
   padding: 5px 0px;
 }
 
+.newBarItem {
+  text-align: left;
+  left: 8.5%;
+}
+
 .topBar {
   width: 95%;
   height: 5%;
@@ -110,4 +115,5 @@ input[type="search"]:focus {
 
 .shrink {
   width: 80%;
+  left: 20%;
 }
