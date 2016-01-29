@@ -26,6 +26,10 @@ body {
   text-align: center;
 }
 
+.extended {
+  width: 20%;
+}
+
 a {
   color: $main-font-color;
   text-decoration: none;
@@ -102,4 +106,8 @@ input[type="search"]:focus {
   padding: 1px;
   //  border-top: 1px solid $main-outline-color;
   //  border-left: 1px solid $main-outline-color;
+}
+
+.shrink {
+  width: 80%;
 }

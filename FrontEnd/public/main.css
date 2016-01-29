@@ -19,6 +19,9 @@ body {
   float: left;
   text-align: center; }
 
+.extended {
+  width: 20%; }
+
 a {
   color: #e0e0e0;
   text-decoration: none; }
@@ -84,3 +87,6 @@ input[type="search"]:focus {
   left: 5%;
   top: 5%;
   padding: 1px; }
+
+.shrink {
+  width: 80%; }
