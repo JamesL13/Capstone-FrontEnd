@@ -1,64 +1,38 @@
-# Capstone
-Song[s]
+# Song[s] Front End
+## A simple music playlist generated and maintained completely through user input
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/rdash/rdash-angular?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-<h2>Dependencies</h2>
-You will need the following installed in the GitHub Capstone-FrontEnd directory:
+The front end repo for Song[s]
 
-<ul>
-	<li>NodeJS</li>
-	<li>AngularJS</li>
-	<li>AngularJS Bootstrap</li>
-	<li>SocketIO</li>
-	<li>grunt</li>
-    <li>grunt-cli</li>
-    <li>grunt-contrib-uglify</li>
-    <li>grunt-sass</li>
-	<li>bower</li>
+Producing a product capable of assisting and engaging the general public with music selection.
+The Return of the Six, came together to solve a problem that the everyday person has while out at local venues regarding music selection. The first step to producing anything useful is to identify the problem. The problem that we address with our application is that patrons at special events do not have an easy way to create an event’s playlist of music that all patrons can engage in and enjoy. 
+The solution to this problem has been carefully crafted such that an application, Song[s], will provides users with the ability to collaborate on playlists by utilizing a voting system to determine song ranking and therefore song priority in the playlist.
 
-</ul>
+## Usage
+### Requirements
+* [NodeJS](http://nodejs.org/) (with [NPM](https://www.npmjs.org/))
+* [Bower](http://bower.io)
+* [Gulp](http://gulpjs.com)
 
-<h4>How to set everything up</h4>
-<ul>
-	<li>Install NodeJs</li>
-		<p>Use nodejs.org installer</p>
+### Installation
+1. Clone the repository: `git clone https://github.com/JamesL13/Capstone-FrontEnd.git`
+2. Install the NodeJS dependencies: `sudo npm install`.
+3. Install the Bower dependencies: `bower install`.
+4. Run the gulp build task: `gulp build`.
+5. Run the gulp default task: `gulp`. This will build any changes made automatically, and also run a live reload server on [http://localhost:8888](http://localhost:8888).
 
-	<li>Install rest of dependencies</li>
-		<p><i><b>npm install</b></i></p>
-	
-	<!--<li>Install AngularJS</li>
-		<p><i><b>npm install angular</b></i></p>
-	
-	<li>Install AngularJs Bootstrap</li>
-		<p><i><b>npm install angular-ui-bootstrap</b></i></p>
-	
-	<li>Install Socket.io</li>
-		<p><i><b>npm install socket.io</b></i></p>
-	
-	<li>Install grunt</li>
-		<p><i><b>npm install -g grunt-cli</b></i></p>-->
-	
-	<li>Install bower</li>
-		<p><i><b>npm install -g bower</b></i></p>
-		<p><i><b>bower install</b></i></p>
-		<p>If that doesn't work try <i><b>bower init</b></i> then try <i><b>bower install</b></i> again</p>
+Ensure your preferred web server points towards the `dist` directory.
 
-	<!--<p><i><b>grunt package</b></i></p>-->
+### Development
+Continue developing the dashboard further by editing the `src` directory. With the `gulp` command, any file changes made will automatically be compiled into the specific location within the `dist` directory.
 
-</ul>
+#### Modules & Packages
+By default, rdash-angular includes [`ui.bootstrap`](http://angular-ui.github.io/bootstrap/), [`ui.router`](https://github.com/angular-ui/ui-router) and [`ngCookies`](https://docs.angularjs.org/api/ngCookies). 
 
-<h2>Commands to Remember</h2>
-To start get in the correct directory <i><b>cd FrontEnd</b></i>
-</br>
-To run the server <i><b>node index.js</b></i>
-</br>
-To compile Sass to CSS <i><b>sass main.scss main.css</b></i> or setup the scss file as a watcher which wil compile automatically for you
-</br>
-If you are ever confused about what node modules you have installed <i><b>npm ls --depth=0</b></i>
+If you'd like to include any additional modules/packages not included with rdash-angular, add them to your `bower.json` file and then update the `src/index.html` file, to include them in the minified distribution output.
 
-<h3>TIPS</h3>
-<ul>
-	<li>Use whatever IDE you want but the gitignore is currently set right now for WebStorm.</li>
-	<li>Make sure you exclude node_modules from indexing in your IDE</li>
-	<li>To improve performance on Windows, make sure you exclude the Capstrone-FrontEnd Directory from your AntiVirus</li>
-	<li>To improve performance on Windows, make sure you add node_modules to the exclusion list for Indexing in your system settings.</li>
-</ul>
+## Credits
+* [Elliot Hesp](https://github.com/Ehesp)
+* [Leonel Samayoa](https://github.com/lsamayoa)
+* [Mathew Goldsborough](https://github.com/mgoldsborough)
+* [Ricardo Pascua Jr](https://github.com/rdpascua)
