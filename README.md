@@ -1,7 +1,5 @@
 # Song[s] Front End
 ## A simple music playlist generated and maintained completely through user input
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/rdash/rdash-angular?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 The front end repo for Song[s]
 
 Producing a product capable of assisting and engaging the general public with music selection.
@@ -32,7 +30,6 @@ By default, rdash-angular includes [`ui.bootstrap`](http://angular-ui.github.io/
 If you'd like to include any additional modules/packages not included with rdash-angular, add them to your `bower.json` file and then update the `src/index.html` file, to include them in the minified distribution output.
 
 ## Credits
-* [Elliot Hesp](https://github.com/Ehesp)
-* [Leonel Samayoa](https://github.com/lsamayoa)
-* [Mathew Goldsborough](https://github.com/mgoldsborough)
-* [Ricardo Pascua Jr](https://github.com/rdpascua)
+* [James Landy](https://github.com/JamesL13)
+* [Garrett Knox](https://github.com/gakf38)
+* [Devin Clark](https://github.com/dclark27)
