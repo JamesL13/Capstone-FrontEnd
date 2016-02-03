@@ -1,11 +1,11 @@
-# RDash rdash-ui
+# Songs rdash-ui
 ## Responsive, bloat free, bootstrap powered admin style dashboard!
 
 Extending from the [original repository](https://github.com/Ehesp/Responsive-Dashboard), rdash-ui is a stylish admin dashboard without the plugins/bloat which many premium dashboard themes come with. It is fully responsive using Bootstrap 3 framework as the base. All animations are CSS3.
 
 Check out a live example, in AngularJS!
 
-> This repository provides only the stying needed to implement RDash into your project.
+> This repository provides only the stying needed to implement Songs into your project.
 
 ## Current Framework Implementations
 

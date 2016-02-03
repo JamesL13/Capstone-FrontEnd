@@ -4,7 +4,7 @@
  */
 
 angular
-    .module('RDash')
+    .module('Songs')
     .directive('rdLoading', rdLoading);
 
 function rdLoading() {

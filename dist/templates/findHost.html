@@ -1,0 +1,73 @@
+<div class="row alerts-container" data-ng-controller="AlertsCtrl" data-ng-show="alerts.length">
+    <div class="col-xs-12">
+        <alert data-ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)"><h3>{{alert.msg}}</h3></alert>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <h3>Find a Host</h3>
+        <h5>Find a host near you to partcipate in voting</h5>
+        <p>
+            <div class="input-group">
+                <span class="input-group-addon" id="sizing-addon2"><i class="fa fa-search"></i></span>
+                <input type="text" class="form-control" placeholder="Search for Host" aria-describedby="sizing-addon2">
+            </div>
+        </p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12 checkbox">
+        <label>
+            <input type="checkbox"> Only show public playlists
+        </label>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <table class="table">
+            <caption>Hosts Near Me</caption>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Host</th>
+                    <th>Distance</th>
+                    <th>Connect</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Big 12</td>
+                    <td>0.21 miles</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm btn-block"><i class="fa fa-check-circle"></i> Connect</button>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Shot Bar</td>
+                    <td>0.32 miles</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm btn-block"><i class="fa fa-check-circle"></i> Connect</button>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">3</th>
+                    <td>Quinton's and Tonic</td>
+                    <td>0.45 miles</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm btn-block"><i class="fa fa-check-circle"></i> Connect</button>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">4</th>
+                    <td>Devin's House</td>
+                    <td>1.45 miles</td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm btn-block"><i class="fa fa-times-circle"></i> Private</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
