@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * Route configuration for the RDash module.
+ * Route configuration for the Songs module.
  */
-angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
+angular.module('Songs').config(['$stateProvider', '$urlRouterProvider',
     function($stateProvider, $urlRouterProvider) {
 
         // For unmatched routes
@@ -13,11 +13,27 @@ angular.module('RDash').config(['$stateProvider', '$urlRouterProvider',
         $stateProvider
             .state('index', {
                 url: '/',
-                templateUrl: 'templates/dashboard.html'
+                templateUrl: 'templates/jukebox.html'
             })
-            .state('tables', {
-                url: '/tables',
-                templateUrl: 'templates/tables.html'
-            });
+            .state('findHost', {
+                url: '/findhost',
+                templateUrl: 'templates/findHost.html'
+            })
+            .state('libary', {
+                url: '/libary',
+                templateUrl: 'templates/library.html'
+            })
+            .state('login', {
+                url: '/login',
+                templateUrl: 'templates/login.html'
+            })
+            .state('createaccount', {
+                url: '/createaccount',
+                templateUrl: 'templates/createaccount.html'
+            })
+            .state('host', {
+                url: '/host',
+                templateUrl: 'templates/host.html'
+            })
     }
 ]);
