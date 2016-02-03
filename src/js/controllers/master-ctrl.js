@@ -2,7 +2,7 @@
  * Master Controller
  */
 
-angular.module('RDash')
+angular.module('Songs')
     .controller('MasterCtrl', ['$scope', '$cookieStore', MasterCtrl]);
 
 function MasterCtrl($scope, $cookieStore) {
@@ -10,11 +10,10 @@ function MasterCtrl($scope, $cookieStore) {
      * Sidebar Toggle & Cookie Control
      */
     var mobileView = 992;
-
+    $scope.greeting = 'Hola!';
     $scope.getWidth = function() {
         return window.innerWidth;
     };
-
     $scope.$watch($scope.getWidth, function(newValue, oldValue) {
         if (newValue >= mobileView) {
             if (angular.isDefined($cookieStore.get('toggle'))) {
