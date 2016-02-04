@@ -51,3 +51,6 @@ node_modules
 *.log
 bower.json
 /FrontEnd/public/.sass-cache
+dist/js/dashboard.min.js
+dist/lib/css/main.min.css
+dist/js/dashboard.min.js
