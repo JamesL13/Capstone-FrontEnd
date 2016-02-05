@@ -35,7 +35,7 @@
             <span class="menu-icon fa fa-bars"></span>
           </a>
                 </li>
-                <li class="sidebar-title"><span>NAVIGATION</span></li>
+                <li class="sidebar-title"><span>NAVIGATION {{isLoggedIn}}</span></li>
                 <li class="sidebar-list">
                     <a href="#/jukebox">Jukebox <span class="menu-icon fa fa-music text-center"></span></a>
                 </li>
@@ -50,8 +50,11 @@
                 </li>
             </ul>
             <div class="sidebar-footer">
-                <div class="col-xs-4">
+                <div class="col-xs-4" ng-hide="isLoggedIn">
                     <a href="#/login">Login</a>
+                </div>
+                <div class="col-xs-4" ng-show="isLoggedIn" ng-click="logout()">
+                    <a href="#/login">Logout</a>
                 </div>
                 <div class="col-xs-8">
                     <a href="#/createaccount">Become a Host</a>

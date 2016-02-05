@@ -9,6 +9,13 @@ function MasterCtrl($scope, $cookieStore) {
     /**
      * Sidebar Toggle & Cookie Control
      */
+    if (typeof $cookieStore.get('isLoggedIn') != 'undefined' && $cookieStore.get('isLoggedIn')) {
+        $scope.isLoggedIn = true;
+    }
+    else {
+        $scope.isLoggedIn = false;
+    }
+
     var mobileView = 992;
     $scope.greeting = 'Hola!';
     $scope.getWidth = function() {
@@ -17,7 +24,7 @@ function MasterCtrl($scope, $cookieStore) {
     $scope.$watch($scope.getWidth, function(newValue, oldValue) {
         if (newValue >= mobileView) {
             if (angular.isDefined($cookieStore.get('toggle'))) {
-                $scope.toggle = ! $cookieStore.get('toggle') ? false : true;
+                $scope.toggle = !$cookieStore.get('toggle') ? false : true;
             } else {
                 $scope.toggle = true;
             }
@@ -35,4 +42,10 @@ function MasterCtrl($scope, $cookieStore) {
     window.onresize = function() {
         $scope.$apply();
     };
+
+    $scope.logout = function() {
+        $scope.isLoggedIn = false;
+        window.location = "#/login";
+    }
+
 }
