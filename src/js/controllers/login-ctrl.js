@@ -17,10 +17,6 @@ function LoginCtrl($scope, $http, $cookieStore) {
     }
 
     var successCallback = function(response) {
-        var matches = response.data.filter(function(val, index, array) {
-            return val.user_email === 'devin@yeah.com';
-        });
-        console.log(util.inspect(response, false, null));
         $cookieStore.put('isLoggedIn', true);
         window.location = "#/host";
         location.reload();
