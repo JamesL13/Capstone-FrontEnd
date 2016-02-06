@@ -45,7 +45,7 @@
                 <li class="sidebar-list">
                     <a href="#/findhost">Find Host <span class="menu-icon fa fa-map-o text-center"></span></a>
                 </li>
-                <li class="sidebar-list">
+                <li class="sidebar-list" ng-show="isLoggedIn">
                     <a href="#/host">Account <span class="menu-icon fa fa-user text-center"></span></a>
                 </li>
             </ul>
@@ -57,7 +57,7 @@
                     <a href="#/login">Logout</a>
                 </div>
                 <div class="col-xs-8">
-                    <a href="#/createaccount">Become a Host</a>
+                    <a href="#/createaccount" ng-hide="isLoggedIn">Become a Host</a>
                 </div>
             </div>
         </div>

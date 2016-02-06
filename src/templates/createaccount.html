@@ -1,9 +1,9 @@
 <div class="container" data-ng-controller="CreateAccountCtrl">
     <div class="row">
         <div class="col-md-8">
-            <div class="alert alert-danger" role="alert" ng-show="formErrors"><strong>Oops!</strong> Something went wrong. Check your input and try again.</div>
             <form role="form" name="accountForm" ng-submit="submit(accountForm.$valid)" method="post" novalidate>
                 <h2>Sign Up <br><small>Sign up to host your own Jukebox</small></h2>
+                <div class="alert alert-danger" role="alert" ng-show="formErrors"><strong>Error!</strong> {{formErrorMessage}}</div>
                 <hr class="colorgraph">
                 <div class="row">
                     <div class="col-md-12">
@@ -24,7 +24,7 @@
                 <hr class="colorgraph">
                 <div class="row">
                     <div class="col-sm-12 col-md-12">
-                        <input type="submit" value="submit" class="btn btn-primary btn-block btn-lg" tabindex="3">
+                        <input type="submit" value="Create Account" class="btn btn-primary btn-block btn-lg" tabindex="3">
                     </div>
                 </div>
                 <div class="row">

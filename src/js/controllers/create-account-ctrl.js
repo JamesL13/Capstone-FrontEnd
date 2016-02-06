@@ -7,6 +7,7 @@ angular.module('Songs').controller('CreateAccountCtrl', ['$scope', '$http', '$co
 function CreateAccountCtrl($scope, $http, $cookieStore) {
     var server = 'http://thomasscully.com';
     $scope.formErrors = false;
+    $scope.formErrorMessage = "";
 
     $scope.submit = function(isValid) {
 
@@ -16,12 +17,21 @@ function CreateAccountCtrl($scope, $http, $cookieStore) {
 
         } else {
             $scope.formErrors = true;
+            $scope.formErrorMessage = "Invalid form input. Please try again."
         }
     }
 
     successCallback = function(response) {
-        $cookieStore.put('isLoggedIn', true);
-        window.location = "#/host";
+        
+        console.log(response);
+        if (response.data == "Email already in use.  Cannot create account.") {
+            $scope.formErrorMessage = response.data;
+            $scope.formErrors = true;
+        } else {
+            $cookieStore.put('isLoggedIn', true);
+            window.location = "#/host";
+        }
+
     }
     errorCallback = function(response) {
         $scope.formErrors = true;
