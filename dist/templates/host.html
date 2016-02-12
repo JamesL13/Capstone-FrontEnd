@@ -1,75 +1,77 @@
-<div class="row">
-	<div class="col-xs-12 text-right">
-		<div class="input-group">
-			<input type="text" class="form-control" placeholder="Search Music" aria-describedby="sizing-addon2">
-			<span class="input-group-addon" id="sizing-addon2"><i class="fa fa-search"></i></span>
-		</div>
-	</div>
-</div>
-<div class="row">
-	<div class="col-xs-12 text-center">
-		<h1>Campus Bar & Grill</h1>
-	</div>
-</div>
-<div class="row">
-    <div class="col-xs-3 text-center">
-        <div style="height: 185px; width: 200px">
-            <img src="/img/avatar.jpg" alt="Host Picture" width="100%" height="100%">
-            <button class="btn btn-xs btn-primary" style="margin-top: 5px">Manage Account</button>
-        </div>
-    </div>
-    <div class="col-xs-9" style="height: 200px">
-        <div class="row">
-            <br>
-            <h4 style="display: inline">Current Jukebox: </h4>
-            <p style="display: inline">Regular Playlist</p>
-        </div>
-        <div class="row">
-            <br>
-            <h4 style="display: inline">Now Playing: </h4>
-            <p style="display: inline">Good Times, Bad Times</p>
-        </div>
-        <div class="row">
-            <br>
-            <h4 style="display: inline">Jukebox Listeners: </h4>
-            <p style="display: inline">44</p>
-        </div>
-        <div class="row">
-            <br>
-            <div class="btn-group">
-                <button class="btn btn-primary"><i class="fa fa-play"></i></button>
-                <button class="btn btn-primary"><i class="fa fa-pause"></i></button>
-                <button class="btn btn-primary"><i class="fa fa-volume-off"></i></button>
-                <button class="btn btn-primary"><i class="fa fa-volume-down"></i></button>
-                <button class="btn btn-primary"><i class="fa fa-volume-up"></i></button>
+<div class="container" data-ng-controller="HostCtrl">
+    <div class="row">
+        <div class="col-xs-12 text-right">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search Music" aria-describedby="sizing-addon2">
+                <span class="input-group-addon" id="sizing-addon2"><i class="fa fa-search"></i></span>
             </div>
         </div>
     </div>
-</div>
-<br>
-<div class="row">
-    <div class="col-xs-12">
-        <table class="table align-center">
-            <caption>Manage Playlist</caption>
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th class="text-center">Songs</th>
-                <th class="text-center">Time Active</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Regular Library</td>
-                <td class="text-center">43</td>
-                <td class="text-center">2:12:11</td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-primary btn-xs"><i class="fa fa-wrench"></i> Manage</button>
-                    <button type="button" class="btn btn-primary btn-xs"><i class="fa fa-trash-o"></i> Delete</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <h1>Campus Bar & Grill</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-3 text-center">
+            <div style="height: 185px; width: 200px">
+                <img src="/img/avatar.jpg" alt="Host Picture" width="100%" height="100%">
+                <button class="btn btn-xs btn-primary" style="margin-top: 5px" ng-click="manageAccount()">Manage Account</button>
+            </div>
+        </div>
+        <div class="col-xs-9" style="height: 200px">
+            <div class="row">
+                <br>
+                <h4 style="display: inline">Current Jukebox: </h4>
+                <p style="display: inline">Regular Playlist</p>
+            </div>
+            <div class="row">
+                <br>
+                <h4 style="display: inline">Now Playing: </h4>
+                <p style="display: inline">Good Times, Bad Times</p>
+            </div>
+            <div class="row">
+                <br>
+                <h4 style="display: inline">Jukebox Listeners: </h4>
+                <p style="display: inline">44</p>
+            </div>
+            <div class="row">
+                <br>
+                <div class="btn-group">
+                    <button class="btn btn-primary"><i class="fa fa-play"></i></button>
+                    <button class="btn btn-primary"><i class="fa fa-pause"></i></button>
+                    <button class="btn btn-primary"><i class="fa fa-volume-off"></i></button>
+                    <button class="btn btn-primary"><i class="fa fa-volume-down"></i></button>
+                    <button class="btn btn-primary"><i class="fa fa-volume-up"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-xs-12">
+            <table class="table align-center">
+                <caption>Manage Playlist</caption>
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th class="text-center">Songs</th>
+                    <th class="text-center">Time Active</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Regular Library</td>
+                    <td class="text-center">43</td>
+                    <td class="text-center">2:12:11</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-primary btn-xs" ng-click="manageJukebox()"><i class="fa fa-wrench"></i> Manage</button>
+                        <button type="button" class="btn btn-primary btn-xs"><i class="fa fa-trash-o"></i> Delete</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
