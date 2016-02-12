@@ -2,72 +2,44 @@
  * Create account Controller
  */
 
-angular.module('Songs').controller('CreateAccountCtrl', ['$scope', CreateAccountCtrl]);
+angular.module('Songs').controller('CreateAccountCtrl', ['$scope', '$http', '$cookieStore', CreateAccountCtrl]);
 
-function CreateAccountCtrl($scope) {
-    $(function() {
+function CreateAccountCtrl($scope, $http, $cookieStore) {
+    var server = 'http://thomasscully.com';
+    $scope.formErrors = false;
+    $scope.formErrorMessage = "";
+
+    $scope.submit = function(isValid) {
+
+        if (isValid) {
+            $scope.formErrors = false;
+            $http.post(server + '/accounts', $scope.accountInfo).then(successCallback, errorCallback);
+
+        } else {
+            $scope.formErrors = true;
+            $scope.formErrorMessage = "Invalid form input. Please try again."
+        }
+    }
+
+    successCallback = function(response) {
         
-        $('.button-checkbox').each(function() {
+        console.log(response);
+        if (response.data == "Email already in use.  Cannot create account.") {
+            $scope.formErrorMessage = response.data;
+            $scope.formErrors = true;
+        } else {
+            $cookieStore.put('isLoggedIn', true);
+            window.location = "#/host";
+        }
 
-            // Settings
-            var $widget = $(this),
-                $button = $widget.find('button'),
-                $checkbox = $widget.find('input:checkbox'),
-                color = $button.data('color'),
-                settings = {
-                    on: {
-                        icon: 'glyphicon glyphicon-check'
-                    },
-                    off: {
-                        icon: 'glyphicon glyphicon-unchecked'
-                    }
-                };
+    }
+    errorCallback = function(response) {
+        $scope.formErrors = true;
+    }
 
-            // Event Handlers
-            $button.on('click', function() {
-                $checkbox.prop('checked', !$checkbox.is(':checked'));
-                $checkbox.triggerHandler('change');
-                updateDisplay();
-            });
-            $checkbox.on('change', function() {
-                updateDisplay();
-            });
+    var init = function() {
 
-            // Actions
-            function updateDisplay() {
-                var isChecked = $checkbox.is(':checked');
 
-                // Set the button's state
-                $button.data('state', (isChecked) ? "on" : "off");
-
-                // Set the button's icon
-                $button.find('.state-icon')
-                    .removeClass()
-                    .addClass('state-icon ' + settings[$button.data('state')].icon);
-
-                // Update the button's color
-                if (isChecked) {
-                    $button
-                        .removeClass('btn-default')
-                        .addClass('btn-' + color + ' active');
-                } else {
-                    $button
-                        .removeClass('btn-' + color + ' active')
-                        .addClass('btn-default');
-                }
-            }
-
-            // Initialization
-            function init() {
-
-                updateDisplay();
-
-                // Inject the icon if applicable
-                if ($button.find('.state-icon').length == 0) {
-                    $button.prepend('<i class="state-icon ' + settings[$button.data('state')].icon + '"></i>');
-                }
-            }
-            init();
-        });
-    });
+    }
+    init();
 }

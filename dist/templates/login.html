@@ -1,35 +1,35 @@
-<div class="row">
-	<div class="col-xs-12 text-center">
-		<h1>Login</h1>
-	</div>
-</div>
-<div class="row">
-	<div class="col-xs-12 text-center">
-		<div class="modal-dialog" style="margin-bottom:0">
-			<div class="modal-content">
-				<div class="panel-heading">
-					<h3 class="panel-title">Sign In</h3>
-				</div>
-				<div class="panel-body">
-					<form role="form">
-						<fieldset>
-							<div class="form-group">
-								<input class="form-control" placeholder="E-mail" name="email" type="email" autofocus="">
-							</div>
-							<div class="form-group">
-								<input class="form-control" placeholder="Password" name="password" type="password" value="">
-							</div>
-							<div class="checkbox">
-								<label>
-									<input name="remember" type="checkbox" value="Remember Me">Remember Me
-								</label>
-							</div>
-							<!-- Change this to a button or input when using this as a form -->
-							<a href="javascript:;" class="btn btn-sm btn-success">Login</a>
-						</fieldset>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+<div class="container" data-ng-controller="LoginCtrl">
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <h1>Login</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <div class="modal-dialog" style="margin-bottom:0">
+                <div class="modal-content">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Sign In</h3>
+                    </div>
+                    <div class="alert alert-danger" role="alert" ng-show="formErrors"><strong>Error!</strong> Invalid email and/or password.</div>
+                    <div class="panel-body">
+                        <form role="form" name="loginForm" ng-submit="submit(loginForm.$valid)" novalidate>
+                            <fieldset>
+                                <div class="form-group">
+                                    <input ng-model="loginDetails.email" class="form-control" placeholder="E-mail" name="user_email" type="email" autofocus="" required>
+                                    <p class="text-danger" ng-show="loginForm.user_email.$touched && loginForm.user_email.$invalid"><small>Please enter a valid email.</small></p>
+                                </div>
+                                <div class="form-group">
+                                    <input ng-model="loginDetails.password" class="form-control" placeholder="Password" name="password" type="password" value="" required>
+                                    <p class="text-danger" ng-show="loginForm.password.$touched && loginForm.password.$invalid"><small>Please enter a password.</small></p>
+                                </div>
+                                <!-- Change this to a button or input when using this as a form -->
+                                <input type="submit" value="Login" class="btn btn-primary btn-block btn-lg" tabindex="3">
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
