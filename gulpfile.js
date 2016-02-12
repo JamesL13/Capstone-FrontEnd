@@ -12,6 +12,7 @@ var gulp = require('gulp'),
 
 var paths = {
     scripts: 'src/js/**/*.*',
+    sockets: 'node_modules/socket.io-client/socket.io.js',
     styles: 'src/less/**/*.*',
     images: 'src/img/**/*.*',
     templates: 'src/templates/**/*.html',
@@ -55,7 +56,7 @@ gulp.task('custom-images', function() {
 });
 
 gulp.task('custom-js', function() {
-    return gulp.src(paths.scripts)
+    return gulp.src([paths.scripts, paths.sockets])
         .pipe(minifyJs())
         .pipe(concat('dashboard.min.js'))
         .pipe(gulp.dest('dist/js'));
