@@ -1,3 +1,72 @@
-<!-- This page is for Account Management -->
-<!-- It is accessed by clicking the 'Manage Account' button on host.html-->
-<!-- This page will allow for an account name change, password change, and deleting of account -->
+<div class="container" data-ng-controller="ManageAccountCtrl">
+    <div class="row">
+        <div class="col-xs-12 text-right">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search Music" aria-describedby="sizing-addon2">
+                <span class="input-group-addon" id="sizing-addon2"><i class="fa fa-search"></i></span>
+            </div>
+        </div>
+    </div>
+    <div id="right-block" class="col-md-8 col-md-offset-2">
+        <div class="user-settings">
+            <h1>Manage Account</h1>
+
+            <div class="col-md-10 personal-info">
+
+                <h3>Account Information</h3>
+
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="first_name" class="col-lg-4 control-label">Account Name:</label>
+                        <div class="col-lg-8">
+                            <input  id="first_name" class="form-control" type="text" value="Campus Bar & Grill">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name" class="col-lg-4 control-label">Location:</label>
+                        <div class="col-lg-8">
+                            <input  id="last_name" class="form-control" type="text" value="Downtown Columbia">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="company" class="col-lg-4 control-label">Company:</label>
+                        <div class="col-lg-8">
+                            <input id="company" class="form-control" type="text" value="Campus Bar & Grill">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="user_email" class="col-lg-4 control-label">Email:</label>
+                        <div class="col-lg-8">
+                            <input id="user_email" class="form-control" type="text" value="ripbig12@gmail.com">
+                        </div>
+                    </div>
+                </form>
+
+                <h3>Change Password</h3>
+
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="pass" class="col-md-4 control-label">New Password:</label>
+                        <div class="col-md-8">
+                            <input id="pass" class="form-control" type="password" value="big12">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pass_repet" class="col-md-4 control-label text">Confirm password:</label>
+                        <div class="col-md-8">
+                            <input  id="pass_repet" class="form-control" type="password" value="big12">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label"></label>
+                        <div class="col-md-8">
+                            <input type="button" class="btn btn-primary" value="Save Changes" ng-click="saveChanges()">
+                            <input type="button" class="btn btn-primary" value="Cancel Changes" ng-click="cancel()">
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

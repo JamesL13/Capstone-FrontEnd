@@ -35,5 +35,9 @@ angular.module('Songs').config(['$stateProvider', '$urlRouterProvider',
                 url: '/host',
                 templateUrl: 'templates/host.html'
             })
+            .state('manageaccount', {
+                url:'/manageaccount',
+                templateUrl: 'templates/manageAccount.html'
+            })
     }
 ]);
