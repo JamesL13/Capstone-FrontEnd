@@ -1,3 +1,58 @@
-<!-- This page is for Jukebox Management -->
-<!-- It is accessed by clicking the 'Manage' button on host.html-->
-<!-- This page will allow for an jukebox name change, password change, and adding of music -->
+<div class="container" data-ng-controller="ManageJukeboxCtrl">
+    <div class="row">
+        <div class="col-xs-12 text-right">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search Music" aria-describedby="sizing-addon2">
+                <span class="input-group-addon" id="sizing-addon2"><i class="fa fa-search"></i></span>
+            </div>
+        </div>
+    </div>
+    <div id="right-block" class="col-md-8 col-md-offset-2">
+        <div class="user-settings">
+            <h1>Manage Jukebox</h1>
+
+            <div class="col-md-10 personal-info">
+
+                <h3>Jukebox Information</h3>
+
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="juke_name" class="col-lg-4 control-label">Jukebox Name:</label>
+                        <div class="col-lg-8">
+                            <input  id="juke_name" class="form-control" type="text" value="Campus Bar & Grill">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="theme" class="col-lg-4 control-label">Theme:</label>
+                        <div class="col-lg-8">
+                            <input id="theme" class="form-control" type="text" value="Anything">
+                        </div>
+                    </div>
+
+                <h3>Change Privacy Pin</h3>
+
+                    <div class="form-group">
+                        <label for="pin" class="col-md-4 control-label">New Pin:</label>
+                        <div class="col-md-8">
+                            <input id="pin" class="form-control" type="password" value="big12">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="pin_repet" class="col-md-4 control-label text">Confirm Pin:</label>
+                        <div class="col-md-8">
+                            <input  id="pin_repet" class="form-control" type="password" value="big12">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label"></label>
+                        <div class="col-md-8">
+                            <input type="button" class="btn btn-primary" value="Save Changes" ng-click="saveChanges()">
+                            <input type="button" class="btn btn-primary" value="Cancel Changes" ng-click="cancel()">
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

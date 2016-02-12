@@ -11,5 +11,7 @@ function HostCtrl($scope, $http, $cookieStore) {
         window.location = "#/manageaccount";
     }
 
-
+    $scope.manageJukebox = function() {
+        window.location = "#/managejukebox";
+    }
 }

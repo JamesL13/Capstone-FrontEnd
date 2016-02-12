@@ -39,5 +39,9 @@ angular.module('Songs').config(['$stateProvider', '$urlRouterProvider',
                 url:'/manageaccount',
                 templateUrl: 'templates/manageAccount.html'
             })
+            .state('managejukebox', {
+                url: '/managejukebox',
+                templateUrl: 'templates/manageJukebox.html'
+            })
     }
 ]);
