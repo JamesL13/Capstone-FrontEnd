@@ -10,18 +10,21 @@ function LoginCtrl($scope, $http, $cookieStore) {
 
     $scope.submit = function(isValid) {
         if (isValid) {
-            $http.get(server + '/accounts').then(successCallback, errorCallback);
+            $http.post(server + '/accounts/login', $scope.loginForm).then(successCallback, errorCallback);
         } else {
             $scope.formErrors = true;
         }
     }
 
     var successCallback = function(response) {
+        
+        console.log(response);
         $cookieStore.put('isLoggedIn', true);
         window.location = "#/host";
         location.reload();
     }
     var errorCallback = function(response) {
+        $scope.formErrorMessage = response.data;
 
     }
     var init = function() {
