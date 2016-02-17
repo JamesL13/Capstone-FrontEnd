@@ -34,7 +34,7 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
 
                          */
                         console.log(song);
-                        alert(song.title + "," + song.artist + "," + song.album + "," + (song.duration / 60) + ":" + (song.duration % 60));
+                        alert(song.title + "," + song.artist + "," + song.album + "," + song.duration);
                     });
                 },
                 onError: function(error) {
