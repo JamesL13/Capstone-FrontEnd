@@ -15,21 +15,4 @@ function HostCtrl($scope, $http, $cookieStore) {
         window.location = "#/managejukebox";
     }
 
-
-    var jsmediatags = window.jsmediatags; // From remote host
-    var inputTypeFile = document.querySelector('input[type="file"]');
-
-    inputTypeFile.addEventListener("change", function (event) {
-        var file = event.target.files[0];
-        jsmediatags.read(file, {
-            onSuccess: function (tag) {
-                console.log(tag);
-            },
-            onError: function (error) {
-                console.log(error);
-            }
-        });
-    }, false);
-
-
 }
