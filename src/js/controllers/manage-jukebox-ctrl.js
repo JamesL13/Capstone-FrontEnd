@@ -101,7 +101,6 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
         console.log(songs);
         document.getElementById('fileinput').value = "";
         files = [];
-        document.getElementById('upload').disabled = false;
     };
 
     /*
