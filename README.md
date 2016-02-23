@@ -11,6 +11,7 @@ The solution to this problem has been carefully crafted such that an application
 * [NodeJS](http://nodejs.org/) (with [NPM](https://www.npmjs.org/))
 * [Bower](http://bower.io)
 * [Gulp](http://gulpjs.com)
+* [JSMediaTags](https://github.com/aadsm/jsmediatags)
 
 ### Installation
 1. Clone the repository: `git clone https://github.com/JamesL13/Capstone-FrontEnd.git`
