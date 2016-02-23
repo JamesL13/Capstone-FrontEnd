@@ -5,7 +5,7 @@
 angular.module('Songs').controller('CreateAccountCtrl', ['$scope', '$http', '$cookieStore', CreateAccountCtrl]);
 
 function CreateAccountCtrl($scope, $http, $cookieStore) {
-    var server = 'http://thomasscully.com';
+    var server = 'https://thomasscully.com';
     $scope.formErrors = false;
     $scope.formErrorMessage = "";
 

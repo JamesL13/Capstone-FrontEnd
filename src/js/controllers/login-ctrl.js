@@ -5,7 +5,7 @@
 angular.module('Songs').controller('LoginCtrl', ['$scope', '$http', '$cookieStore', LoginCtrl]);
 
 function LoginCtrl($scope, $http, $cookieStore) {
-    var server = 'http://thomasscully.com';
+    var server = 'https://thomasscully.com';
     $scope.formErrors = false;
     $scope.formErrorMessage = "";
 

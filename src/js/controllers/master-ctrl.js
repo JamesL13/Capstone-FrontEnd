@@ -45,6 +45,7 @@ function MasterCtrl($scope, $cookieStore) {
 
     $scope.logout = function() {
         $scope.isLoggedIn = false;
+        $cookieStore.put('isLoggedIn', false);
         window.location = "#/login";
     }
 
