@@ -5,7 +5,7 @@
 angular.module('Songs').controller('ManageJukeboxCtrl', ['$scope', '$http', '$cookieStore', ManageJukeboxCtrl]);
 
 function ManageJukeboxCtrl($scope, $http, $cookieStore) {
-    var server = 'http://thomasscully.com';
+    var server = 'https://thomasscully.com';
 
     $scope.cancel = function() {
         window.location = "#/host";
@@ -19,10 +19,11 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
      Arrays/variables used to store and create the final JSON Object of uploaded songs
      */
     var files = [];
-    var fileDurations = [];
-    var fileTitles = [];
-    var fileAlbums = [];
-    var fileArtists = [];
+    var song_titles = [];
+    var song_artists = [];
+    var song_albums = [];
+    var song_lengths = [];
+    var song_locations = [];
     var songs = [];
     var loadedFlags = [];
 
@@ -30,10 +31,11 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
         Function to reset the arrays/variables used in the uploading process
      */
     var resetData = function() {
-        fileDurations = [];
-        fileTitles = [];
-        fileAlbums = [];
-        fileArtists = [];
+        song_titles = [];
+        song_artists = [];
+        song_albums = [];
+        song_lengths = [];
+        song_locations = [];
         songs = [];
     };
 
@@ -56,10 +58,12 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
         {
             var audio = document.createElement('audio');
             audio.setAttribute('id', i);
-            audio.setAttribute('src', URL.createObjectURL(files[i]));
+            var location = URL.createObjectURL(files[i]);
+            song_locations[i] = location;
+            audio.setAttribute('src', location);
             audio.load();
             audio.oncanplaythrough = function() {
-                fileDurations[this.id] = this.duration;
+                song_lengths[this.id] = this.duration;
                 createSongsMetadata(this.id, createJSON);
             }
         }
@@ -68,9 +72,9 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
         var file = files[id];
         new jsmediatags.Reader(file).setTagsToRead(["title", "album", "artist"]).read({
             onSuccess: function(tag) {
-                fileTitles[id] = tag.tags.title;
-                fileAlbums[id] = tag.tags.album;
-                fileArtists[id] = tag.tags.artist;
+                song_titles[id] = tag.tags.title;
+                song_artists[id] = tag.tags.artist;
+                song_albums[id] = tag.tags.album;
                 callback(id);
             },
             onError: function(error) {
@@ -79,10 +83,7 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
         });
     };
     var createJSON = function(id) {
-        /*
-            Replace this with a push of JSON object to the database
-         */
-        songs[id] = {"title":fileTitles[id],"atrist":fileArtists[id],"album":fileAlbums[id],"duration":fileDurations[id]};
+        songs.push({"song_title":song_titles[id],"song_artist":song_artists[id],"song_album":song_albums[id],"song_length":song_lengths[id],"location_in_filesystem":song_locations[id]});
         loadedFlags[id] = true;
         checkFlags();
         if(checkFlags())
@@ -95,10 +96,10 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
         function that pushes the final JSON object to the database
      */
     var pushSongs = function() {
-        /*
-         Replace console.log with a push of songs object to the database
-         */
         console.log(songs);
+        var uploadObject = {"user_account_id": 2, "number_of_songs": songs.length, "songs": songs};
+        console.log(uploadObject);
+        $http.post(server + '/songs', uploadObject).then(successCallback, errorCallback);
         document.getElementById('fileinput').value = "";
         files = [];
     };
@@ -118,13 +119,22 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
     };
 
     /*
+        Callback functions for a success or error from a post to the songs database
+     */
+    successCallback = function(response) {
+        console.log("SUCCESS: " + response);
+    }
+    errorCallback = function(error) {
+        console.dir(error);
+    }
+
+    /*
         Triggers whenever new files are selected with the input type file
      */
     var inputTypeFile = document.getElementById('fileinput');
     inputTypeFile.addEventListener("change", function(event) {
         files = [];
         loadedFlags = [];
-        var fileURL;
         for(i = 0; i < event.target.files.length; i++)
         {
             var file = event.target.files[i];
