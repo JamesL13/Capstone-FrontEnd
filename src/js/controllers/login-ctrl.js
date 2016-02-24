@@ -19,30 +19,18 @@ function LoginCtrl($scope, $http, $cookieStore) {
     }
 
     var successCallback = function(response) {
-        
         if (response.data) {
             $cookieStore.put('isLoggedIn', true);
+            $cookieStore.put('userId', response.data);
             window.location = "#/host";
-            location.reload();
         } else {
             $scope.formErrorMessage = "Invalid username / password combination.";
             $scope.formErrors = true;
         }
-    }   
+    }
     var errorCallback = function(response) {
         $scope.formErrorMessage = "Server not responding. Please try again later.";
         $scope.formErrors = true;
 
     }
-    var init = function() {
-
-
-
-    }
-
-    $scope.login = function() {
-
-    }
-
-    init();
 }

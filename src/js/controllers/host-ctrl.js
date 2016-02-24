@@ -14,4 +14,12 @@ function HostCtrl($scope, $http, $cookieStore) {
     $scope.manageJukebox = function() {
         window.location = "#/managejukebox";
     }
+
+    var init = function() {
+        if (!$cookieStore.get('isLoggedIn')) {
+            window.location = "#/login";
+        }
+    }
+
+    init();
 }

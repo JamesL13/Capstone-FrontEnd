@@ -29,6 +29,8 @@ function CreateAccountCtrl($scope, $http, $cookieStore) {
             $scope.formErrors = true;
         } else {
             $cookieStore.put('isLoggedIn', true);
+            $cookieStore.put('userId', response.data);
+
             window.location = "#/host";
         }
 

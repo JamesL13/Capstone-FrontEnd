@@ -9,12 +9,6 @@ function MasterCtrl($scope, $cookieStore) {
     /**
      * Sidebar Toggle & Cookie Control
      */
-    if (typeof $cookieStore.get('isLoggedIn') != 'undefined' && $cookieStore.get('isLoggedIn')) {
-        $scope.isLoggedIn = true;
-    }
-    else {
-        $scope.isLoggedIn = false;
-    }
 
     var mobileView = 992;
     $scope.greeting = 'Hola!';
@@ -44,9 +38,11 @@ function MasterCtrl($scope, $cookieStore) {
     };
 
     $scope.logout = function() {
-        $scope.isLoggedIn = false;
         $cookieStore.put('isLoggedIn', false);
-        window.location = "#/login";
     }
+
+    $scope.$on('$locationChangeStart', function(event) {
+        $scope.isLoggedIn = $cookieStore.get('isLoggedIn');
+    });
 
 }

@@ -54,8 +54,7 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
         database
      */
     var createAudio = function() {
-        for(i = 0; i < files.length; i++)
-        {
+        for (i = 0; i < files.length; i++) {
             var audio = document.createElement('audio');
             audio.setAttribute('id', i);
             var location = URL.createObjectURL(files[i]);
@@ -83,11 +82,10 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
         });
     };
     var createJSON = function(id) {
-        songs.push({"song_title":song_titles[id],"song_artist":song_artists[id],"song_album":song_albums[id],"song_length":song_lengths[id],"location_in_filesystem":song_locations[id]});
+        songs.push({ "song_title": song_titles[id], "song_artist": song_artists[id], "song_album": song_albums[id], "song_length": song_lengths[id], "location_in_filesystem": song_locations[id] });
         loadedFlags[id] = true;
         checkFlags();
-        if(checkFlags())
-        {
+        if (checkFlags()) {
             pushSongs();
         }
     };
@@ -97,7 +95,7 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
      */
     var pushSongs = function() {
         console.log(songs);
-        var uploadObject = {"user_account_id": 2, "number_of_songs": songs.length, "songs": songs};
+        var uploadObject = { "user_account_id": 2, "number_of_songs": songs.length, "songs": songs };
         console.log(uploadObject);
         $http.post(server + '/songs', uploadObject).then(successCallback, errorCallback);
         document.getElementById('fileinput').value = "";
@@ -107,11 +105,9 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
     /*
         Function that checks the flags of the songs to determine when all songs have been successfully uploaded
      */
-    var checkFlags = function () {
-        for(i = 0; i < loadedFlags.length; i++)
-        {
-            if(!loadedFlags[i])
-            {
+    var checkFlags = function() {
+        for (i = 0; i < loadedFlags.length; i++) {
+            if (!loadedFlags[i]) {
                 return false;
             }
         }
@@ -135,8 +131,7 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
     inputTypeFile.addEventListener("change", function(event) {
         files = [];
         loadedFlags = [];
-        for(i = 0; i < event.target.files.length; i++)
-        {
+        for (i = 0; i < event.target.files.length; i++) {
             var file = event.target.files[i];
             files.push(file);
             loadedFlags[i] = false;
