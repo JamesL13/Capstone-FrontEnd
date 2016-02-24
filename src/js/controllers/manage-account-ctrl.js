@@ -5,7 +5,8 @@
 angular.module('Songs').controller('ManageAccountCtrl', ['$scope', '$http', '$cookieStore', ManageAccountCtrl]);
 
 function ManageAccountCtrl($scope, $http, $cookieStore) {
-    var server = 'http://thomasscully.com';
+
+    var server = 'https://thomasscully.com';
 
     $scope.cancel = function() {
         window.location = "#/host";
@@ -14,4 +15,11 @@ function ManageAccountCtrl($scope, $http, $cookieStore) {
     $scope.saveChanges = function() {
 
     }
+    var init = function() {
+        if (!$cookieStore.get('isLoggedIn')) {
+            window.location = "#/login";
+        }
+    }
+
+    init();
 }
