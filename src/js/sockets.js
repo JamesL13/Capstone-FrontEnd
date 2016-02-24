@@ -1,1 +1,1 @@
-var socket = io("http://localhost");
+var socket = io("https://thomasscully.com");
