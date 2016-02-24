@@ -6,9 +6,6 @@ angular.module('Songs')
     .controller('MasterCtrl', ['$scope', '$cookieStore', MasterCtrl]);
 
 function MasterCtrl($scope, $cookieStore) {
-    /**
-     * Sidebar Toggle & Cookie Control
-     */
 
     var mobileView = 992;
     $scope.greeting = 'Hola!';
@@ -44,5 +41,4 @@ function MasterCtrl($scope, $cookieStore) {
     $scope.$on('$locationChangeStart', function(event) {
         $scope.isLoggedIn = $cookieStore.get('isLoggedIn');
     });
-
 }
