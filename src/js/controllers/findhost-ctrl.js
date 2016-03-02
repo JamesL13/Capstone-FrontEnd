@@ -2,10 +2,10 @@
  * Find Host Controller
  */
 
-angular.module('Songs').controller('FindHostCtrl', ['$scope','http' ,FindHostCtrl]);
+angular.module('Songs').controller('FindHostCtrl', ['$scope','$http' , '$cookieStore', FindHostCtrl]);
 
-function FindHostCtrl($scope) {
-    var server = 'http://thomasscully.com';
+function FindHostCtrl($scope, $http) {
+    var server = 'https://thomasscully.com';
     $scope.jukeboxes = [];
 
     var successCallback = function(response) {
