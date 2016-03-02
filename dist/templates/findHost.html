@@ -22,7 +22,7 @@
         </label>
     </div>
 </div>
-<div class="row">
+<div class="row" data-ng-controller="FindHostCtrl">
     <div class="col-xs-12">
         <table class="table">
             <caption>Hosts Near Me</caption>
@@ -35,7 +35,17 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
+
+            <tr ng-repeat="jukebox in jukeboxes">
+                <td class="text-center">{{jukebox.id}}</td>
+                <td>{{jukebox.playlist_name}}</td>
+                <td class="text-center">{{jukebox.user__account}}</td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-primary btn-sm btn-block"><i class="fa fa-check-circle"></i> Connect</button>
+                </td>
+            </tr>
+
+                <!--<tr>
                     <th scope="row">1</th>
                     <td>Big 12</td>
                     <td>0.21 miles</td>
@@ -64,9 +74,9 @@
                     <td>Devin's House</td>
                     <td>1.45 miles</td>
                     <td>
-                        <button type="button" class="btn btn-danger btn-sm btn-block"><i class="fa fa-times-circle"></i> Private</button>
+                        <button type="button" class="btn btn-danger btn-sm btn-block	"><i class="fa fa-times-circle"></i> Private</button>
                     </td>
-                </tr>
+                </tr>-->
             </tbody>
         </table>
     </div>
