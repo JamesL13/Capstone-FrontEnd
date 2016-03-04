@@ -2,10 +2,20 @@
  * Find Host Controller
  */
 
-angular.module('Songs').controller('FindHostCtrl', ['$scope','$http' , '$cookieStore', FindHostCtrl]);
+angular.module('Songs').controller('FindHostCtrl', ['$scope','$http', '$cookieStore', FindHostCtrl]);
 
 function FindHostCtrl($scope, $http) {
     var server = 'https://thomasscully.com';
+
+    $http.defaults.headers.common = {'secret-token': 'aBcDeFgHiJkReturnOfTheSixToken666666',
+        'Accept': "application/json, text/plain, */*"
+    };
+
+    /*var config = {headers:  {
+        "secret-token" : "aBcDeFgHiJkReturnOfTheSixToken666666"
+    }
+    };*/
+
     $scope.jukeboxes = [];
 
     var successCallback = function(response) {
