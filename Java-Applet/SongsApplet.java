@@ -41,8 +41,8 @@ public class SongsApplet extends Application {
         /* Creates the Elements of the Applet */
         BorderPane root = new BorderPane();  
         StackPane titleList = new StackPane();
-        ToolBar tools = new ToolBar();
-        ToolBar jukebox = new ToolBar();
+        ToolBar hostTools = new ToolBar();
+        ToolBar jukeboxTools = new ToolBar();
         
         /* Buttons of Applet */
         Button upload = new Button("Upload Songs");
@@ -51,6 +51,8 @@ public class SongsApplet extends Application {
         Button stop = new Button("Stop");
         play.setDisable(true);
 
+        /* Media Player of Applet */
+        MediaPlayer jukebox = null;
         
         /* File Chooser of Applet */
         FileChooser uploadSongs = new FileChooser();
@@ -58,11 +60,13 @@ public class SongsApplet extends Application {
         /* ListView of Applet */
         ListView<String> songTitles = null;
                        
+        /* On Start Functions */
         showAllSongs(songTitles, titleList);
+        startJukebox(jukebox);
         
         /* Event Handlers for Button Presses */
         /* Open File Chooser, create Json Array from files, POST Json Array to the Database */
-        upload.setOnAction(new EventHandler<ActionEvent> () {
+        upload.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 try {
@@ -79,13 +83,21 @@ public class SongsApplet extends Application {
             }
         });
         
+        pause.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                jukebox.pause();
+                jukebox.stop();
+            }
+        });
+        
         play.setMinWidth(60);
         pause.setMinWidth(60);
         stop.setMinWidth(60);
-        tools.getItems().addAll(upload);
-        jukebox.getItems().addAll(play, pause, stop);
-        root.setTop(tools);
-        root.setBottom(jukebox);
+        hostTools.getItems().addAll(upload);
+        jukeboxTools.getItems().addAll(play, pause, stop);
+        root.setTop(hostTools);
+        root.setBottom(jukeboxTools);
         root.setCenter(titleList);
         Scene scene = new Scene(root, 700, 500);
         primaryStage.setTitle("Song[s]");
@@ -106,6 +118,12 @@ public class SongsApplet extends Application {
         File file = new File(songLocation);
         Media media = new Media(file.toURI().toString());
         return media;
+    }
+    
+    private static void playSong(Media songToPlay, MediaPlayer jukebox)
+    {
+        jukebox = new MediaPlayer(songToPlay);
+        jukebox.play();
     }
     
     private static void checkSongList (Button button, ListView list) throws Exception
@@ -265,6 +283,14 @@ public class SongsApplet extends Application {
         titleList.getChildren().add(songTitles);
     }
     
+    /* Function called to start the host's Jukebox */
+    private static void startJukebox(MediaPlayer jukebox) throws MalformedURLException
+    {
+        Song[] allSongs = getSongsFromDB(32);
+        Media songToPlay = createMedia(allSongs[0].getLocation());
+        playSong(songToPlay, jukebox);
+    }
+    
     /* Function called when the Upload Button is clicked */
     private static void upload(Stage stage, FileChooser uploadSongs, List<File> uploadedFiles, JsonArray uploadedSongs, ListView<String> songTitles, StackPane titleList) throws IOException, UnsupportedTagException, InvalidDataException, Exception
     {
@@ -278,4 +304,3 @@ public class SongsApplet extends Application {
         showAllSongs(songTitles, titleList);
     }
 }
-
