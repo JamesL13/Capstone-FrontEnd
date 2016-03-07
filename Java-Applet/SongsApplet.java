@@ -19,6 +19,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.*;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.media.*;
@@ -49,10 +50,12 @@ public class SongsApplet extends Application {
         Button play = new Button("Start");
         Button pause = new Button("Pause");
         Button stop = new Button("Stop");
-        play.setDisable(true);
+        
+        /* Labels of Applet */
+        Label nowPlaying = new Label("Now Playing: ");
 
         /* Media Player of Applet */
-        MediaPlayer jukebox = null;
+        MediaPlayer jukebox;
         
         /* File Chooser of Applet */
         FileChooser uploadSongs = new FileChooser();
@@ -62,7 +65,10 @@ public class SongsApplet extends Application {
                        
         /* On Start Functions */
         showAllSongs(songTitles, titleList);
-        startJukebox(jukebox);
+        Media songToPlay = songToPlay(nowPlaying);
+        jukebox = new MediaPlayer(songToPlay);
+        playSong(jukebox);
+        
         
         /* Event Handlers for Button Presses */
         /* Open File Chooser, create Json Array from files, POST Json Array to the Database */
@@ -83,19 +89,32 @@ public class SongsApplet extends Application {
             }
         });
         
-        pause.setOnAction(new EventHandler<ActionEvent>() {
+        play.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                jukebox.pause();
-                jukebox.stop();
+                playSong(jukebox);
             }
         });
         
+        pause.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                pauseSong(jukebox);
+            }
+        });
+        
+        stop.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                stopJukebox(jukebox);
+            }
+        });
+                
         play.setMinWidth(60);
         pause.setMinWidth(60);
         stop.setMinWidth(60);
         hostTools.getItems().addAll(upload);
-        jukeboxTools.getItems().addAll(play, pause, stop);
+        jukeboxTools.getItems().addAll(play, pause, stop, nowPlaying);
         root.setTop(hostTools);
         root.setBottom(jukeboxTools);
         root.setCenter(titleList);
@@ -120,24 +139,19 @@ public class SongsApplet extends Application {
         return media;
     }
     
-    private static void playSong(Media songToPlay, MediaPlayer jukebox)
+    private static void playSong(MediaPlayer jukebox)
     {
-        jukebox = new MediaPlayer(songToPlay);
         jukebox.play();
     }
     
-    private static void checkSongList (Button button, ListView list) throws Exception
+    private static void pauseSong(MediaPlayer jukebox)
     {
-        if(list.isVisible())
-        {
-            list.setVisible(false);
-            button.setText("Show All Songs");
-        }
-        else
-        {
-            list.setVisible(true);
-            button.setText("Hide Songs");
-        }   
+        jukebox.pause();
+    }
+    
+    private static void stopJukebox(MediaPlayer jukebox)
+    {
+        jukebox.stop();
     }
     
     /* Function which sends a GET Request to the Database */
@@ -284,11 +298,12 @@ public class SongsApplet extends Application {
     }
     
     /* Function called to start the host's Jukebox */
-    private static void startJukebox(MediaPlayer jukebox) throws MalformedURLException
+    private static Media songToPlay(Label nowPlaying) throws MalformedURLException
     {
         Song[] allSongs = getSongsFromDB(32);
         Media songToPlay = createMedia(allSongs[0].getLocation());
-        playSong(songToPlay, jukebox);
+        nowPlaying.setText("Now Playing: " + allSongs[0].getTitle() + ", " + allSongs[0].getArtist() + ", " + allSongs[0].getAlbum());
+        return songToPlay;
     }
     
     /* Function called when the Upload Button is clicked */
@@ -300,7 +315,10 @@ public class SongsApplet extends Application {
         
         /* Open File Chooser, POST the files that are selected, Display an updated list of Song Titles */
         uploadedFiles = uploadSongs.showOpenMultipleDialog(stage);
-        createJsonObject(uploadedFiles, uploadedSongs);
+        if(uploadedFiles != null)
+        {
+            createJsonObject(uploadedFiles, uploadedSongs);
+        }
         showAllSongs(songTitles, titleList);
     }
 }
