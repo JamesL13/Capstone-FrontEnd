@@ -28,19 +28,19 @@
             <caption>Hosts Near Me</caption>
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Host</th>
-                    <th>Distance</th>
+                    <th>Host Account</th>
+                    <th>PlayList Name</th>
+                    <th>PlayList Id</th>
                     <th>Connect</th>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="jukebox in jukeboxes">
-                    <td class="text-center">{{jukebox.id}}</td>
-                    <td >{{jukebox.playlist_name}}</td>
                     <td class="text-center">{{jukebox.user__account}}</td>
+                    <td >{{jukebox.playlist_name}}</td>
+                    <td class="text-center">{{jukebox.id}}</td>
                     <td class="text-center">
-                        <button type="button" class="btn btn-primary btn-sm btn-block"><i class="fa fa-check-circle"></i> Connect</button>
+                        <button type="button" class="btn btn-primary btn-sm btn-block" ng-click="open('sm', jukebox.id)"><i class="fa fa-check-circle"></i> Connect</button>
                     </td>
                 </tr>
             </tbody>
