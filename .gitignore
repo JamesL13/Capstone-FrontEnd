@@ -55,3 +55,4 @@ bower.json
 dist/js/dashboard.min.js
 dist/lib/css/main.min.css
 dist/js/dashboard.min.js
+/nbproject/private/

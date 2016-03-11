@@ -32,6 +32,9 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public class SongsApplet extends Application {
     
+    /* User Account ID of Applet */
+    int user_account_id = 32;
+    
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -47,9 +50,10 @@ public class SongsApplet extends Application {
         
         /* Buttons of Applet */
         Button upload = new Button("Upload Songs");
-        Button play = new Button("Start");
+        Button play = new Button("Play");
         Button pause = new Button("Pause");
-        Button stop = new Button("Stop");
+        Button stop = new Button("Stop Jukebox");
+        play.setDisable(true);
         
         /* Labels of Applet */
         Label nowPlaying = new Label("Now Playing: ");
@@ -62,7 +66,7 @@ public class SongsApplet extends Application {
         
         /* ListView of Applet */
         ListView<String> songTitles = null;
-                       
+                               
         /* On Start Functions */
         showAllSongs(songTitles, titleList);
         Media songToPlay = songToPlay(nowPlaying);
@@ -93,6 +97,8 @@ public class SongsApplet extends Application {
             @Override
             public void handle(ActionEvent event) {
                 playSong(jukebox);
+                pause.setDisable(false);
+                play.setDisable(true);
             }
         });
         
@@ -100,6 +106,8 @@ public class SongsApplet extends Application {
             @Override
             public void handle(ActionEvent event) {
                 pauseSong(jukebox);
+                pause.setDisable(true);
+                play.setDisable(false);
             }
         });
         
@@ -113,8 +121,8 @@ public class SongsApplet extends Application {
         play.setMinWidth(60);
         pause.setMinWidth(60);
         stop.setMinWidth(60);
-        hostTools.getItems().addAll(upload);
-        jukeboxTools.getItems().addAll(play, pause, stop, nowPlaying);
+        hostTools.getItems().addAll(upload, stop);
+        jukeboxTools.getItems().addAll(play, pause, nowPlaying);
         root.setTop(hostTools);
         root.setBottom(jukeboxTools);
         root.setCenter(titleList);
@@ -132,31 +140,31 @@ public class SongsApplet extends Application {
     }
     
     /* Function that creates a Media object from an absolute path */
-    private static Media createMedia(String songLocation)
+    private Media createMedia(String songLocation)
     {
         File file = new File(songLocation);
         Media media = new Media(file.toURI().toString());
         return media;
     }
     
-    private static void playSong(MediaPlayer jukebox)
+    private void playSong(MediaPlayer jukebox)
     {
         jukebox.play();
     }
     
-    private static void pauseSong(MediaPlayer jukebox)
+    private void pauseSong(MediaPlayer jukebox)
     {
         jukebox.pause();
     }
     
-    private static void stopJukebox(MediaPlayer jukebox)
+    private void stopJukebox(MediaPlayer jukebox)
     {
         jukebox.stop();
     }
     
     /* Function which sends a GET Request to the Database */
     /* Return: A Song Object Array of all songs currently in the database */
-    private static Song[] getSongsFromDB(int user_account_id) throws MalformedURLException 
+    private Song[] getSongsFromDB(int user_account_id) throws MalformedURLException 
     {
         try {
             String server = "https://thomasscully.com/songs?user_account_id=" + user_account_id;
@@ -191,7 +199,7 @@ public class SongsApplet extends Application {
     
     /* Function that creates a ListView of song titles */
     /* Return: A ListView of all Song Titles currently in the Database */
-    private static ListView createListView(int user_account_id) throws Exception
+    private ListView createListView(int user_account_id) throws Exception
     {
         Song[] songs = getSongsFromDB(user_account_id); //Get the most up to date list of songs
         ListView<String> songTitles = new ListView<>();
@@ -208,11 +216,11 @@ public class SongsApplet extends Application {
     
     /* Function which sends a POST Request with a JSON Post Body to the Database */
     /* Return: None */
-    private static void postSongsToDB(JsonArray array) throws IOException
+    private void postSongsToDB(JsonArray array) throws IOException
     {
         /* Create the POST Body for the POST Request */
         JsonObject postBody = new JsonObject();
-        postBody.addProperty("user_account_id",32);
+        postBody.addProperty("user_account_id",user_account_id);
         postBody.addProperty("number_of_songs",array.size());
         postBody.add("songs", array);
         
@@ -263,7 +271,7 @@ public class SongsApplet extends Application {
     
     /* Function which creates a JSON Object Array from a list of Files */
     /* Specifically each JSON Object holds metadata of selected songs */ 
-    private static void createJsonObject (List<File> files, JsonArray array) throws IOException, UnsupportedTagException, InvalidDataException
+    private void createJsonObject (List<File> files, JsonArray array) throws IOException, UnsupportedTagException, InvalidDataException
     {
         for(File file : files)
         {
@@ -291,23 +299,23 @@ public class SongsApplet extends Application {
     }
     
     /* Function called when the Show All Songs Button is clicked */
-    private static void showAllSongs(ListView<String> songTitles, StackPane titleList) throws Exception
+    private void showAllSongs(ListView<String> songTitles, StackPane titleList) throws Exception
     {
-        songTitles = createListView(32);
+        songTitles = createListView(user_account_id);
         titleList.getChildren().add(songTitles);
     }
     
     /* Function called to start the host's Jukebox */
-    private static Media songToPlay(Label nowPlaying) throws MalformedURLException
+    private Media songToPlay(Label nowPlaying) throws MalformedURLException
     {
-        Song[] allSongs = getSongsFromDB(32);
+        Song[] allSongs = getSongsFromDB(user_account_id);
         Media songToPlay = createMedia(allSongs[0].getLocation());
         nowPlaying.setText("Now Playing: " + allSongs[0].getTitle() + ", " + allSongs[0].getArtist() + ", " + allSongs[0].getAlbum());
         return songToPlay;
     }
     
     /* Function called when the Upload Button is clicked */
-    private static void upload(Stage stage, FileChooser uploadSongs, List<File> uploadedFiles, JsonArray uploadedSongs, ListView<String> songTitles, StackPane titleList) throws IOException, UnsupportedTagException, InvalidDataException, Exception
+    private void upload(Stage stage, FileChooser uploadSongs, List<File> uploadedFiles, JsonArray uploadedSongs, ListView<String> songTitles, StackPane titleList) throws IOException, UnsupportedTagException, InvalidDataException, Exception
     {
         /* Clear All to avoid duplicate Uploads */
         uploadedFiles = new ArrayList<File>();
