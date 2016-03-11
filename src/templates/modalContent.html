@@ -11,7 +11,7 @@
                             <p class="text-danger" ng-show="connectForm.password.$touched && connectForm.password.$invalid"><small>Please enter a password.</small></p>
                     </div>
                     <div class="modal-footer">
-                        <input type="submit" value="Connect" ng-click="submit(isValid)" class="btn btn-primary btn-block btn-lg" tabindex="3">
+                        <input value="Connect" ng-click="submit(connectForm.$valid)" class="btn btn-primary btn-block btn-lg" tabindex="3">
                     </div>
                 </fieldset>
             </form>

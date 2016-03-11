@@ -53,13 +53,14 @@ function FindHostCtrl($scope, $http, $uibModal) {
             animation: $scope.animationsEnabled,
             templateUrl: 'templates/modalContent.html',
             size: size,
+            scope: $scope,
         });
     };
 
     $scope.submit = function(isValid) {
-        console.log("Here");
+        console.log($scope.password);
         if (isValid) {
-            $http.post(server + '/playlists/join', {'id': $scope.currentId}, $scope.connectDetails).then(successCallback, errorCallback);
+            $http.post(server + '/playlists/join', {'id': $scope.currentId, 'password': "password"}/*,*$scope.connectDetails*/).then(successCallback, errorCallback);
         } else {
             $scope.formErrors = true;
             $scope.formErrorMessage = "Invalid password.";
