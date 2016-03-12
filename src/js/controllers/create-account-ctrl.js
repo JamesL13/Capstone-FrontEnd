@@ -17,7 +17,6 @@ function CreateAccountCtrl($scope, $http, $cookieStore) {
 
 
     $scope.submit = function(isValid) {
-
         if (isValid) {
             $scope.formErrors = false;
             $http.post(server + '/accounts', $scope.accountInfo).then(successCallback, errorCallback);
@@ -29,16 +28,12 @@ function CreateAccountCtrl($scope, $http, $cookieStore) {
     }
 
     successCallback = function(response) {
-        
         console.log(response);
         if (response.data == "Email already in use.  Cannot create account.") {
             $scope.formErrorMessage = response.data;
             $scope.formErrors = true;
         } else {
-            $cookieStore.put('isLoggedIn', true);
-            $cookieStore.put('userId', response.data);
-
-            window.location = "#/host";
+            window.location = "#/login?account_creation=true";
         }
 
     }
