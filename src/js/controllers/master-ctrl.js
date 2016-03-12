@@ -40,5 +40,12 @@ function MasterCtrl($scope, $cookieStore) {
 
     $scope.$on('$locationChangeStart', function(event) {
         $scope.isLoggedIn = $cookieStore.get('isLoggedIn');
+
+        // Check playlist authentication
+        if ($cookieStore.get('isConnectedToPlaylist') == undefined || !$cookieStore.get('isConnectedToPlaylist')) {
+            $scope.isConnectedToPlaylist = false;
+        } else {
+            $scope.isConnectedToPlaylist = true;
+        }
     });
 }

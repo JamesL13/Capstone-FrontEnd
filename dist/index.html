@@ -26,13 +26,13 @@
                 </li>
                 <li class="sidebar-title"><span>NAVIGATION</span></li>
                 <li class="sidebar-list">
+                    <a href="#/findhost">Find Host <span class="menu-icon fa fa-map-o text-center"></span></a>
+                </li>
+                <li class="sidebar-list" ng-show="isConnectedToPlaylist">
                     <a href="#/jukebox">Jukebox <span class="menu-icon fa fa-music text-center"></span></a>
                 </li>
-                <li class="sidebar-list">
+                <li class="sidebar-list" ng-show="isConnectedToPlaylist">
                     <a href="#/libary">Library <span class="menu-icon fa fa-list text-center"></span></a>
-                </li>
-                <li class="sidebar-list">
-                    <a href="#/findhost">Find Host <span class="menu-icon fa fa-map-o text-center"></span></a>
                 </li>
                 <li class="sidebar-list" ng-show="isLoggedIn">
                     <a href="#/host">Account <span class="menu-icon fa fa-user text-center"></span></a>

@@ -44,8 +44,8 @@ function FindHostCtrl($scope, $http, $uibModal) {
         console.log(response);
     }
 
-    var init = function () {
-        $http.get(server + '/playlists').success(function (jukebox) {
+    var init = function() {
+        $http.get(server + '/playlists').success(function(jukebox) {
             $scope.jukeboxes = jukebox;
         }).then(successCallback, errorCallback);
     }

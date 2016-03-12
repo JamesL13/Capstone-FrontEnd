@@ -1,69 +1,70 @@
-<div class="row">
-	<div class="col-xs-12 text-center">
-		<h1>Library</h1>
-	</div>
+<div class="container-fluid" data-ng-controller="LibraryCtrl">
+    <div class="row">
+        <div class="col-xs-12 text-center">
+            <h1>Library</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <span class="input-group-addon" id="sizing-addon2"><i class="fa fa-search"></i></span>
+                    <input type="text" class="form-control" placeholder="Search by Song Name" aria-describedby="sizing-addon2">
+                </div>
+            </div>
+            <table class="table">
+                <caption>Your Search Returned 4 Results</caption>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Song Name</th>
+                        <th>Artist</th>
+                        <th>Album</th>
+                        <th>Add</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>The War</td>
+                        <td>Angels & Airwaves</td>
+                        <td>We Don't Need to Whisper</td>
+                        <td>
+                            <button type="button" id="increaseButton" class="btn btn-success">+</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">2</th>
+                        <td>Yelow</td>
+                        <td>Coldplay</td>
+                        <td>Parachutes</td>
+                        <td>
+                            <button type="button" id="increaseButton" class="btn btn-success">+</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">3</th>
+                        <td>Soul Meets Body</td>
+                        <td>Death Cab for Cutie</td>
+                        <td>Plans</td>
+                        <td>
+                            <button type="button" id="increaseButton" class="btn btn-success">+</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">4</th>
+                        <td>Written in the Stars</td>
+                        <td>Tinie Tempah</td>
+                        <td>Disc-Overy</td>
+                        <td>
+                            <button type="button" id="increaseButton" class="btn btn-success">+</button>
+                            <!--<span class="input-group-btn"><button type="button" id="decreaseButton" class="btn btn-danger">-</button></span>-->
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+    </script>
 </div>
-<div class="row">
-	<div class="col-xs-12">
-		<div class="col-md-12">
-			<div class="input-group">
-				<span class="input-group-addon" id="sizing-addon2"><i class="fa fa-search"></i></span>
-				<input type="text" class="form-control" placeholder="Search by Song Name" aria-describedby="sizing-addon2">
-			</div>
-		</div>
-
-		<table class="table">
-			<caption>Your Search Returned 4 Results</caption>
-			<thead>
-			<tr>
-				<th>#</th>
-				<th>Song Name</th>
-				<th>Artist</th>
-				<th>Album</th>
-				<th>Add</th>
-			</tr>
-			</thead>
-			<tbody>
-			<tr>
-				<th scope="row">1</th>
-				<td>The War</td>
-				<td>Angels & Airwaves</td>
-				<td>We Don't Need to Whisper</td>
-				<td>
-					<button type="button" id="increaseButton" class="btn btn-success">+</button>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row">2</th>
-				<td>Yelow</td>
-				<td>Coldplay</td>
-				<td>Parachutes</td>
-				<td>
-					<button type="button" id="increaseButton" class="btn btn-success">+</button>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row">3</th>
-				<td>Soul Meets Body</td>
-				<td>Death Cab for Cutie</td>
-				<td>Plans</td>
-				<td>
-					<button type="button" id="increaseButton" class="btn btn-success">+</button>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row">4</th>
-				<td>Written in the Stars</td>
-				<td>Tinie Tempah</td>
-				<td>Disc-Overy</td>
-				<td>
-					<button type="button" id="increaseButton" class="btn btn-success">+</button>
-					<!--<span class="input-group-btn"><button type="button" id="decreaseButton" class="btn btn-danger">-</button></span>-->
-				</td>
-			</tr>
-			</tbody>
-		</table>
-	</div>
-</div>
-<script>
-</script>
