@@ -1,118 +1,117 @@
-<div class="row">
-    <div class="col-xs-12 text-right">
-        <div class="input-group">
-            <input type="text" class="form-control" placeholder="Search Music" aria-describedby="sizing-addon2">
-            <span class="input-group-addon" id="sizing-addon2"><i class="fa fa-search"></i></span>
+<div class="container-fluid" data-ng-controller="JukeboxCtrl">
+    <div class="row">
+        <div class="col-xs-12 text-right">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search Music" aria-describedby="sizing-addon2">
+                <span class="input-group-addon" id="sizing-addon2"><i class="fa fa-search"></i></span>
+            </div>
         </div>
     </div>
-</div>
-
-<div class="row">
-	<div class="col-xs-12 text-left">
-		<h1>Campus Bar & Grill</h1>
-	</div>
-</div>
-<div class="row">
-    <div class="col-xs-2 text-center">
-        <div class="center-block" style="height: 100px; width: 100px">
-            <img src="img/celebration.jpg" alt="Album Cover" height="100" width="100">
+    <div class="row">
+        <div class="col-xs-12 text-left">
+            <h1>Campus Bar & Grill</h1>
         </div>
     </div>
-	<div class="col-xs-10 text-left">
-        <h3>Good Times, Bad Times</h3>
-		<p>Led Zeppelin, Celebration Day, Classic Rock</p>
-	</div>
-</div>
-
-<div class="row">
-    <div class="col-xs-12">
-        <div style="height: 291px; overflow:scroll">
-        <table class="table">
-            <!--<caption>Next in Jukebox</caption>-->
-            <thead>
-            <tr>
-                <th>Song</th>
-                <th>Artist</th>
-                <th>Votes</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>Happy Birthday</td>
-                <td>Unknown</td>
-                <td>20</td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
-                    <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button>
-                </td>
-            </tr>
-            <tr>
-                <td>Sorry</td>
-                <td>Justin Bieber</td>
-                <td>11</td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
-                    <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button>
-                </td>
-            </tr>
-            <tr>
-                <td>Me, Myself & I</td>
-                <td>G-Eazy</td>
-                <td>10</td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
-                    <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button>
-                </td>
-            </tr>
-            <tr>
-                <td>Rock n' Roll</td>
-                <td>Led Zeppelin</td>
-                <td>2</td>
-                <td>
-                    <button type="button" class="btn btn-disable btn-xs btn-inline"><i class="fa fa-check"></i></button>
-                    <button type="button" class="btn btn-disable btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button>
-
-                </td>
-            </tr>
-            <tr>
-                <td>American Girl</td>
-                <td>Tom Petty</td>
-                <td>1</td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
-                    <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button>
-                </td>
-            </tr>
-            <tr>
-                <td>Jingle Bells</td>
-                <td>Santa Claus</td>
-                <td>-3</td>
-                <td>
-                    <button type="button" class="btn btn-disable btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
-                    <button type="button" class="btn btn-disable btn-xs btn-inline"><i class="fa fa-check"></i></button>
-                </td>
-            </tr>
-            <tr>
-                <td>Jump</td>
-                <td>Van Halen</td>
-                <td>5</td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
-                    <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-check"></i></button>
-                </td>
-            </tr>
-            <tr>
-                <td>It's Tricky</td>
-                <td>Run D.M.C.</td>
-                <td>2</td>
-                <td>
-                    <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
-                    <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-check"></i></button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <div class="row">
+        <div class="col-xs-2 text-center">
+            <div class="center-block" style="height: 100px; width: 100px">
+                <img src="img/celebration.jpg" alt="Album Cover" height="100" width="100">
+            </div>
+        </div>
+        <div class="col-xs-10 text-left">
+            <h3>Good Times, Bad Times</h3>
+            <p>Led Zeppelin, Celebration Day, Classic Rock</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div style="height: 291px; overflow:scroll">
+                <table class="table">
+                    <!--<caption>Next in Jukebox</caption>-->
+                    <thead>
+                        <tr>
+                            <th>Song</th>
+                            <th>Artist</th>
+                            <th>Votes</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Happy Birthday</td>
+                            <td>Unknown</td>
+                            <td>20</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
+                                <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Sorry</td>
+                            <td>Justin Bieber</td>
+                            <td>11</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
+                                <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Me, Myself & I</td>
+                            <td>G-Eazy</td>
+                            <td>10</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
+                                <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Rock n' Roll</td>
+                            <td>Led Zeppelin</td>
+                            <td>2</td>
+                            <td>
+                                <button type="button" class="btn btn-disable btn-xs btn-inline"><i class="fa fa-check"></i></button>
+                                <button type="button" class="btn btn-disable btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>American Girl</td>
+                            <td>Tom Petty</td>
+                            <td>1</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
+                                <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Jingle Bells</td>
+                            <td>Santa Claus</td>
+                            <td>-3</td>
+                            <td>
+                                <button type="button" class="btn btn-disable btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
+                                <button type="button" class="btn btn-disable btn-xs btn-inline"><i class="fa fa-check"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Jump</td>
+                            <td>Van Halen</td>
+                            <td>5</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
+                                <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-check"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>It's Tricky</td>
+                            <td>Run D.M.C.</td>
+                            <td>2</td>
+                            <td>
+                                <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
+                                <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-check"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
