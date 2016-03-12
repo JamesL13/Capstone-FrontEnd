@@ -6,6 +6,10 @@ angular.module('Songs').controller('LoginCtrl', ['$scope', '$http', '$cookieStor
 
 function LoginCtrl($scope, $http, $cookieStore) {
     var server = 'https://thomasscully.com';
+    $http.defaults.headers.common = {
+        'secret-token': 'aBcDeFgHiJkReturnOfTheSixToken666666',
+        'Accept': "application/json, text/plain, */*"
+    };
     $scope.formErrors = false;
     $scope.formErrorMessage = "";
 
