@@ -6,6 +6,10 @@ angular.module('Songs').controller('FindHostCtrl', ['$scope','$http' , '$cookieS
 
 function FindHostCtrl($scope, $http) {
     var server = 'https://thomasscully.com';
+    $http.defaults.headers.common = {
+        'secret-token': 'aBcDeFgHiJkReturnOfTheSixToken666666',
+        'Accept': "application/json, text/plain, */*"
+    };
     $scope.jukeboxes = [];
 
     var successCallback = function(response) {

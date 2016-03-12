@@ -6,6 +6,10 @@ angular.module('Songs').controller('ManageJukeboxCtrl', ['$scope', '$http', '$co
 
 function ManageJukeboxCtrl($scope, $http, $cookieStore) {
     var server = 'https://thomasscully.com';
+    $http.defaults.headers.common = {
+        'secret-token': 'aBcDeFgHiJkReturnOfTheSixToken666666',
+        'Accept': "application/json, text/plain, */*"
+    };
 
     $scope.cancel = function() {
         window.location = "#/host";
