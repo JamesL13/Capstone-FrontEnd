@@ -2,18 +2,17 @@
     <h3 class="modal-title">Enter JukeBox Password</h3>
 </div>
 <div class="modal-body">
-    <div class="alert alert-danger" role="alert" ng-show="formErrors"><strong>Error!</strong> {{formErrorMessage}}</div>
-        <div class="panel-body">
-            <form id="connectForm" role="form" name="connectForm" ng-submit="submit(connectForm.$valid)" novalidate>
-                <fieldset>
-                    <div class="form-group">
-                        <input ng-model="connectDetails.password" class="form-control" placeholder="Password" name="password" type="password" value="" required>
-                            <p class="text-danger" ng-show="connectForm.password.$touched && connectForm.password.$invalid"><small>Please enter a password.</small></p>
-                    </div>
-                    <div class="modal-footer">
-                        <input value="Connect" ng-click="submit(connectForm.$valid)" class="btn btn-primary btn-block btn-lg" tabindex="3">
-                    </div>
-                </fieldset>
-            </form>
-        </div>
+    <div class="panel-body">
+        <form id="connectForm" role="form" name="connectForm" ng-submit="submit(connectForm.$valid)" novalidate>
+            <fieldset>
+                <div class="form-group">
+                    <input ng-model="connectDetails.password" class="form-control" placeholder="Password" name="password" type="password" value="" required>
+                        <p class="text-danger" ng-show="connectForm.password.$touched || connectForm.password.$invalid"><small>Please enter a password.</small></p>
+                </div>
+                <div class="modal-footer">
+                    <input value="Connect" ng-click="submit(connectForm.$valid)" class="btn btn-primary btn-block btn-lg" tabindex="3">
+                </div>
+            </fieldset>
+        </form>
+    </div>
 </div>

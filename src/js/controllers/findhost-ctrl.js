@@ -24,16 +24,20 @@ function FindHostCtrl($scope, $http, $uibModal) {
         if (response == true) {
             $cookieStore.put('isConnected', true);
             $cookieStore.put('jukeBoxid', $scope.currentId);
+            console.log("success and true");
             if ($scope.modalInstance != null) {
                 $scope.modalInstance.$dismiss(connect);
+                console.log("success true and modal not null");
             }
         } else {
             $scope.formErrorMessage = "Invalid password.";
             $scope.formErrors = true;
+            console.log("success false");
         }
-        if ($scope.modalInstance != null) {
-            $scope.modalInstance.$dismiss(connect);
-        }
+        /*if ($scope.modalInstance != null) {
+            $scope.modalInstance.$dismiss(submit);
+            console.log("Here5");
+        }*/
     }
 
     var errorCallback = function (response) {
@@ -57,13 +61,16 @@ function FindHostCtrl($scope, $http, $uibModal) {
         });
     };
 
-    $scope.submit = function(isValid) {
-        console.log($scope.password);
+    $scope.submit = function() {
+        //console.log($scope.connectDetails);
+        var isValid = true;
         if (isValid) {
-            $http.post(server + '/playlists/join', {'id': $scope.currentId, 'password': "password"}/*,*$scope.connectDetails*/).then(successCallback, errorCallback);
+            $http.post(server + '/playlists/join', {'id': $scope.currentId, 'password': "thomas"}/*,*$scope.connectDetails*/).then(successCallback, errorCallback);
+            console.log("submit and isvalid");
         } else {
             $scope.formErrors = true;
             $scope.formErrorMessage = "Invalid password.";
+            console.log("submit and invalid");
         }
     };
 
