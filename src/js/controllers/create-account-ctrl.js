@@ -6,8 +6,15 @@ angular.module('Songs').controller('CreateAccountCtrl', ['$scope', '$http', '$co
 
 function CreateAccountCtrl($scope, $http, $cookieStore) {
     var server = 'https://thomasscully.com';
+    $http.defaults.headers.common = {
+        'secret-token': 'aBcDeFgHiJkReturnOfTheSixToken666666',
+        'Accept': "application/json, text/plain, */*"
+    };
+
     $scope.formErrors = false;
     $scope.formErrorMessage = "";
+
+
 
     $scope.submit = function(isValid) {
 

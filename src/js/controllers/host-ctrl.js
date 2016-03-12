@@ -5,7 +5,11 @@
 angular.module('Songs').controller('HostCtrl', ['$scope', '$http', '$cookieStore', HostCtrl]);
 
 function HostCtrl($scope, $http, $cookieStore) {
-    var server = 'https://thomasscully.com';
+   var server = 'https://thomasscully.com';
+    $http.defaults.headers.common = {
+        'secret-token': 'aBcDeFgHiJkReturnOfTheSixToken666666',
+        'Accept': "application/json, text/plain, */*"
+    };
     $scope.formErrors = false;
     $scope.formErrorMessage = "";
     $scope.userId = $cookieStore.get('userId');
