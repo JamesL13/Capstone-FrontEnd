@@ -5,7 +5,7 @@
 angular.module('Songs').controller('HostCtrl', ['$scope', '$http', '$cookieStore', HostCtrl]);
 
 function HostCtrl($scope, $http, $cookieStore) {
-   var server = 'https://thomasscully.com';
+    var server = 'https://thomasscully.com';
     $http.defaults.headers.common = {
         'secret-token': 'aBcDeFgHiJkReturnOfTheSixToken666666',
         'Accept': "application/json, text/plain, */*"
@@ -18,9 +18,7 @@ function HostCtrl($scope, $http, $cookieStore) {
         window.location = "#/manageaccount";
     }
 
-    $scope.manageJukebox = function() {
-        window.location = "#/managejukebox";
-    }
+    // Delete playlist function
     $scope.deletePlaylist = function() {
         var r = confirm("Are you sure you'd like to delete this playlist?");
         if (r == true) {
@@ -34,6 +32,8 @@ function HostCtrl($scope, $http, $cookieStore) {
             );
         }
     }
+
+    // Creates the playlist
     $scope.submit = function(isValid) {
         if (isValid) {
             var data = {
@@ -56,7 +56,16 @@ function HostCtrl($scope, $http, $cookieStore) {
         }
     }
 
-    // Playlist callback
+    // Function to get user information from ID
+    var getById = function(arr, id) {
+        for (var d = 0, len = arr.length; d < len; d += 1) {
+            if (arr[d].id === id) {
+                return arr[d];
+            }
+        }
+    }
+
+    // Playlist get request callback
     var playlistResponse = function(response) {
         if (response.data == '') {
             $scope.hasPlaylist = false;
@@ -68,14 +77,26 @@ function HostCtrl($scope, $http, $cookieStore) {
             $scope.password = response.data[0].password;
         }
     }
-    var errorCallback = function(response) {}
 
+    // Account get request callback
+    // Sets the account information in the session data
+    var accountInfoResponse = function(response) {
+        var userId = $cookieStore.get('userId');
+        var single_object = getById(response.data, userId);
+        $scope.businessName = single_object.business;
+    }
+    var errorCallback = function(response) {
+        console.log("Something went wrong.");
+    }
     var init = function() {
         if (!$cookieStore.get('isLoggedIn')) {
             window.location = "#/login";
         }
         $http.get(server + '/playlists?account__id=' + $cookieStore.get('userId')).then(playlistResponse, errorCallback);
+        $http.get(server + '/accounts?account__id=' + $cookieStore.get('userId')).then(accountInfoResponse, errorCallback);
     }
 
     init();
+
+
 }
