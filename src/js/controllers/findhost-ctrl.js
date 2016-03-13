@@ -70,8 +70,9 @@
 
     $scope.submit = function(isValid, password) {   
         if (isValid) {
+            var id = $scope.currentId.toString();
             var data = {
-                "id": "51",
+                "id": id,
                 "password": password.$modelValue
             };
             $http.post(server + '/playlists/join', data).then(hostConnectSuccessCallback, errorCallback);
