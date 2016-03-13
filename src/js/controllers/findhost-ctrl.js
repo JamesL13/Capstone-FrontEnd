@@ -20,24 +20,23 @@ function FindHostCtrl($scope, $http, $uibModal) {
     $scope.jukeboxes = [];
 
     var successCallback = function (response) {
-        //console.log(response);
-        if (response == true) {
-            $cookieStore.put('isConnected', true);
-            $cookieStore.put('jukeBoxid', $scope.currentId);
-            console.log("success and true");
+        console.log(response);
             if ($scope.modalInstance != null) {
-                $scope.modalInstance.$dismiss(connect);
-                console.log("success true and modal not null");
+                if (response == true) {
+                    isConnectedChecker = $cookieStore.get('isConnected')
+                    if (isConnectedChecker = true){
+                        $cookieStore.put('jukeBoxid', '');
+                        $cookieStore.put('jukeBoxid', $scope.currentId);
+                    }
+                    $cookieStore.put('isConnected', true);
+                    $cookieStore.put('jukeBoxid', $scope.currentId);
+                    $scope.modalInstance.dismiss();
+                    //window.location = "#/jukebox";
+                } else {
+                    $scope.formErrorMessage = "Invalid password.";
+                    $scope.formErrors = true;
+                }
             }
-        } else {
-            $scope.formErrorMessage = "Invalid password.";
-            $scope.formErrors = true;
-            console.log("success false");
-        }
-        /*if ($scope.modalInstance != null) {
-            $scope.modalInstance.$dismiss(submit);
-            console.log("Here5");
-        }*/
     }
 
     var errorCallback = function (response) {
@@ -51,26 +50,22 @@ function FindHostCtrl($scope, $http, $uibModal) {
     }
 
     $scope.open = function (size, id) {
-        console.log(id);
         $scope.currentId = id;
         $scope.modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
             templateUrl: 'templates/modalContent.html',
             size: size,
             scope: $scope,
+            id: id,
         });
     };
 
-    $scope.submit = function() {
-        //console.log($scope.connectDetails);
-        var isValid = true;
+    $scope.submit = function(isValid, password ) {
         if (isValid) {
-            $http.post(server + '/playlists/join', {'id': $scope.currentId, 'password': "thomas"}/*,*$scope.connectDetails*/).then(successCallback, errorCallback);
-            console.log("submit and isvalid");
+            $http.post(server + '/playlists/join', {"id": $scope.currentId, "password": password}).then(successCallback, errorCallback);
         } else {
             $scope.formErrors = true;
-            $scope.formErrorMessage = "Invalid password.";
-            console.log("submit and invalid");
+            $scope.formErrorMessage = "Enter Password";
         }
     };
 
