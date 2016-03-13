@@ -2,9 +2,9 @@
  * Find Host Controller
  */
 
-angular.module('Songs').controller('FindHostCtrl', ['$scope','$http', '$uibModal', '$cookieStore', FindHostCtrl]);
+ angular.module('Songs').controller('FindHostCtrl', ['$scope','$http', '$uibModal', '$cookieStore', FindHostCtrl]);
 
-function FindHostCtrl($scope, $http, $uibModal) {
+ function FindHostCtrl($scope, $http, $uibModal, $cookieStore) {
     var server = 'https://thomasscully.com';
     $scope.modalInstance = null;
     $scope.animationsEnabled = true;
@@ -19,35 +19,43 @@ function FindHostCtrl($scope, $http, $uibModal) {
 
     $scope.jukeboxes = [];
 
-    var successCallback = function (response) {
+    var errorCallback = function (response) {
+        console.log("failure");
         console.log(response);
-            if ($scope.modalInstance != null) {
-                if (response == true) {
-                    isConnectedChecker = $cookieStore.get('isConnected')
-                    if (isConnectedChecker = true){
-                        $cookieStore.put('jukeBoxid', '');
-                        $cookieStore.put('jukeBoxid', $scope.currentId);
-                    }
-                    $cookieStore.put('isConnected', true);
-                    $cookieStore.put('jukeBoxid', $scope.currentId);
-                    $scope.modalInstance.dismiss();
-                    //window.location = "#/jukebox";
-                } else {
-                    $scope.formErrorMessage = "Invalid password.";
-                    $scope.formErrors = true;
-                }
-            }
     }
 
-    var errorCallback = function (response) {
-        console.log(response);
+    var hostConnectSuccessCallback = function (response) {
+        if ($scope.modalInstance != null) {
+            // Bug in backend where response sends back false if bad password, just an OK for good password
+            // This bypasses that issue, but if backend updates, having explicit checks for True or False 
+            // Should be added, rather than an if false, else statement as implemented here.
+            if (response.data == false) {
+                $scope.formErrorMessage = "Invalid password.";
+                $scope.formErrors = true;
+            } 
+            else {
+                isConnectedChecker = $cookieStore.get('isConnectedToPlaylist')
+                if (isConnectedChecker = true){
+                    $cookieStore.put('jukeBoxid', '');
+                    $cookieStore.put('jukeBoxid', $scope.currentId);
+                }
+                $cookieStore.put('isConnectedToPlaylist', true);
+                $cookieStore.put('jukeBoxid', $scope.currentId);
+                $scope.modalInstance.dismiss();
+                window.location = "#/jukebox";
+            }
+        }
     }
+
+    var getPlaylistSuccessCallback = function (response) {
+        // TO-DO
+    };
 
     var init = function() {
         $http.get(server + '/playlists').success(function(jukebox) {
             $scope.jukeboxes = jukebox;
-        }).then(successCallback, errorCallback);
-    }
+        }).then(getPlaylistSuccessCallback, errorCallback);
+    };
 
     $scope.open = function (size, id) {
         $scope.currentId = id;
@@ -60,9 +68,13 @@ function FindHostCtrl($scope, $http, $uibModal) {
         });
     };
 
-    $scope.submit = function(isValid, password ) {
+    $scope.submit = function(isValid, password) {   
         if (isValid) {
-            $http.post(server + '/playlists/join', {"id": $scope.currentId, "password": password}).then(successCallback, errorCallback);
+            var data = {
+                "id": "51",
+                "password": password.$modelValue
+            };
+            $http.post(server + '/playlists/join', data).then(hostConnectSuccessCallback, errorCallback);
         } else {
             $scope.formErrors = true;
             $scope.formErrorMessage = "Enter Password";

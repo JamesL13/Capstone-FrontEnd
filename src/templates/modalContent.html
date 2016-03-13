@@ -3,14 +3,14 @@
 </div>
 <div class="modal-body">
     <div class="panel-body">
-        <form id="connectForm" role="form" name="connectForm" ng-submit="submit(connectForm.$valid)" novalidate>
+        <form id="connectForm" role="form" name="connectForm" ng-submit="submit(connectForm.$valid, connectForm.password)" novalidate>
             <fieldset>
                 <div class="form-group">
                     <input ng-model="connectDetails.password" class="form-control" placeholder="Password" name="password" type="password" value="" required>
                         <p class="text-danger" ng-show="connectForm.password.$touched || connectForm.password.$invalid"><small>{{formErrorMessage}}</small></p>
                 </div>
                 <div class="modal-footer">
-                    <input value="Connect" ng-click="submit(connectForm.$valid, connectDetails.password)" class="btn btn-primary btn-block btn-lg" tabindex="3">
+                    <input type="submit" value="Connect" class="btn btn-primary btn-block btn-lg" tabindex="3">
                 </div>
             </fieldset>
         </form>
