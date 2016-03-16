@@ -13,7 +13,6 @@
                 </div>
             </div>
             <table class="table">
-                <caption>Your Search Returned 4 Results</caption>
                 <thead>
                     <tr>
                         <th>#</th>
@@ -24,47 +23,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>The War</td>
-                        <td>Angels & Airwaves</td>
-                        <td>We Don't Need to Whisper</td>
+                    <tr ng-repeat="song in songs">
+                        <th scope="row">{{$index + 1}}</th>
+                        <td>{{song.song_title}}</td>
+                        <td>{{song.song_artist}}</td>
+                        <td>{{song.song_album}}</td>
                         <td>
                             <button type="button" id="increaseButton" class="btn btn-success">+</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Yelow</td>
-                        <td>Coldplay</td>
-                        <td>Parachutes</td>
-                        <td>
-                            <button type="button" id="increaseButton" class="btn btn-success">+</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>Soul Meets Body</td>
-                        <td>Death Cab for Cutie</td>
-                        <td>Plans</td>
-                        <td>
-                            <button type="button" id="increaseButton" class="btn btn-success">+</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">4</th>
-                        <td>Written in the Stars</td>
-                        <td>Tinie Tempah</td>
-                        <td>Disc-Overy</td>
-                        <td>
-                            <button type="button" id="increaseButton" class="btn btn-success">+</button>
-                            <!--<span class="input-group-btn"><button type="button" id="decreaseButton" class="btn btn-danger">-</button></span>-->
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <script>
-    </script>
+    <div class="col-xs-12 text-center" ng-hide="songs.length">
+        No songs in the library 
+        <br> :(
+    </div>
 </div>
+

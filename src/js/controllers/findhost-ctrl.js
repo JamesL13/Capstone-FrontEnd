@@ -36,11 +36,11 @@
             else {
                 isConnectedChecker = $cookieStore.get('isConnectedToPlaylist')
                 if (isConnectedChecker = true){
-                    $cookieStore.put('jukeBoxid', '');
-                    $cookieStore.put('jukeBoxid', $scope.currentId);
+                    $cookieStore.put('connectPlaylistUserId', '');
                 }
+                socket.emit('room', $scope.playlistname);
                 $cookieStore.put('isConnectedToPlaylist', true);
-                $cookieStore.put('jukeBoxid', $scope.currentId);
+                $cookieStore.put('connectPlaylistUserId', response.data);
                 $scope.modalInstance.dismiss();
                 window.location = "#/jukebox";
             }
@@ -68,9 +68,10 @@
         });
     };
 
-    $scope.submit = function(isValid, password) {   
+    $scope.submit = function(isValid, password, playlistname) {   
         if (isValid) {
             var id = $scope.currentId.toString();
+            $scope.playlistname = playlistname;
             var data = {
                 "id": id,
                 "password": password.$modelValue
