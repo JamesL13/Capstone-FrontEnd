@@ -21,9 +21,11 @@ import java.util.logging.Logger;
 import javafx.collections.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.*;
 import javafx.scene.media.*;
 import javafx.stage.FileChooser;
+import javafx.util.Pair;
 import javax.net.ssl.HttpsURLConnection;
 
 /**
@@ -67,12 +69,20 @@ public class SongsApplet extends Application {
         /* ListView of Applet */
         ListView<String> songTitles = null;
                                
+        /* Log in test */
+        
+        // Create the custom dialog.
+        /*Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Login Dialog");
+        dialog.setHeaderText("Look, a Custom Login Dialog");
+        dialog.show();*/
+        
         /* On Start Functions */
+        authenticateLogin("gakf38@gmail.com", "password");
         showAllSongs(songTitles, titleList);
         Media songToPlay = songToPlay(nowPlaying);
         jukebox = new MediaPlayer(songToPlay);
         playSong(jukebox);
-        
         
         /* Event Handlers for Button Presses */
         /* Open File Chooser, create Json Array from files, POST Json Array to the Database */
@@ -137,6 +147,60 @@ public class SongsApplet extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+    
+    /* Function to authenticate a user login with the backend */
+    private void authenticateLogin(String user_email, String password) throws IOException 
+    {
+        /* Create the POST Body for the POST Request */
+        JsonObject postBody = new JsonObject();
+        postBody.addProperty("user_email",user_email);
+        postBody.addProperty("password",password);
+                
+        /* Write the POST Body to the POST Request */
+        InputStream inputStream = new ByteArrayInputStream(postBody.toString().getBytes());
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+	BufferedReader br = new BufferedReader(inputStreamReader);
+	String jsonLine;
+        String json = "";
+	while ((jsonLine = br.readLine()) != null) {
+            json += jsonLine + "\n";
+	}
+        System.out.println("JSON read from file:");
+        System.out.println(json);  // print the json to output to see it was read correctly
+        
+        /* Make Connection with server and send POST Request to the database */
+        URL url;
+        try {
+            url = new URL("https://thomasscully.com/accounts/login");
+        } catch (MalformedURLException mex) {
+            System.out.println("The URL is malformed: " + mex.getMessage());
+            return;
+        }
+        
+        try {
+            URLConnection conn = url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
+            conn.setRequestProperty("Content-Type", "application/json");
+            OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+
+            writer.write(json);
+            writer.flush();
+            
+            System.out.println("JSON returned from server after request:");
+            
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            while ((line = reader.readLine()) != null) {
+                user_account_id = Integer.parseInt(line);
+                System.out.println("user_account_id: " + line);
+            }
+            writer.close();
+            reader.close();
+        } catch (IOException ex) {
+            System.out.println("IO error: " + ex.getMessage());
+        }     
     }
     
     /* Function that creates a Media object from an absolute path */
