@@ -7,6 +7,10 @@ angular.module('Songs').controller('ManageAccountCtrl', ['$scope', '$http', '$co
 function ManageAccountCtrl($scope, $http, $cookieStore) {
 
     var server = 'https://thomasscully.com';
+    $http.defaults.headers.common = {
+        'secret-token': 'aBcDeFgHiJkReturnOfTheSixToken666666',
+        'Accept': "application/json, text/plain, */*"
+    };
 
     $scope.cancel = function() {
         window.location = "#/host";

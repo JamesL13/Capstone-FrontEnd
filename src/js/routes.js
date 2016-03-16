@@ -23,6 +23,10 @@ angular.module('Songs').config(['$stateProvider', '$urlRouterProvider',
                 url: '/libary',
                 templateUrl: 'templates/library.html'
             })
+            .state('jukebox', {
+            url: '/jukebox',
+            templateUrl: 'templates/jukebox.html'
+            })
             .state('login', {
                 url: '/login',
                 templateUrl: 'templates/login.html'

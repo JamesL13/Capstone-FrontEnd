@@ -16,6 +16,30 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="form-group">
+                            <input ng-model="accountInfo.first_name" name="first_name" type="text" class="form-control input-lg" tabindex="1" placeholder="First Name" required>
+                            <p class="text-danger" ng-show="accountForm.first_name.$touched && accountForm.first_name.$invalid"><small>Please enter a valid first name.</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input ng-model="accountInfo.last_name" name="last_name" type="text" class="form-control input-lg" tabindex="1" placeholder="Last Name" required>
+                            <p class="text-danger" ng-show="accountForm.last_name.$touched && accountForm.last_name.$invalid"><small>Please enter a valid last name.</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input ng-model="accountInfo.business" name="business" type="text" class="form-control input-lg" tabindex="1" placeholder="Business Name" required>
+                            <p class="text-danger" ng-show="accountForm.business.$touched && accountForm.business.$invalid"><small>Please enter a valid business name.</small></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
                             <input ng-model="accountInfo.password" name="password" type="password" class="form-control input-lg" tabindex="2" placeholder="Password" required>
                             <p class="text-danger" ng-show="accountForm.password.$touched && accountForm.password.$invalid"><small>Please enter a password.</small></p>
                         </div>

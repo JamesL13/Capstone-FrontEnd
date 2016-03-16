@@ -6,11 +6,17 @@ angular.module('Songs').controller('CreateAccountCtrl', ['$scope', '$http', '$co
 
 function CreateAccountCtrl($scope, $http, $cookieStore) {
     var server = 'https://thomasscully.com';
+    $http.defaults.headers.common = {
+        'secret-token': 'aBcDeFgHiJkReturnOfTheSixToken666666',
+        'Accept': "application/json, text/plain, */*"
+    };
+
     $scope.formErrors = false;
     $scope.formErrorMessage = "";
 
-    $scope.submit = function(isValid) {
 
+
+    $scope.submit = function(isValid) {
         if (isValid) {
             $scope.formErrors = false;
             $http.post(server + '/accounts', $scope.accountInfo).then(successCallback, errorCallback);
@@ -22,16 +28,12 @@ function CreateAccountCtrl($scope, $http, $cookieStore) {
     }
 
     successCallback = function(response) {
-        
         console.log(response);
         if (response.data == "Email already in use.  Cannot create account.") {
             $scope.formErrorMessage = response.data;
             $scope.formErrors = true;
         } else {
-            $cookieStore.put('isLoggedIn', true);
-            $cookieStore.put('userId', response.data);
-
-            window.location = "#/host";
+            window.location = "#/login?account_creation=true";
         }
 
     }

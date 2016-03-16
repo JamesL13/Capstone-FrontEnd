@@ -28,55 +28,21 @@
             <caption>Hosts Near Me</caption>
             <thead>
                 <tr>
-                    <th>#</th>
-                    <th>Host</th>
-                    <th>Distance</th>
+                    <th>Host Account</th>
+                    <th>PlayList Name</th>
+                    <th>PlayList Id</th>
                     <th>Connect</th>
                 </tr>
             </thead>
             <tbody>
-
-            <tr ng-repeat="jukebox in jukeboxes">
-                <td class="text-center">{{jukebox.id}}</td>
-                <td>{{jukebox.playlist_name}}</td>
-                <td class="text-center">{{jukebox.user__account}}</td>
-                <td class="text-center">
-                    <button type="button" class="btn btn-primary btn-sm btn-block"><i class="fa fa-check-circle"></i> Connect</button>
-                </td>
-            </tr>
-
-                <!--<tr>
-                    <th scope="row">1</th>
-                    <td>Big 12</td>
-                    <td>0.21 miles</td>
-                    <td>
-                        <button type="button" class="btn btn-primary btn-sm btn-block"><i class="fa fa-check-circle"></i> Connect</button>
+                <tr ng-repeat="jukebox in jukeboxes">
+                    <td class="text-center">{{jukebox.user__account}}</td>
+                    <td>{{jukebox.playlist_name}}</td>
+                    <td class="text-center">{{jukebox.id}}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-primary btn-sm btn-block" ng-click="open('sm', jukebox.id, jukebox.playlist_name)"><i class="fa fa-check-circle"></i> Connect</button>
                     </td>
                 </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Shot Bar</td>
-                    <td>0.32 miles</td>
-                    <td>
-                        <button type="button" class="btn btn-primary btn-sm btn-block"><i class="fa fa-check-circle"></i> Connect</button>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">3</th>
-                    <td>Quinton's and Tonic</td>
-                    <td>0.45 miles</td>
-                    <td>
-                        <button type="button" class="btn btn-primary btn-sm btn-block"><i class="fa fa-check-circle"></i> Connect</button>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row">4</th>
-                    <td>Devin's House</td>
-                    <td>1.45 miles</td>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm btn-block	"><i class="fa fa-times-circle"></i> Private</button>
-                    </td>
-                </tr>-->
             </tbody>
         </table>
     </div>
