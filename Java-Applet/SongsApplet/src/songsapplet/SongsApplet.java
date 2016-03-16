@@ -35,7 +35,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class SongsApplet extends Application {
     
     /* User Account ID of Applet */
-    int user_account_id = 32;
+    int user_account_id;
     
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -68,14 +68,6 @@ public class SongsApplet extends Application {
         
         /* ListView of Applet */
         ListView<String> songTitles = null;
-                               
-        /* Log in test */
-        
-        // Create the custom dialog.
-        /*Dialog<Pair<String, String>> dialog = new Dialog<>();
-        dialog.setTitle("Login Dialog");
-        dialog.setHeaderText("Look, a Custom Login Dialog");
-        dialog.show();*/
         
         /* On Start Functions */
         authenticateLogin("gakf38@gmail.com", "password");
