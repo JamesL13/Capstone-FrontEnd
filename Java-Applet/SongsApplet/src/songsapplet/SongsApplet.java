@@ -14,19 +14,19 @@ import com.google.gson.*;
 import com.mpatric.mp3agic.*;
 import java.io.*;
 import java.net.*;
-import java.nio.charset.Charset;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.*;
-import javafx.geometry.Pos;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.*;
 import javafx.scene.media.*;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
-import javax.net.ssl.HttpsURLConnection;
+//import javax.net.ssl.HttpsURLConnection;
 
 /**
  *
@@ -68,12 +68,83 @@ public class SongsApplet extends Application {
         
         /* ListView of Applet */
         ListView<String> songTitles = null;
+
+        
+        /* Login test */
+        // Create the custom dialog.
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Song[s] Login");
+        dialog.setHeaderText("Please Login to access your library");
+
+        // Set the button types.
+        ButtonType loginButtonType = new ButtonType("Login", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+        // Create the username and password labels and fields.
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField userEmail = new TextField();
+        userEmail.setPromptText("User Email");
+        PasswordField password = new PasswordField();
+        password.setPromptText("Password");
+
+        grid.add(new Label("User Email:"), 0, 0);
+        grid.add(userEmail, 1, 0);
+        grid.add(new Label("Password:"), 0, 1);
+        grid.add(password, 1, 1);
+
+        // Enable/Disable login button depending on whether a username was entered.
+        Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+        loginButton.setDisable(true);
+
+        // Do some validation (using the Java 8 lambda syntax).
+        userEmail.textProperty().addListener((observable, oldValue, newValue) -> {
+            loginButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Request focus on the username field by default.
+        Platform.runLater(() -> userEmail.requestFocus());
+
+        // Convert the result to a username-password-pair when the login button is clicked.
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == loginButtonType) {
+                return new Pair<>(userEmail.getText(), password.getText());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+
+        String user_email = result.get().getKey();
+        String user_password = result.get().getValue();
+        
+        /* Authenticate the user login attempt */
+        boolean loggedIn = authenticateLogin(user_email, user_password);
+        while(loggedIn == false)
+        {
+            dialog.setHeaderText("Invalid Login Credentials. Try Again.");
+            result = dialog.showAndWait();
+            user_email = result.get().getKey();
+            user_password = result.get().getValue();
+            loggedIn = authenticateLogin(user_email, user_password);
+        }
         
         /* On Start Functions */
-        authenticateLogin("gakf38@gmail.com", "password");
+        
+        //may want to abstract the username and password to class vars to make it easier to change and should be able to be set on setup
+        authenticateLogin(user_email, user_password);
+
         showAllSongs(songTitles, titleList);
+        //make sure the now playing is not null
         Media songToPlay = songToPlay(nowPlaying);
+        //check again for null
         jukebox = new MediaPlayer(songToPlay);
+        //check for null/bad jukebox
         playSong(jukebox);
         
         /* Event Handlers for Button Presses */
@@ -142,7 +213,7 @@ public class SongsApplet extends Application {
     }
     
     /* Function to authenticate a user login with the backend */
-    private void authenticateLogin(String user_email, String password) throws IOException 
+    private boolean authenticateLogin(String user_email, String password) throws IOException 
     {
         /* Create the POST Body for the POST Request */
         JsonObject postBody = new JsonObject();
@@ -167,7 +238,7 @@ public class SongsApplet extends Application {
             url = new URL("https://thomasscully.com/accounts/login");
         } catch (MalformedURLException mex) {
             System.out.println("The URL is malformed: " + mex.getMessage());
-            return;
+            return false;
         }
         
         try {
@@ -185,14 +256,26 @@ public class SongsApplet extends Application {
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             while ((line = reader.readLine()) != null) {
-                user_account_id = Integer.parseInt(line);
-                System.out.println("user_account_id: " + line);
+                System.out.println(line);
+                if(!line.equals("false"))
+                {
+                    user_account_id = Integer.parseInt(line);
+                    System.out.println("user_account_id: " + line);
+                    return true;
+                }
+                else
+                {
+                    System.out.println("Login Failed");
+                    return false;
+                }
             }
             writer.close();
             reader.close();
         } catch (IOException ex) {
             System.out.println("IO error: " + ex.getMessage());
+            return false;
         }     
+        return false;
     }
     
     /* Function that creates a Media object from an absolute path */
@@ -257,6 +340,12 @@ public class SongsApplet extends Application {
     /* Return: A ListView of all Song Titles currently in the Database */
     private ListView createListView(int user_account_id) throws Exception
     {
+        //
+        //
+        //  check user account stil exists before getting songs?
+        //  put getSongsFromDB() in try catch block? 
+        //
+        //
         Song[] songs = getSongsFromDB(user_account_id); //Get the most up to date list of songs
         ListView<String> songTitles = new ListView<>();
                 
@@ -274,6 +363,11 @@ public class SongsApplet extends Application {
     /* Return: None */
     private void postSongsToDB(JsonArray array) throws IOException
     {
+        //
+        //
+        //Is it possible to check the JsonArray?
+        //
+        //
         /* Create the POST Body for the POST Request */
         JsonObject postBody = new JsonObject();
         postBody.addProperty("user_account_id",user_account_id);
@@ -286,6 +380,7 @@ public class SongsApplet extends Application {
 	BufferedReader br = new BufferedReader(inputStreamReader);
 	String jsonLine;
         String json = "";
+        //put in try catch? or are we passing excepton along?
 	while ((jsonLine = br.readLine()) != null) {
             json += jsonLine + "\n";
 	}
@@ -329,8 +424,10 @@ public class SongsApplet extends Application {
     /* Specifically each JSON Object holds metadata of selected songs */ 
     private void createJsonObject (List<File> files, JsonArray array) throws IOException, UnsupportedTagException, InvalidDataException
     {
+        //do we want to check the files/array we are passing in some how?
         for(File file : files)
         {
+            //try catch for creating new mp3?
             Mp3File mp3File = new Mp3File(file.getAbsolutePath());
             JsonObject object = new JsonObject();
             if(mp3File.hasId3v1Tag() == true)
@@ -357,6 +454,9 @@ public class SongsApplet extends Application {
     /* Function called when the Show All Songs Button is clicked */
     private void showAllSongs(ListView<String> songTitles, StackPane titleList) throws Exception
     {
+        //checks for list/stackpane    stack pane not so much but list may be good
+        
+        //want to catch this one?
         songTitles = createListView(user_account_id);
         titleList.getChildren().add(songTitles);
     }
@@ -364,6 +464,8 @@ public class SongsApplet extends Application {
     /* Function called to start the host's Jukebox */
     private Media songToPlay(Label nowPlaying) throws MalformedURLException
     {
+        //check to make sure label is correct
+        //again not sure what we are doing try catch wise, but wrap get songs and createMedia to make sure nothing crashes
         Song[] allSongs = getSongsFromDB(user_account_id);
         Media songToPlay = createMedia(allSongs[0].getLocation());
         nowPlaying.setText("Now Playing: " + allSongs[0].getTitle() + ", " + allSongs[0].getArtist() + ", " + allSongs[0].getAlbum());
@@ -373,6 +475,7 @@ public class SongsApplet extends Application {
     /* Function called when the Upload Button is clicked */
     private void upload(Stage stage, FileChooser uploadSongs, List<File> uploadedFiles, JsonArray uploadedSongs, ListView<String> songTitles, StackPane titleList) throws IOException, UnsupportedTagException, InvalidDataException, Exception
     {
+        //check for all lists to make sure they contain correct data and try catch the error prone areas to better handle errors
         /* Clear All to avoid duplicate Uploads */
         uploadedFiles = new ArrayList<File>();
         uploadedSongs = new JsonArray();

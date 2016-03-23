@@ -65,3 +65,15 @@ Java-Applet/SongsApplet/dist/SongsApplet.html
 Java-Applet/SongsApplet/dist/SongsApplet.jar
 
 Java-Applet/SongsApplet/dist/SongsApplet.jnlp
+
+*.properties
+
+*.properties
+
+*.class
+
+*.html
+
+*.jnlp
+
+*.jar
