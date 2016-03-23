@@ -137,7 +137,7 @@ public class SongsApplet extends Application {
         /* On Start Functions */
         
         //may want to abstract the username and password to class vars to make it easier to change and should be able to be set on setup
-        authenticateLogin("gakf38@gmail.com", "password");
+        authenticateLogin(user_email, user_password);
 
         showAllSongs(songTitles, titleList);
         //make sure the now playing is not null
