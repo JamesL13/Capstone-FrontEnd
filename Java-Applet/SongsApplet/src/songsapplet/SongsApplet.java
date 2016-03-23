@@ -26,7 +26,6 @@ import javafx.scene.layout.*;
 import javafx.scene.media.*;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
-//import javax.net.ssl.HttpsURLConnection;
 
 /**
  *
@@ -138,7 +137,7 @@ public class SongsApplet extends Application {
         
         //may want to abstract the username and password to class vars to make it easier to change and should be able to be set on setup
         authenticateLogin(user_email, user_password);
-
+        
         showAllSongs(songTitles, titleList);
         //make sure the now playing is not null
         Media songToPlay = songToPlay(nowPlaying);
@@ -210,6 +209,12 @@ public class SongsApplet extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+    
+    /* Function to make a DELETE request to the server */
+    private boolean deleteSongFromDB(int songID)
+    {
+        return true;
     }
     
     /* Function to authenticate a user login with the backend */
