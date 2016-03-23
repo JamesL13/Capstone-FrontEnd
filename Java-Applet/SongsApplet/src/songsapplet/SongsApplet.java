@@ -68,8 +68,8 @@ public class SongsApplet extends Application {
         
         /* ListView of Applet */
         ListView<String> songTitles = null;
-        
 
+        
         /* Login test */
         // Create the custom dialog.
         Dialog<Pair<String, String>> dialog = new Dialog<>();
@@ -134,9 +134,17 @@ public class SongsApplet extends Application {
             loggedIn = authenticateLogin(user_email, user_password);
         }
         
+        /* On Start Functions */
+        
+        //may want to abstract the username and password to class vars to make it easier to change and should be able to be set on setup
+        authenticateLogin("gakf38@gmail.com", "password");
+
         showAllSongs(songTitles, titleList);
+        //make sure the now playing is not null
         Media songToPlay = songToPlay(nowPlaying);
+        //check again for null
         jukebox = new MediaPlayer(songToPlay);
+        //check for null/bad jukebox
         playSong(jukebox);
         
         /* Event Handlers for Button Presses */
@@ -332,6 +340,12 @@ public class SongsApplet extends Application {
     /* Return: A ListView of all Song Titles currently in the Database */
     private ListView createListView(int user_account_id) throws Exception
     {
+        //
+        //
+        //  check user account stil exists before getting songs?
+        //  put getSongsFromDB() in try catch block? 
+        //
+        //
         Song[] songs = getSongsFromDB(user_account_id); //Get the most up to date list of songs
         ListView<String> songTitles = new ListView<>();
                 
@@ -349,6 +363,11 @@ public class SongsApplet extends Application {
     /* Return: None */
     private void postSongsToDB(JsonArray array) throws IOException
     {
+        //
+        //
+        //Is it possible to check the JsonArray?
+        //
+        //
         /* Create the POST Body for the POST Request */
         JsonObject postBody = new JsonObject();
         postBody.addProperty("user_account_id",user_account_id);
@@ -361,6 +380,7 @@ public class SongsApplet extends Application {
 	BufferedReader br = new BufferedReader(inputStreamReader);
 	String jsonLine;
         String json = "";
+        //put in try catch? or are we passing excepton along?
 	while ((jsonLine = br.readLine()) != null) {
             json += jsonLine + "\n";
 	}
@@ -404,8 +424,10 @@ public class SongsApplet extends Application {
     /* Specifically each JSON Object holds metadata of selected songs */ 
     private void createJsonObject (List<File> files, JsonArray array) throws IOException, UnsupportedTagException, InvalidDataException
     {
+        //do we want to check the files/array we are passing in some how?
         for(File file : files)
         {
+            //try catch for creating new mp3?
             Mp3File mp3File = new Mp3File(file.getAbsolutePath());
             JsonObject object = new JsonObject();
             if(mp3File.hasId3v1Tag() == true)
@@ -432,6 +454,9 @@ public class SongsApplet extends Application {
     /* Function called when the Show All Songs Button is clicked */
     private void showAllSongs(ListView<String> songTitles, StackPane titleList) throws Exception
     {
+        //checks for list/stackpane    stack pane not so much but list may be good
+        
+        //want to catch this one?
         songTitles = createListView(user_account_id);
         titleList.getChildren().add(songTitles);
     }
@@ -439,6 +464,8 @@ public class SongsApplet extends Application {
     /* Function called to start the host's Jukebox */
     private Media songToPlay(Label nowPlaying) throws MalformedURLException
     {
+        //check to make sure label is correct
+        //again not sure what we are doing try catch wise, but wrap get songs and createMedia to make sure nothing crashes
         Song[] allSongs = getSongsFromDB(user_account_id);
         Media songToPlay = createMedia(allSongs[0].getLocation());
         nowPlaying.setText("Now Playing: " + allSongs[0].getTitle() + ", " + allSongs[0].getArtist() + ", " + allSongs[0].getAlbum());
@@ -448,6 +475,7 @@ public class SongsApplet extends Application {
     /* Function called when the Upload Button is clicked */
     private void upload(Stage stage, FileChooser uploadSongs, List<File> uploadedFiles, JsonArray uploadedSongs, ListView<String> songTitles, StackPane titleList) throws IOException, UnsupportedTagException, InvalidDataException, Exception
     {
+        //check for all lists to make sure they contain correct data and try catch the error prone areas to better handle errors
         /* Clear All to avoid duplicate Uploads */
         uploadedFiles = new ArrayList<File>();
         uploadedSongs = new JsonArray();
