@@ -14,19 +14,19 @@ import com.google.gson.*;
 import com.mpatric.mp3agic.*;
 import java.io.*;
 import java.net.*;
-import java.nio.charset.Charset;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.collections.*;
-import javafx.geometry.Pos;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.*;
 import javafx.scene.media.*;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
-import javax.net.ssl.HttpsURLConnection;
+//import javax.net.ssl.HttpsURLConnection;
 
 /**
  *
@@ -69,8 +69,71 @@ public class SongsApplet extends Application {
         /* ListView of Applet */
         ListView<String> songTitles = null;
         
-        /* On Start Functions */
-        authenticateLogin("gakf38@gmail.com", "password");
+
+        /* Login test */
+        // Create the custom dialog.
+        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        dialog.setTitle("Song[s] Login");
+        dialog.setHeaderText("Please Login to access your library");
+
+        // Set the button types.
+        ButtonType loginButtonType = new ButtonType("Login", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+        // Create the username and password labels and fields.
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField userEmail = new TextField();
+        userEmail.setPromptText("User Email");
+        PasswordField password = new PasswordField();
+        password.setPromptText("Password");
+
+        grid.add(new Label("User Email:"), 0, 0);
+        grid.add(userEmail, 1, 0);
+        grid.add(new Label("Password:"), 0, 1);
+        grid.add(password, 1, 1);
+
+        // Enable/Disable login button depending on whether a username was entered.
+        Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+        loginButton.setDisable(true);
+
+        // Do some validation (using the Java 8 lambda syntax).
+        userEmail.textProperty().addListener((observable, oldValue, newValue) -> {
+            loginButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        dialog.getDialogPane().setContent(grid);
+
+        // Request focus on the username field by default.
+        Platform.runLater(() -> userEmail.requestFocus());
+
+        // Convert the result to a username-password-pair when the login button is clicked.
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == loginButtonType) {
+                return new Pair<>(userEmail.getText(), password.getText());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+
+        String user_email = result.get().getKey();
+        String user_password = result.get().getValue();
+        
+        /* Authenticate the user login attempt */
+        boolean loggedIn = authenticateLogin(user_email, user_password);
+        while(loggedIn == false)
+        {
+            dialog.setHeaderText("Invalid Login Credentials. Try Again.");
+            result = dialog.showAndWait();
+            user_email = result.get().getKey();
+            user_password = result.get().getValue();
+            loggedIn = authenticateLogin(user_email, user_password);
+        }
+        
         showAllSongs(songTitles, titleList);
         Media songToPlay = songToPlay(nowPlaying);
         jukebox = new MediaPlayer(songToPlay);
@@ -142,7 +205,7 @@ public class SongsApplet extends Application {
     }
     
     /* Function to authenticate a user login with the backend */
-    private void authenticateLogin(String user_email, String password) throws IOException 
+    private boolean authenticateLogin(String user_email, String password) throws IOException 
     {
         /* Create the POST Body for the POST Request */
         JsonObject postBody = new JsonObject();
@@ -167,7 +230,7 @@ public class SongsApplet extends Application {
             url = new URL("https://thomasscully.com/accounts/login");
         } catch (MalformedURLException mex) {
             System.out.println("The URL is malformed: " + mex.getMessage());
-            return;
+            return false;
         }
         
         try {
@@ -185,14 +248,26 @@ public class SongsApplet extends Application {
             String line;
             BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             while ((line = reader.readLine()) != null) {
-                user_account_id = Integer.parseInt(line);
-                System.out.println("user_account_id: " + line);
+                System.out.println(line);
+                if(!line.equals("false"))
+                {
+                    user_account_id = Integer.parseInt(line);
+                    System.out.println("user_account_id: " + line);
+                    return true;
+                }
+                else
+                {
+                    System.out.println("Login Failed");
+                    return false;
+                }
             }
             writer.close();
             reader.close();
         } catch (IOException ex) {
             System.out.println("IO error: " + ex.getMessage());
+            return false;
         }     
+        return false;
     }
     
     /* Function that creates a Media object from an absolute path */

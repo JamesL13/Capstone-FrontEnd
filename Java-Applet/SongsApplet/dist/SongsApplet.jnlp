@@ -8,7 +8,7 @@
   </information>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="SongsApplet.jar" size="11921" download="eager" />
+    <jar href="SongsApplet.jar" size="14051" download="eager" />
     <jar href="lib/gson-2.6.1.jar" size="230882" download="eager" />
     <jar href="lib/mp3agic-0.8.1.jar" size="78595" download="eager" />
   </resources>
