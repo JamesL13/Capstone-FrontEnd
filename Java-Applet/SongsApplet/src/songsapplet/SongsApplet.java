@@ -145,6 +145,9 @@ public class SongsApplet extends Application {
         jukebox = new MediaPlayer(songToPlay);
         //check for null/bad jukebox
         playSong(jukebox);
+  
+        
+        
         
         /* Event Handlers for Button Presses */
         /* Open File Chooser, create Json Array from files, POST Json Array to the Database */
@@ -212,8 +215,37 @@ public class SongsApplet extends Application {
     }
     
     /* Function to make a DELETE request to the server */
-    private boolean deleteSongFromDB(int songID)
+    private boolean deleteSongFromDB(int song_id)
     {
+        /* Make Connection with server and send DELETE Request to the database */
+        try {
+            String server = "https://thomasscully.com/songs?id=" + song_id;
+            URL url = new URL(server);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            
+            //Set Request Method
+            con.setRequestMethod("DELETE");
+            
+            //Add Request Header
+            con.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
+            con.setRequestProperty("Content-Type", "application/json");
+            
+            //Read the Request Response
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer jsonString = new StringBuffer();
+            
+            while ((inputLine = in.readLine()) != null) {
+                jsonString.append(inputLine);
+                System.out.println("Number of rows deleted: " + inputLine);
+            }
+            in.close();
+            
+        } catch (IOException ex) {
+            //Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Deletion Failed");
+            return false;
+        }
         return true;
     }
     
@@ -491,6 +523,13 @@ public class SongsApplet extends Application {
         {
             createJsonObject(uploadedFiles, uploadedSongs);
         }
+        showAllSongs(songTitles, titleList);
+    }
+    
+    /* Function called when a Song is selected to be deleted */
+    private void delete(int song_id, ListView<String> songTitles, StackPane titleList) throws Exception
+    {
+        deleteSongFromDB(song_id);
         showAllSongs(songTitles, titleList);
     }
 }
