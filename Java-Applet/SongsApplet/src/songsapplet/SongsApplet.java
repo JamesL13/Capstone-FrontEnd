@@ -68,8 +68,7 @@ public class SongsApplet extends Application {
         /* ListView of Applet */
         ListView<String> songTitles = null;
 
-        
-        /* Login test */
+        /* Login */
         // Create the custom dialog.
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Song[s] Login");
@@ -119,6 +118,7 @@ public class SongsApplet extends Application {
 
         Optional<Pair<String, String>> result = dialog.showAndWait();
 
+        // Gather the user_email and user_password
         String user_email = result.get().getKey();
         String user_password = result.get().getValue();
         
@@ -145,10 +145,7 @@ public class SongsApplet extends Application {
         jukebox = new MediaPlayer(songToPlay);
         //check for null/bad jukebox
         playSong(jukebox);
-  
-        
-        
-        
+          
         /* Event Handlers for Button Presses */
         /* Open File Chooser, create Json Array from files, POST Json Array to the Database */
         upload.setOnAction(new EventHandler<ActionEvent>() {
