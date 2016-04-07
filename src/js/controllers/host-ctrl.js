@@ -18,6 +18,10 @@ function HostCtrl($scope, $http, $cookieStore) {
         window.location = "#/manageaccount";
     }
 
+    socket.on('message', function(data) {
+        console.log('Incoming message:', data);
+    });
+
     // Delete playlist function
     $scope.deletePlaylist = function() {
         var r = confirm("Are you sure you'd like to delete this playlist?");
@@ -44,13 +48,17 @@ function HostCtrl($scope, $http, $cookieStore) {
             };
             $http.post(server + '/playlists', data).then(
                 function(response) {
+                    room = data.playlist_name;
+                    console.log("Client side - Room: " + room);
+                    socket.emit('room', room);
                     location.reload();
                 },
                 function(response) {
                     console.log("Server did not successfully complete request.");
                 }
-            );
-        } else {
+            );  
+        } 
+        else {
             $scope.formErrors = true;
             $scope.formErrorMessage = "There was a problem with your input. Please try again.";
         }
