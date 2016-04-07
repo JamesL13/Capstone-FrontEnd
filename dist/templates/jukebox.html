@@ -13,19 +13,24 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-2 text-center">
-            <div class="center-block" style="height: 100px; width: 100px">
-                <img src="img/celebration.jpg" alt="Album Cover" height="100" width="100">
+        <div class="col-md-12">
+            <h4>Now Playing:</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="text-center">
+                <img src="img/celebration.jpg" alt="Album Cover" height="150px">
             </div>
         </div>
         <div class="col-xs-10 text-left">
             <h3>{{playlistName.playlist_name}}</h3>
-            <p>Led Zeppelin, Celebration Day, Classic Rock</p>
+            <p>{{playlistName.description}}</p>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <div style="height: 291px; overflow:scroll">
+            <div>
                 <table class="table">
                     <!--<caption>Next in Jukebox</caption>-->
                     <thead>
