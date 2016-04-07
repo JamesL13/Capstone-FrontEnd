@@ -11,7 +11,7 @@
     $scope.formErrors = false;
     $scope.formErrorMessage = "";
     $scope.currentId = null;
-     $scope.hostId = null;
+    $scope.hostId = null;
 
     $http.defaults.headers.common = {
         'secret-token': 'aBcDeFgHiJkReturnOfTheSixToken666666',
