@@ -11,6 +11,7 @@
     $scope.formErrors = false;
     $scope.formErrorMessage = "";
     $scope.currentId = null;
+     $scope.hostId = null;
 
     $http.defaults.headers.common = {
         'secret-token': 'aBcDeFgHiJkReturnOfTheSixToken666666',
@@ -34,9 +35,11 @@
                 $scope.formErrors = true;
             } 
             else {
-                isConnectedChecker = $cookieStore.get('isConnectedToPlaylist')
+                isConnectedChecker = $cookieStore.get('isConnectedToPlaylist');
                 if (isConnectedChecker = true){
-                    $cookieStore.put('connectPlaylistUserId', '');
+                    //$cookieStore.put('jukeBoxid', '');
+                    $cookieStore.put('jukeBoxid', $scope.currentId);
+                    $cookieStore.put('hostid', $scope.hostId);
                 }
                 socket.emit('room', $scope.playlistname);
                 $cookieStore.put('isConnectedToPlaylist', true);
@@ -57,7 +60,8 @@
         }).then(getPlaylistSuccessCallback, errorCallback);
     };
 
-    $scope.open = function (size, id) {
+    $scope.open = function (size, hostid, id) {
+        $scope.hostId = hostid;
         $scope.currentId = id;
         $scope.modalInstance = $uibModal.open({
             animation: $scope.animationsEnabled,
