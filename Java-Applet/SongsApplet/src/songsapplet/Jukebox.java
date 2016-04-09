@@ -25,6 +25,11 @@ public class Jukebox {
         this.password = password;
         this.is_active = is_active;
     }
+        
+    public int getID()
+    {
+        return this.id;
+    }
     
     public int getIsActive()
     {

@@ -39,11 +39,11 @@ public class SongsApplet extends Application {
     /* User Account ID of Applet */
     int user_account_id;
     
+    /* Jukebox Object of Applet */
+    Jukebox currentJukebox;
+    
     /* Jukebox Active Flag of Applet */
     boolean jukeboxActive;
-    
-    /* Jukebox Active Flag on the Database */
-    int jukeboxState;
     
     /* Media Player of Applet */
     MediaPlayer jukebox;
@@ -155,8 +155,10 @@ public class SongsApplet extends Application {
         }
         
         /* On Start Functions */        
-        showAllSongs(titleList);        
-        
+        showAllSongs(titleList); 
+        getJukeboxFromDB();
+        toggleJukeboxOnDB("stop", currentJukebox.getID());
+                
         /* Event Handlers for Button Presses */
                 
         /* Prompt an alert, on confirmation DELETE song from Database, update the ListView */           
@@ -221,6 +223,8 @@ public class SongsApplet extends Application {
                 try {
                     startStopJukebox();
                 } catch (MalformedURLException ex) {
+                    Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
                     Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -366,10 +370,11 @@ public class SongsApplet extends Application {
         jukebox.pause();
     }
     
-    private void startStopJukebox() throws MalformedURLException
+    private void startStopJukebox() throws MalformedURLException, IOException
     {
         if(jukeboxActive == true)
         {
+            toggleJukeboxOnDB("stop", currentJukebox.getID());
             jukebox.stop();
             jukeboxActive = false;
             songTitles.setDisable(false);
@@ -382,6 +387,7 @@ public class SongsApplet extends Application {
         }
         else
         {
+            toggleJukeboxOnDB("start", currentJukebox.getID());
             songTitles.setDisable(true);
             deleteSong.setDisable(true);
             upload.setDisable(true);
@@ -399,7 +405,7 @@ public class SongsApplet extends Application {
     
     /* Function which sends a GET Request to the Database */
     /* Return: A integer representing the current state of the jukebox (Active or Inactive) */
-    private void getJukeboxStateFromDB() throws MalformedURLException
+    private void getJukeboxFromDB() throws MalformedURLException
     {
         try {
             String server = "https://thomasscully.com/playlists?account__id=" + user_account_id;
@@ -422,9 +428,7 @@ public class SongsApplet extends Application {
             in.close();
             
             Gson gson = new Gson();
-            Jukebox currentJukebox = gson.fromJson(jsonString.toString(), Jukebox.class);
-            System.out.println("Jukebox state: " + currentJukebox.getIsActive());
-            jukeboxState = currentJukebox.getIsActive();
+            currentJukebox = gson.fromJson(jsonString.toString(), Jukebox.class);
         } catch (IOException ex) {
             Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -484,6 +488,7 @@ public class SongsApplet extends Application {
         } catch (IOException ex) {
             System.out.println("IO error: " + ex.getMessage());
         }
+        getJukeboxFromDB();
     }
     
     /* Function which sends a GET Request to the Database */
