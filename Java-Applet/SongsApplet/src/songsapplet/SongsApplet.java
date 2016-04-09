@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 
 import com.google.gson.*;
 import com.mpatric.mp3agic.*;
+import java.awt.Desktop;
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -72,7 +73,7 @@ public class SongsApplet extends Application {
     Button deleteSong = new Button ("Remove Song");
     Button play = new Button("Play");
     Button pause = new Button("Pause");
-        
+    Button hostManagement = new Button("Manage Account");
     
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -199,6 +200,20 @@ public class SongsApplet extends Application {
             }
         });
         
+        hostManagement.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                System.out.println("Link to account management page");
+                try {
+                    Desktop.getDesktop().browse(new URI("http://localhost:8888/#/manageaccount"));
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                } catch (URISyntaxException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        
         play.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -234,7 +249,7 @@ public class SongsApplet extends Application {
         pause.setMinWidth(60);
         stop.setMinWidth(60);
         deleteSong.setMinWidth(60);
-        hostTools.getItems().addAll(upload, stop, deleteSong);
+        hostTools.getItems().addAll(upload, stop, deleteSong, hostManagement);
         jukeboxTools.getItems().addAll(play, pause, nowPlaying);
         root.setTop(hostTools);
         root.setBottom(jukeboxTools);
