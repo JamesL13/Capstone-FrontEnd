@@ -18,6 +18,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.value.*;
 import javafx.collections.*;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -26,7 +27,8 @@ import javafx.scene.layout.*;
 import javafx.scene.media.*;
 import javafx.stage.FileChooser;
 import javafx.util.Pair;
-//import javax.net.ssl.HttpsURLConnection;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 
 /**
  *
@@ -37,40 +39,57 @@ public class SongsApplet extends Application {
     /* User Account ID of Applet */
     int user_account_id;
     
+    /* Jukebox Object of Applet */
+    Jukebox currentJukebox;
+    
+    /* Jukebox Active Flag of Applet */
+    boolean jukeboxActive;
+    
+    /* Media Player of Applet */
+    MediaPlayer jukebox;
+    
+    /* ListView of Applet */
+    ListView<String> songTitles = new ListView<>();
+    
+    /* File Chooser of Applet */
+    FileChooser uploadSongs = new FileChooser();
+    
+    /* List of Files Uploaded */
+    List<File> uploadedFiles = new ArrayList<File>();
+    
+    /* Json Array of Songs Uploaded */
+    JsonArray uploadedSongs = new JsonArray();
+    
+    /* Songs of Applet */
+    Songs getSongs = new Songs(null);
+    
+    /* Labels of Applet */
+    Label nowPlaying = new Label("Now Playing: ");
+    
+    /* Buttons of Applet */
+    Button upload = new Button("Upload Songs");
+    Button stop = new Button("Start Jukebox");
+    Button deleteSong = new Button ("Remove Song");
+    Button play = new Button("Play");
+    Button pause = new Button("Pause");
+        
+    
     @Override
     public void start(Stage primaryStage) throws Exception {
-
-        List<File> uploadedFiles = new ArrayList<File>();
-        JsonArray uploadedSongs = new JsonArray();
-        Songs getSongs = new Songs(null);
+        
+        /* Jukebox is in active upon start of Applet */
+        jukeboxActive = false;
+        play.setDisable(true);
+        pause.setDisable(true);
+        deleteSong.setDisable(true);
         
         /* Creates the Elements of the Applet */
         BorderPane root = new BorderPane();  
         StackPane titleList = new StackPane();
         ToolBar hostTools = new ToolBar();
         ToolBar jukeboxTools = new ToolBar();
-        
-        /* Buttons of Applet */
-        Button upload = new Button("Upload Songs");
-        Button play = new Button("Play");
-        Button pause = new Button("Pause");
-        Button stop = new Button("Stop Jukebox");
-        play.setDisable(true);
-        
-        /* Labels of Applet */
-        Label nowPlaying = new Label("Now Playing: ");
-
-        /* Media Player of Applet */
-        MediaPlayer jukebox;
-        
-        /* File Chooser of Applet */
-        FileChooser uploadSongs = new FileChooser();
-        
-        /* ListView of Applet */
-        ListView<String> songTitles = null;
-
-        
-        /* Login test */
+                
+        /* Login */
         // Create the custom dialog.
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Song[s] Login");
@@ -120,6 +139,7 @@ public class SongsApplet extends Application {
 
         Optional<Pair<String, String>> result = dialog.showAndWait();
 
+        // Gather the user_email and user_password
         String user_email = result.get().getKey();
         String user_password = result.get().getValue();
         
@@ -134,26 +154,39 @@ public class SongsApplet extends Application {
             loggedIn = authenticateLogin(user_email, user_password);
         }
         
-        /* On Start Functions */
-        
-        //may want to abstract the username and password to class vars to make it easier to change and should be able to be set on setup
-        authenticateLogin(user_email, user_password);
-
-        showAllSongs(songTitles, titleList);
-        //make sure the now playing is not null
-        Media songToPlay = songToPlay(nowPlaying);
-        //check again for null
-        jukebox = new MediaPlayer(songToPlay);
-        //check for null/bad jukebox
-        playSong(jukebox);
-        
+        /* On Start Functions */        
+        showAllSongs(titleList); 
+        getJukeboxFromDB();
+        toggleJukeboxOnDB("stop", currentJukebox.getID());
+                
         /* Event Handlers for Button Presses */
+                
+        /* Prompt an alert, on confirmation DELETE song from Database, update the ListView */           
+        songTitles.getSelectionModel().selectedIndexProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
+            deleteSong.setDisable(false);
+            deleteSong.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event)
+                {
+                    Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete the song '" + getSongs.getSongs()[new_val.intValue()].getTitle() + "'?");
+                    Optional<ButtonType> deleteResult = alert.showAndWait();
+                    if (deleteResult.isPresent() && deleteResult.get() == ButtonType.OK) {
+                        try {
+                            delete(new_val.intValue());
+                        } catch (Exception ex) {
+                            Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            });
+        });
+        
         /* Open File Chooser, create Json Array from files, POST Json Array to the Database */
         upload.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 try {
-                    upload(primaryStage, uploadSongs, uploadedFiles, uploadedSongs, songTitles, titleList);
+                    upload(primaryStage, uploadedFiles, uploadedSongs, titleList);
                 } catch (IOException ex) {
                     Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (UnsupportedTagException ex) {
@@ -169,7 +202,7 @@ public class SongsApplet extends Application {
         play.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                playSong(jukebox);
+                playSong();
                 pause.setDisable(false);
                 play.setDisable(true);
             }
@@ -178,7 +211,7 @@ public class SongsApplet extends Application {
         pause.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                pauseSong(jukebox);
+                pauseSong();
                 pause.setDisable(true);
                 play.setDisable(false);
             }
@@ -187,14 +220,21 @@ public class SongsApplet extends Application {
         stop.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                stopJukebox(jukebox);
+                try {
+                    startStopJukebox();
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
-                
+        
         play.setMinWidth(60);
         pause.setMinWidth(60);
         stop.setMinWidth(60);
-        hostTools.getItems().addAll(upload, stop);
+        deleteSong.setMinWidth(60);
+        hostTools.getItems().addAll(upload, stop, deleteSong);
         jukeboxTools.getItems().addAll(play, pause, nowPlaying);
         root.setTop(hostTools);
         root.setBottom(jukeboxTools);
@@ -210,6 +250,40 @@ public class SongsApplet extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+    
+    /* Function to make a DELETE request to the server */
+    private boolean deleteSongFromDB(int song_id)
+    {
+        /* Make Connection with server and send DELETE Request to the database */
+        try {
+            String server = "https://thomasscully.com/songs?id=" + song_id;
+            URL url = new URL(server);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            
+            //Set Request Method
+            con.setRequestMethod("DELETE");
+            
+            //Add Request Header
+            con.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
+            con.setRequestProperty("Content-Type", "application/json");
+            
+            //Read the Request Response
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer jsonString = new StringBuffer();
+            
+            while ((inputLine = in.readLine()) != null) {
+                jsonString.append(inputLine);
+                System.out.println("Number of rows deleted: " + inputLine);
+            }
+            in.close();            
+        } catch (IOException ex) {
+            //Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Deletion Failed");
+            return false;
+        }
+        return true;
     }
     
     /* Function to authenticate a user login with the backend */
@@ -286,19 +360,135 @@ public class SongsApplet extends Application {
         return media;
     }
     
-    private void playSong(MediaPlayer jukebox)
+    private void playSong()
     {
         jukebox.play();
     }
     
-    private void pauseSong(MediaPlayer jukebox)
+    private void pauseSong()
     {
         jukebox.pause();
     }
     
-    private void stopJukebox(MediaPlayer jukebox)
+    private void startStopJukebox() throws MalformedURLException, IOException
     {
-        jukebox.stop();
+        if(jukeboxActive == true)
+        {
+            toggleJukeboxOnDB("stop", currentJukebox.getID());
+            jukebox.stop();
+            jukeboxActive = false;
+            songTitles.setDisable(false);
+            deleteSong.setDisable(false);
+            upload.setDisable(false);
+            play.setDisable(true);
+            pause.setDisable(true);
+            stop.setText("Start Jukebox");
+            nowPlaying.setText("Now Playing:");
+        }
+        else
+        {
+            toggleJukeboxOnDB("start", currentJukebox.getID());
+            songTitles.setDisable(true);
+            deleteSong.setDisable(true);
+            upload.setDisable(true);
+            pause.setDisable(false);
+            //make sure the now playing is not null
+            Media songToPlay = songToPlay();
+            //check again for null
+            jukebox = new MediaPlayer(songToPlay);
+            //check for null/bad jukebox
+            playSong();
+            stop.setText("Stop Jukebox");
+            jukeboxActive = true;
+        }
+    }
+    
+    /* Function which sends a GET Request to the Database */
+    /* Return: A integer representing the current state of the jukebox (Active or Inactive) */
+    private void getJukeboxFromDB() throws MalformedURLException
+    {
+        try {
+            String server = "https://thomasscully.com/playlists?account__id=" + user_account_id;
+            URL url = new URL(server);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            
+            con.setRequestMethod("GET");
+            
+            con.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
+            con.setRequestProperty("Content-Type", "application/json");
+            
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer jsonString = new StringBuffer();
+            
+            while ((inputLine = in.readLine()) != null) {
+                jsonString.append(inputLine);
+                System.out.println(inputLine);
+            }
+            in.close();
+            
+            Gson gson = new Gson();
+            currentJukebox = gson.fromJson(jsonString.toString(), Jukebox.class);
+        } catch (IOException ex) {
+            Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /* Function which sends a PUT Request to the Database to change the Jukebox state */
+    /* Return: A integer representing the number of Jukeboxes that state changed */
+    private void toggleJukeboxOnDB(String action, int jukeboxId) throws IOException
+    {
+        /* Create the PUT Body for the PUT Request */
+        JsonObject putBody = new JsonObject();
+        putBody.addProperty("action", action);
+        putBody.addProperty("id", jukeboxId);
+        
+        /* Write the PUT Body to the PUT Request */
+        InputStream inputStream = new ByteArrayInputStream(putBody.toString().getBytes());
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+	BufferedReader br = new BufferedReader(inputStreamReader);
+	String jsonLine;
+        String json = "";
+        //put in try catch? or are we passing excepton along?
+	while ((jsonLine = br.readLine()) != null) {
+            json += jsonLine + "\n";
+	}
+        System.out.println("JSON read from file:");
+        System.out.println(json);  // print the json to output to see it was read correctly
+        
+        /* Make Connection with server and send PUT Request to the database */
+        URL url;
+        try {
+            url = new URL("https://thomasscully.com/toggle");
+        } catch (MalformedURLException mex) {
+            System.out.println("The URL is malformed: " + mex.getMessage());
+            return;
+        }
+        
+        try {
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("PUT");
+            conn.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
+            conn.setRequestProperty("Content-Type", "application/json");
+            OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+
+            writer.write(json);
+            writer.flush();
+            
+            System.out.println("JSON returned from server after request:");
+            
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            writer.close();
+            reader.close();
+        } catch (IOException ex) {
+            System.out.println("IO error: " + ex.getMessage());
+        }
+        getJukeboxFromDB();
     }
     
     /* Function which sends a GET Request to the Database */
@@ -325,9 +515,9 @@ public class SongsApplet extends Application {
             }
             in.close();
             
-            //print result
             Gson gson = new Gson();
             Songs songs = gson.fromJson(jsonString.toString(), Songs.class);
+            getSongs = songs;
             return songs.getSongs();
             
         } catch (IOException ex) {
@@ -338,7 +528,7 @@ public class SongsApplet extends Application {
     
     /* Function that creates a ListView of song titles */
     /* Return: A ListView of all Song Titles currently in the Database */
-    private ListView createListView(int user_account_id) throws Exception
+    private void createListView(int user_account_id) throws Exception
     {
         //
         //
@@ -347,16 +537,14 @@ public class SongsApplet extends Application {
         //
         //
         Song[] songs = getSongsFromDB(user_account_id); //Get the most up to date list of songs
-        ListView<String> songTitles = new ListView<>();
                 
         ObservableList<String> items = FXCollections.observableArrayList();
         for(Song song : songs)
         {
             items.add(song.getTitle());
         }
-    
+        
         songTitles.setItems(items);
-        return songTitles;
     }
     
     /* Function which sends a POST Request with a JSON Post Body to the Database */
@@ -452,28 +640,37 @@ public class SongsApplet extends Application {
     }
     
     /* Function called when the Show All Songs Button is clicked */
-    private void showAllSongs(ListView<String> songTitles, StackPane titleList) throws Exception
+    private void showAllSongs(StackPane titleList) throws Exception
     {
         //checks for list/stackpane    stack pane not so much but list may be good
         
         //want to catch this one?
-        songTitles = createListView(user_account_id);
+        createListView(user_account_id);
+        titleList.getChildren().remove(songTitles);
         titleList.getChildren().add(songTitles);
     }
     
     /* Function called to start the host's Jukebox */
-    private Media songToPlay(Label nowPlaying) throws MalformedURLException
+    private Media songToPlay() throws MalformedURLException
     {
         //check to make sure label is correct
         //again not sure what we are doing try catch wise, but wrap get songs and createMedia to make sure nothing crashes
         Song[] allSongs = getSongsFromDB(user_account_id);
-        Media songToPlay = createMedia(allSongs[0].getLocation());
-        nowPlaying.setText("Now Playing: " + allSongs[0].getTitle() + ", " + allSongs[0].getArtist() + ", " + allSongs[0].getAlbum());
-        return songToPlay;
+        Media songToPlay;
+        if(allSongs.length != 0)
+        {
+            songToPlay = createMedia(allSongs[0].getLocation());
+            nowPlaying.setText("Now Playing: " + allSongs[0].getTitle() + ", " + allSongs[0].getArtist() + ", " + allSongs[0].getAlbum());
+            return songToPlay;
+        }
+        else
+        {
+            return null;
+        }
     }
     
     /* Function called when the Upload Button is clicked */
-    private void upload(Stage stage, FileChooser uploadSongs, List<File> uploadedFiles, JsonArray uploadedSongs, ListView<String> songTitles, StackPane titleList) throws IOException, UnsupportedTagException, InvalidDataException, Exception
+    private void upload(Stage stage, List<File> uploadedFiles, JsonArray uploadedSongs, StackPane titleList) throws IOException, UnsupportedTagException, InvalidDataException, Exception
     {
         //check for all lists to make sure they contain correct data and try catch the error prone areas to better handle errors
         /* Clear All to avoid duplicate Uploads */
@@ -486,6 +683,22 @@ public class SongsApplet extends Application {
         {
             createJsonObject(uploadedFiles, uploadedSongs);
         }
-        showAllSongs(songTitles, titleList);
+        showAllSongs(titleList);
+    }
+    
+    /* Function called when a Song is selected to be deleted */
+    private void delete(int list_id) throws Exception
+    {
+        /* Remove Song from getSongs */
+        if(deleteSongFromDB(getSongs.getSongs()[list_id].getId()) == true)
+        {
+            getSongsFromDB(user_account_id);
+            songTitles.getItems().remove(list_id);
+            System.out.println("Song removed!");
+        }
+        else
+        {
+            System.out.println("Failed to Delete Song");
+        }
     }
 }
