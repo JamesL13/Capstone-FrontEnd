@@ -42,6 +42,9 @@ public class SongsApplet extends Application {
     /* Jukebox Active Flag of Applet */
     boolean jukeboxActive;
     
+    /* Jukebox Active Flag on the Database */
+    int jukeboxState;
+    
     /* Media Player of Applet */
     MediaPlayer jukebox;
     
@@ -152,8 +155,8 @@ public class SongsApplet extends Application {
         }
         
         /* On Start Functions */        
-        showAllSongs(titleList);
-                
+        showAllSongs(titleList);        
+        
         /* Event Handlers for Button Presses */
                 
         /* Prompt an alert, on confirmation DELETE song from Database, update the ListView */           
@@ -391,6 +394,95 @@ public class SongsApplet extends Application {
             playSong();
             stop.setText("Stop Jukebox");
             jukeboxActive = true;
+        }
+    }
+    
+    /* Function which sends a GET Request to the Database */
+    /* Return: A integer representing the current state of the jukebox (Active or Inactive) */
+    private void getJukeboxStateFromDB() throws MalformedURLException
+    {
+        try {
+            String server = "https://thomasscully.com/playlists?account__id=" + user_account_id;
+            URL url = new URL(server);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            
+            con.setRequestMethod("GET");
+            
+            con.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
+            con.setRequestProperty("Content-Type", "application/json");
+            
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer jsonString = new StringBuffer();
+            
+            while ((inputLine = in.readLine()) != null) {
+                jsonString.append(inputLine);
+                System.out.println(inputLine);
+            }
+            in.close();
+            
+            Gson gson = new Gson();
+            Jukebox currentJukebox = gson.fromJson(jsonString.toString(), Jukebox.class);
+            System.out.println("Jukebox state: " + currentJukebox.getIsActive());
+            jukeboxState = currentJukebox.getIsActive();
+        } catch (IOException ex) {
+            Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    /* Function which sends a PUT Request to the Database to change the Jukebox state */
+    /* Return: A integer representing the number of Jukeboxes that state changed */
+    private void toggleJukeboxOnDB(String action, int jukeboxId) throws IOException
+    {
+        /* Create the PUT Body for the PUT Request */
+        JsonObject putBody = new JsonObject();
+        putBody.addProperty("action", action);
+        putBody.addProperty("id", jukeboxId);
+        
+        /* Write the PUT Body to the PUT Request */
+        InputStream inputStream = new ByteArrayInputStream(putBody.toString().getBytes());
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+	BufferedReader br = new BufferedReader(inputStreamReader);
+	String jsonLine;
+        String json = "";
+        //put in try catch? or are we passing excepton along?
+	while ((jsonLine = br.readLine()) != null) {
+            json += jsonLine + "\n";
+	}
+        System.out.println("JSON read from file:");
+        System.out.println(json);  // print the json to output to see it was read correctly
+        
+        /* Make Connection with server and send PUT Request to the database */
+        URL url;
+        try {
+            url = new URL("https://thomasscully.com/toggle");
+        } catch (MalformedURLException mex) {
+            System.out.println("The URL is malformed: " + mex.getMessage());
+            return;
+        }
+        
+        try {
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("PUT");
+            conn.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
+            conn.setRequestProperty("Content-Type", "application/json");
+            OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+
+            writer.write(json);
+            writer.flush();
+            
+            System.out.println("JSON returned from server after request:");
+            
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            writer.close();
+            reader.close();
+        } catch (IOException ex) {
+            System.out.println("IO error: " + ex.getMessage());
         }
     }
     
