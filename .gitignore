@@ -58,7 +58,7 @@ dist/js/dashboard.min.js
 /nbproject/private/
 
 Java-Applet/SongsApplet/build/*
-Java-Applet/SongsApplet/dst/*
+Java-Applet/SongsApplet/dist/*
 
 
 *.properties
@@ -72,3 +72,4 @@ Java-Applet/SongsApplet/dst/*
 *.jnlp
 
 *.jar
+/Java-Applet/SongsApplet/nbproject/private/
