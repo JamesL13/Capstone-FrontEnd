@@ -78,7 +78,6 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
         }
 
         if ($cookieStore.get('haveVotedSongs') == undefined || !$cookieStore.get('haveVotedSongs')) {
-            alert("starting the have voted songs array");
             $scope.hasVoted = [];
             $cookieStore.put('haveVotedSongs', $scope.hasVoted);
         }
