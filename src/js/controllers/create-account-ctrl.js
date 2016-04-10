@@ -28,7 +28,6 @@ function CreateAccountCtrl($scope, $http, $cookieStore) {
     }
 
     successCallback = function(response) {
-        console.log(response);
         if (response.data == "Email already in use.  Cannot create account.") {
             $scope.formErrorMessage = response.data;
             $scope.formErrors = true;
