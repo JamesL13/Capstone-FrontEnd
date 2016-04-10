@@ -49,6 +49,9 @@ public class SongsApplet extends Application {
     /* Media Player of Applet */
     MediaPlayer jukebox;
     
+    /* Current Song of Applet */
+    Media currentSong;
+    
     /* ListView of Applet */
     ListView<String> songTitles = new ListView<>();
     
@@ -408,9 +411,9 @@ public class SongsApplet extends Application {
             upload.setDisable(true);
             pause.setDisable(false);
             //make sure the now playing is not null
-            Media songToPlay = songToPlay();
+            currentSong = songToPlay();
             //check again for null
-            jukebox = new MediaPlayer(songToPlay);
+            jukebox = new MediaPlayer(currentSong);
             //check for null/bad jukebox
             playSong();
             stop.setText("Stop Jukebox");
@@ -670,12 +673,12 @@ public class SongsApplet extends Application {
     {
         //check to make sure label is correct
         //again not sure what we are doing try catch wise, but wrap get songs and createMedia to make sure nothing crashes
-        Song[] allSongs = getSongsFromDB(user_account_id);
         Media songToPlay;
-        if(allSongs.length != 0)
+        if(getSongs.getSongs().length != 0)
         {
-            songToPlay = createMedia(allSongs[0].getLocation());
-            nowPlaying.setText("Now Playing: " + allSongs[0].getTitle() + ", " + allSongs[0].getArtist() + ", " + allSongs[0].getAlbum());
+            int songID = 0;
+            songToPlay = createMedia(getSongs.getSongs()[songID].getLocation());
+            nowPlaying.setText("Now Playing: " + getSongs.getSongs()[songID].getTitle() + ", " + getSongs.getSongs()[songID].getArtist() + ", " + getSongs.getSongs()[songID].getAlbum());
             return songToPlay;
         }
         else
