@@ -56,15 +56,10 @@ dist/js/dashboard.min.js
 dist/lib/css/main.min.css
 dist/js/dashboard.min.js
 /nbproject/private/
-Java-Applet/SongsApplet/build/built-jar.properties
 
-Java-Applet/SongsApplet/build/classes/songsapplet/SongsApplet.class
+Java-Applet/SongsApplet/build/*
+Java-Applet/SongsApplet/dst/*
 
-Java-Applet/SongsApplet/dist/SongsApplet.html
-
-Java-Applet/SongsApplet/dist/SongsApplet.jar
-
-Java-Applet/SongsApplet/dist/SongsApplet.jnlp
 
 *.properties
 
