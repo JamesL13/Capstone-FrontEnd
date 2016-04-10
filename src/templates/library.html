@@ -28,8 +28,13 @@
                         <td>{{song.song_title}}</td>
                         <td>{{song.song_artist}}</td>
                         <td>{{song.song_album}}</td>
-                        <td>
-                            <button type="button" id="increaseButton" class="btn btn-success">+</button>
+                        <td ng-if="song.is_active == 0">
+                            <div id="increaseButton_{{song.id}}">
+                                <button type="button" id="increaseButtonInner_{{song.id}}" ng-click="addSongToJukebox(song.id)" class="btn btn-success">+</button>
+                            </div>
+                        </td>
+                        <td ng-if="song.is_active == 1">
+                            <button disabled type="button" id="increaseButton_{{song.id}}" ng-click="addSongToJukebox(song.id)" class="btn btn-warning">+</button>
                         </td>
                     </tr>
                 </tbody>

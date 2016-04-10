@@ -98,9 +98,7 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
         function that pushes the final JSON object to the database
      */
     var pushSongs = function() {
-        console.log(songs);
         var uploadObject = { "user_account_id": 2, "number_of_songs": songs.length, "songs": songs };
-        console.log(uploadObject);
         $http.post(server + '/songs', uploadObject).then(successCallback, errorCallback);
         document.getElementById('fileinput').value = "";
         files = [];
@@ -122,7 +120,6 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
         Callback functions for a success or error from a post to the songs database
      */
     successCallback = function(response) {
-        console.log("SUCCESS: " + response);
     }
     errorCallback = function(error) {
         console.dir(error);
