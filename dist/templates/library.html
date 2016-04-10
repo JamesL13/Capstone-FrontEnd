@@ -1,17 +1,19 @@
 <div class="container-fluid" data-ng-controller="LibraryCtrl">
     <div class="row">
-        <div class="col-xs-12 text-center">
+        <div class="col-xs-12 text-right">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search Music" aria-describedby="sizing-addon2">
+                <span class="input-group-addon" id="sizing-addon2"><i class="fa fa-search"></i></span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-3">
             <h1>Library</h1>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <div class="col-md-12">
-                <div class="input-group">
-                    <span class="input-group-addon" id="sizing-addon2"><i class="fa fa-search"></i></span>
-                    <input type="text" class="form-control" placeholder="Search by Song Name" aria-describedby="sizing-addon2">
-                </div>
-            </div>
             <table class="table">
                 <thead>
                     <tr>
@@ -23,20 +25,26 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <div class="spinner"></div>
                     <tr ng-repeat="song in songs">
                         <th scope="row">{{$index + 1}}</th>
                         <td>{{song.song_title}}</td>
                         <td>{{song.song_artist}}</td>
                         <td>{{song.song_album}}</td>
-                        <td>
-                            <button type="button" id="increaseButton" class="btn btn-success">+</button>
+                        <td ng-if="song.is_active == 0">
+                            <div id="increaseButton_{{song.id}}">
+                                <button type="button" id="increaseButtonInner_{{song.id}}" ng-click="addSongToJukebox(song.id)" class="btn btn-success">+</button>
+                            </div>
+                        </td>
+                        <td ng-if="song.is_active == 1">
+                            <button disabled="disabled" type="button" id="increaseButton_{{song.id}}" ng-click="addSongToJukebox(song.id)" class="btn btn-warning">+</button>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-    <div class="col-xs-12 text-center" ng-hide="songs.length">
+    <div class="col-xs-12 text-center hide" id="no-songs-message" ng-hide="songs.length">
         No songs in the library 
         <br> :(
     </div>
