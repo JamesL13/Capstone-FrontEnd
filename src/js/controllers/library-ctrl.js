@@ -27,7 +27,13 @@
     }
 
     var getSongsCallbackSuccess = function(response) {
-        $scope.songs = response.data.songs;
+        $(".spinner").hide();
+        if (response.data.songs.length > 0) {
+            $scope.songs = response.data.songs; 
+        } else {
+            $("#no-songs-message").removeClass('hide');
+        }
+        
     }
 
     var errorCallback = function(response) {

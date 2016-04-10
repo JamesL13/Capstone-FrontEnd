@@ -55,8 +55,10 @@
     };
 
     var init = function() {
+
         $http.get(server + '/playlists').success(function(jukebox) {
             $scope.jukeboxes = jukebox;
+            $(".spinner").hide();
         }).then(getPlaylistSuccessCallback, errorCallback);
     };
 

@@ -14,6 +14,20 @@ function JukeboxCtrl($scope, $http, $cookieStore) {
     $scope.businessName;
     $scope.playlistName;
 
+    var getSongsCallbackSuccess = function(response) {
+        $(".spinner").hide();
+        if (response.data.songs.length > 0) {
+            $scope.songs = response.data.songs; 
+        } else {
+            $("#no-songs-message").removeClass('hide');
+        }
+        
+    }
+
+    var errorCallback = function(response) {
+        console.log("Error:");
+        console.log(response);
+    }
 
     var init = function() {
         if ($cookieStore.get('isConnectedToPlaylist') == undefined || !$cookieStore.get('isConnectedToPlaylist')) {
@@ -26,6 +40,8 @@ function JukeboxCtrl($scope, $http, $cookieStore) {
         $http.get(server + '/playlists?'+ "account__id=" + hostId).success(function(name) {
             $scope.playlistName = name[0];
         }).then(successCallback, errorCallback);
+        
+        $http.get(server + '/songs/active?user_account_id=' + $cookieStore.get('connectPlaylistUserId')).then(getSongsCallbackSuccess, errorCallback);
     }
 
     var errorCallback = function (response) {
