@@ -1,10 +1,10 @@
 /**
  * Jukebox Controller
  */
+var app = angular.module( "Songs");
+app.controller('JukeboxCtrl', ['$scope', '$http', '$cookieStore', '$timeout', JukeboxCtrl]);
 
-angular.module('Songs').controller('JukeboxCtrl', ['$scope', '$http', '$cookieStore', JukeboxCtrl]);
-
-function JukeboxCtrl($scope, $http, $cookieStore) {
+function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
     var server = 'https://thomasscully.com';
     $http.defaults.headers.common = {
         'secret-token': 'aBcDeFgHiJkReturnOfTheSixToken666666',
@@ -14,10 +14,53 @@ function JukeboxCtrl($scope, $http, $cookieStore) {
     $scope.businessName;
     $scope.playlistName;
 
-    var getSongsCallbackSuccess = function(response) {
+    $scope.upvote = function (songId) {
+        var songsArray = $cookieStore.get('haveVotedSongs');
+        songsArray.push(songId);
+        $cookieStore.put('haveVotedSongs', songsArray);
+        disableVotedSongs();
+
+        var data = {
+            "action": "up",
+            "id": songId
+        };
+        $http.put(server + '/toggle/song/vote', data).success(function(response) {
+            $scope.getFreshSongs();
+        }).error(function (response) {
+            console.log(response);
+        });
+    }
+
+    $scope.downvote = function(songId) {
+        var songsArray = $cookieStore.get('haveVotedSongs');
+        songsArray.push(songId);
+        $cookieStore.put('haveVotedSongs', songsArray);
+        disableVotedSongs();
+
+        var data = {
+            "action": "down",
+            "id": songId
+        };
+        $http.put(server + '/toggle/song/vote', data).success(function(response) {
+            $scope.getFreshSongs();
+        }).error(function (response) {
+            console.log(response);
+        });
+    }
+
+    var disableVotedSongs = function () {
+        var songsArray = $cookieStore.get('haveVotedSongs');
+        for (var i = 0; i < songsArray.length; i++) {
+            $('#upvote_' + songsArray[i]).addClass('disabled');
+            $('#downvote_' + songsArray[i]).addClass('disabled');
+        }
         $(".spinner").hide();
+        $("#songList").removeClass('hide');
+    }
+
+    var getSongsCallbackSuccess = function(response) {
         if (response.data.songs.length > 0) {
-            $scope.songs = response.data.songs; 
+            $scope.songs = response.data.songs;
         } else {
             $("#no-songs-message").removeClass('hide');
         }
@@ -33,17 +76,27 @@ function JukeboxCtrl($scope, $http, $cookieStore) {
         if ($cookieStore.get('isConnectedToPlaylist') == undefined || !$cookieStore.get('isConnectedToPlaylist')) {
             window.location = "#/findhost"
         }
+
+        if ($cookieStore.get('haveVotedSongs') == undefined || !$cookieStore.get('haveVotedSongs')) {
+            alert("starting the have voted songs array");
+            $scope.hasVoted = [];
+            $cookieStore.put('haveVotedSongs', $scope.hasVoted);
+        }
+
         $http.get(server + '/accounts?' + "account__id=" + hostId).success(function(name) {
-            console.log(name);
             $scope.businessName = name[0];
         }).then(successCallback, errorCallback);
         $http.get(server + '/playlists?'+ "account__id=" + hostId).success(function(name) {
             $scope.playlistName = name[0];
         }).then(successCallback, errorCallback);
-        
-        $http.get(server + '/songs/active?user_account_id=' + $cookieStore.get('connectPlaylistUserId')).then(getSongsCallbackSuccess, errorCallback);
+        $scope.getFreshSongs();
     }
-
+    $scope.getFreshSongs = function () {
+        $http.get(server + '/songs/active?user_account_id=' + $cookieStore.get('connectPlaylistUserId')).then(getSongsCallbackSuccess, errorCallback);
+        $(".spinner").show();
+        $("#songList").addClass('hide');
+        setTimeout(disableVotedSongs, 1500);
+    }
     var errorCallback = function (response) {
         console.log("failure");
         console.log(response);
