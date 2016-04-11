@@ -25,7 +25,10 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
             "id": songId
         };
         $http.put(server + '/toggle/song/vote', data).success(function(response) {
-            $scope.getFreshSongs();
+            var voteBlock = $('#songVoteCount_' + songId);
+            var temp = voteBlock.html();
+            temp++;
+            voteBlock.html(temp);
         }).error(function (response) {
             console.log(response);
         });
@@ -42,7 +45,10 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
             "id": songId
         };
         $http.put(server + '/toggle/song/vote', data).success(function(response) {
-            $scope.getFreshSongs();
+            var voteBlock = $('#songVoteCount_' + songId);
+            var temp = voteBlock.html();
+            temp--;
+            voteBlock.html(temp);
         }).error(function (response) {
             console.log(response);
         });
@@ -51,8 +57,9 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
     var disableVotedSongs = function () {
         var songsArray = $cookieStore.get('haveVotedSongs');
         for (var i = 0; i < songsArray.length; i++) {
-            $('#upvote_' + songsArray[i]).addClass('disabled');
-            $('#downvote_' + songsArray[i]).addClass('disabled');
+
+            $('#hasNotVoted_' + songsArray[i]).addClass('hide');
+            $('#hasVoted_' + songsArray[i]).removeClass('hide');
         }
         $(".spinner").hide();
         $("#songList").removeClass('hide');

@@ -12,33 +12,41 @@
             <h1>Jukebox</h1>
             <h3>{{businessName.business}}</h3>  
         </div>
-        <div class="col-xs-9 text-left">
-            
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <button type="button" ng-click="getFreshSongs()" class="btn btn-primary btn-xl btn-inline">Refresh The 'Juke</button>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <table class="table">
+            <div class="spinner text-center"></div>
+            <table class="table hide" id="songList">
                 <thead>
                     <tr>
-                        <th>Vote Count</th>
+                        
                         <th>Song Name</th>
                         <th>Artist</th>
                         <th>Album</th>
-                        <th>Vote</th>
+                        <th></th>
+                        <th>Votes</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <div class="spinner"></div>
+                    
                     <tr ng-repeat="song in songs">
-                        <th scope="row">{{$index + 1}}</th>
+                        
                         <td>{{song.song_title}}</td>
                         <td>{{song.song_artist}}</td>
                         <td>{{song.song_album}}</td>
-                        <td>
-                            <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
-                            <button type="button" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button>
+                        <td id="hasNotVoted_{{song.id}}" class="">
+                            <button id="upvote_{{song.id}}" type="button" ng-click="upvote(song.id, $event)" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
+                            <button id="downvote_{{song.id}}" type="button" ng-click="downvote(song.id)" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button>
                         </td>
+                        <td id="hasVoted_{{song.id}}" class="hide">
+                            Voted!
+                        </td>
+                        <td id="songVoteCount_{{song.id}}" class="">{{song.votes}}</td>
                     </tr>
                 </tbody>
             </table>
