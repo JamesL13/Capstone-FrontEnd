@@ -39,11 +39,14 @@
                         <td>{{song.song_title}}</td>
                         <td>{{song.song_artist}}</td>
                         <td>{{song.song_album}}</td>
-                        <td>
-                            <button id="upvote_{{song.id}}" type="button" ng-click="upvote(song.id)" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
+                        <td id="hasNotVoted_{{song.id}}" class="">
+                            <button id="upvote_{{song.id}}" type="button" ng-click="upvote(song.id, $event)" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
                             <button id="downvote_{{song.id}}" type="button" ng-click="downvote(song.id)" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button>
                         </td>
-                        <td class="">{{song.votes}}</td>
+                        <td id="hasVoted_{{song.id}}" class="hide">
+                            Voted!
+                        </td>
+                        <td id="songVoteCount_{{song.id}}" class="">{{song.votes}}</td>
                     </tr>
                 </tbody>
             </table>
