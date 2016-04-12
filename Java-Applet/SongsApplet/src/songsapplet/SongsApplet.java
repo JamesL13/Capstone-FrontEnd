@@ -546,7 +546,41 @@ public class SongsApplet extends Application {
     /* Return: The Song with the highest number of votes in the Database */
     private boolean getNextSongFromDB()
     {
-        return false;
+        try {
+            String server = "https://thomasscully.com/songs/top_song?user_account_id=" + user_account_id;
+            URL url = new URL(server);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            // optional default is GET
+            con.setRequestMethod("GET");
+            
+            //add request header
+            con.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
+            con.setRequestProperty("Content-Type", "application/json");
+            
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer jsonString = new StringBuffer();
+            
+            while ((inputLine = in.readLine()) != null) {
+                jsonString.append(inputLine);
+            }
+            in.close();
+            
+            System.out.println("JSON Returned: " + jsonString);
+            if(jsonString.toString().equals("false"))
+            {
+                return false;
+            }
+            else
+            {
+                Gson gson = new Gson();
+                playingSong = gson.fromJson(jsonString.toString(), Song.class);
+                return true;
+            }
+            
+        } catch (IOException ex) {
+            return false;
+        }
     }
     
     
@@ -681,12 +715,15 @@ public class SongsApplet extends Application {
         //again not sure what we are doing try catch wise, but wrap get songs and createMedia to make sure nothing crashes
         if(getNextSongFromDB())
         {
-            System.out.println("Playing next song based on database request");
-            return null;
+            System.out.println("Location: " + playingSong.getLocation());
+            currentSong = createMedia(playingSong.getLocation());
+            nowPlaying.setText("Now Playing: " + playingSong.getTitle() + ", " + playingSong.getArtist() + ", " + playingSong.getAlbum());
+            return currentSong;
         }
         else
         {
             /* WSHTF Functionality */
+            System.out.println("WHSTF Functionality");
             if(getSongs.getSongs().length != 0)
             {
                 Random rn = new Random();
