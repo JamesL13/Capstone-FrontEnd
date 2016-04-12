@@ -1,16 +1,8 @@
 <div class="container-fluid" data-ng-controller="JukeboxCtrl">
     <div class="row">
-        <div class="col-xs-12 text-right">
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search Music" aria-describedby="sizing-addon2">
-                <span class="input-group-addon" id="sizing-addon2"><i class="fa fa-search"></i></span>
-            </div>
-        </div>
-    </div>
-    <div class="row">
         <div class="col-xs-3">
             <h1>Jukebox</h1>
-            <h3>{{businessName.business}}</h3>  
+            <h3>{{businessName.business}}</h3>
         </div>
     </div>
     <div class="row">
@@ -20,40 +12,35 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <div class="spinner text-center"></div>
-            <table class="table hide" id="songList">
-                <thead>
-                    <tr>
-                        
-                        <th>Song Name</th>
-                        <th>Artist</th>
-                        <th>Album</th>
-                        <th></th>
-                        <th>Votes</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                    <tr ng-repeat="song in songs">
-                        
-                        <td>{{song.song_title}}</td>
-                        <td>{{song.song_artist}}</td>
-                        <td>{{song.song_album}}</td>
-                        <td id="hasNotVoted_{{song.id}}" class="">
-                            <button id="upvote_{{song.id}}" type="button" ng-click="upvote(song.id, $event)" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button>
-                            <button id="downvote_{{song.id}}" type="button" ng-click="downvote(song.id)" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button>
-                        </td>
-                        <td id="hasVoted_{{song.id}}" class="hide">
-                            Voted!
-                        </td>
-                        <td id="songVoteCount_{{song.id}}" class="">{{song.votes}}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <h4>Songs in Rotation
+    </div>
+    </div>
+    <div class="spinner"></div>
+    <div class="hide" id="songList">
+        <div class="row song-item" ng-repeat="song in songs">
+            <div class="col-xs-1">
+                <br/>
+                <h4 id="songVoteCount_{{song.id}}">{{song.votes}}</h2>
+        </div>
+        <div class="col-xs-9">
+            <br>
+            <h5>{{song.song_title}} - {{song.song_artist}}
+            <h6>{{song.song_album}}
+        </div>
+        <div class="col-xs-1" id="hasNotVoted_{{song.id}}">
+            <br/>
+            <div><button id="upvote_{{song.id}}" type="button" ng-click="upvote(song.id, $event)" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button></div>
+            <br/>
+            <div> <button id="downvote_{{song.id}}" type="button" ng-click="downvote(song.id, $event)" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button></div>
+        </div>
+        <div class="col-xs-1 hide" id="hasVoted_{{song.id}}">
+            <br>
+            <h3><span class="glyphicon glyphicon-ok" aria-hidden="true">
         </div>
     </div>
+    </div>
     <div class="col-xs-12 text-center hide" id="no-songs-message" ng-hide="songs.length">
-        No songs in the Jukebox 
+        No songs in the Jukebox
         <br> :(
     </div>
 </div>

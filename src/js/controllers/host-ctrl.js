@@ -79,10 +79,10 @@ function HostCtrl($scope, $http, $cookieStore) {
             $scope.hasPlaylist = false;
         } else {
             $scope.hasPlaylist = true;
-            $scope.playlist_id = response.data[0].id;
-            $scope.playlist_name = response.data[0].playlist_name;
-            $scope.description = response.data[0].description;
-            $scope.password = response.data[0].password;
+            $scope.playlist_id = response.data.id;
+            $scope.playlist_name = response.data.playlist_name;
+            $scope.description = response.data.description;
+            $scope.password = response.data.password;
         }
     }
 
