@@ -51,6 +51,7 @@ public class SongsApplet extends Application {
     
     /* Current Song of Applet */
     Media currentSong;
+    Song playingSong;
     
     /* ListView of Applet */
     ListView<String> songTitles = new ListView<>();
@@ -397,6 +398,7 @@ public class SongsApplet extends Application {
             jukeboxActive = false;
             songTitles.setDisable(false);
             deleteSong.setDisable(false);
+            hostManagement.setDisable(false);
             upload.setDisable(false);
             play.setDisable(true);
             pause.setDisable(true);
@@ -409,15 +411,11 @@ public class SongsApplet extends Application {
             songTitles.setDisable(true);
             deleteSong.setDisable(true);
             upload.setDisable(true);
+            hostManagement.setDisable(true);
             pause.setDisable(false);
-            //make sure the now playing is not null
-            songToPlay();
-            //check again for null
-            jukebox = new MediaPlayer(currentSong);
-            //check for null/bad jukebox
-            playSong();
             stop.setText("Stop Jukebox");
             jukeboxActive = true;
+            play();
         }
     }
     
@@ -543,6 +541,14 @@ public class SongsApplet extends Application {
             return null;
         }
     }
+    
+    /* Function which sends a GET Request to the Database */
+    /* Return: The Song with the highest number of votes in the Database */
+    private boolean getNextSongFromDB()
+    {
+        return false;
+    }
+    
     
     /* Function that creates a ListView of song titles */
     /* Return: A ListView of all Song Titles currently in the Database */
@@ -673,19 +679,27 @@ public class SongsApplet extends Application {
     {
         //check to make sure label is correct
         //again not sure what we are doing try catch wise, but wrap get songs and createMedia to make sure nothing crashes
-        
-        /* WSHTF Functionality */
-        if(getSongs.getSongs().length != 0)
+        if(getNextSongFromDB())
         {
-            Random rn = new Random();
-            int songID = rn.nextInt(getSongs.getSongs().length);
-            currentSong = createMedia(getSongs.getSongs()[songID].getLocation());
-            nowPlaying.setText("Now Playing: " + getSongs.getSongs()[songID].getTitle() + ", " + getSongs.getSongs()[songID].getArtist() + ", " + getSongs.getSongs()[songID].getAlbum());
-            return currentSong;
+            System.out.println("Playing next song based on database request");
+            return null;
         }
         else
         {
-            return null;
+            /* WSHTF Functionality */
+            if(getSongs.getSongs().length != 0)
+            {
+                Random rn = new Random();
+                int songID = rn.nextInt(getSongs.getSongs().length);
+                playingSong = getSongs.getSongs()[songID];
+                currentSong = createMedia(playingSong.getLocation());
+                nowPlaying.setText("Now Playing: " + getSongs.getSongs()[songID].getTitle() + ", " + getSongs.getSongs()[songID].getArtist() + ", " + getSongs.getSongs()[songID].getAlbum());
+                return currentSong;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
     
@@ -720,5 +734,24 @@ public class SongsApplet extends Application {
         {
             System.out.println("Failed to Delete Song");
         }
+    }
+    
+    /* Function called when a Jukebox is started and music needs to begin playing */
+    private void play() throws MalformedURLException
+    {
+        //make sure the now playing is not null
+        songToPlay();
+        //check again for null
+        jukebox = new MediaPlayer(currentSong);
+        //check for null/bad jukebox
+        playSong();
+        jukebox.setOnEndOfMedia(() -> {
+            try {
+                System.out.println("End of Song");
+                play();
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
     }
 }
