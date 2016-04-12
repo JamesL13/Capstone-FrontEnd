@@ -49,6 +49,10 @@ public class SongsApplet extends Application {
     /* Media Player of Applet */
     MediaPlayer jukebox;
     
+    /* Current Song of Applet */
+    Media currentSong;
+    Song playingSong;
+    
     /* ListView of Applet */
     ListView<String> songTitles = new ListView<>();
     
@@ -394,6 +398,7 @@ public class SongsApplet extends Application {
             jukeboxActive = false;
             songTitles.setDisable(false);
             deleteSong.setDisable(false);
+            hostManagement.setDisable(false);
             upload.setDisable(false);
             play.setDisable(true);
             pause.setDisable(true);
@@ -406,15 +411,11 @@ public class SongsApplet extends Application {
             songTitles.setDisable(true);
             deleteSong.setDisable(true);
             upload.setDisable(true);
+            hostManagement.setDisable(true);
             pause.setDisable(false);
-            //make sure the now playing is not null
-            Media songToPlay = songToPlay();
-            //check again for null
-            jukebox = new MediaPlayer(songToPlay);
-            //check for null/bad jukebox
-            playSong();
             stop.setText("Stop Jukebox");
             jukeboxActive = true;
+            play();
         }
     }
     
@@ -540,6 +541,48 @@ public class SongsApplet extends Application {
             return null;
         }
     }
+    
+    /* Function which sends a GET Request to the Database */
+    /* Return: The Song with the highest number of votes in the Database */
+    private boolean getNextSongFromDB()
+    {
+        try {
+            String server = "https://thomasscully.com/songs/top_song?user_account_id=" + user_account_id;
+            URL url = new URL(server);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            // optional default is GET
+            con.setRequestMethod("GET");
+            
+            //add request header
+            con.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
+            con.setRequestProperty("Content-Type", "application/json");
+            
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer jsonString = new StringBuffer();
+            
+            while ((inputLine = in.readLine()) != null) {
+                jsonString.append(inputLine);
+            }
+            in.close();
+            
+            System.out.println("JSON Returned: " + jsonString);
+            if(jsonString.toString().equals("false"))
+            {
+                return false;
+            }
+            else
+            {
+                Gson gson = new Gson();
+                playingSong = gson.fromJson(jsonString.toString(), Song.class);
+                return true;
+            }
+            
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+    
     
     /* Function that creates a ListView of song titles */
     /* Return: A ListView of all Song Titles currently in the Database */
@@ -670,17 +713,30 @@ public class SongsApplet extends Application {
     {
         //check to make sure label is correct
         //again not sure what we are doing try catch wise, but wrap get songs and createMedia to make sure nothing crashes
-        Song[] allSongs = getSongsFromDB(user_account_id);
-        Media songToPlay;
-        if(allSongs.length != 0)
+        if(getNextSongFromDB())
         {
-            songToPlay = createMedia(allSongs[0].getLocation());
-            nowPlaying.setText("Now Playing: " + allSongs[0].getTitle() + ", " + allSongs[0].getArtist() + ", " + allSongs[0].getAlbum());
-            return songToPlay;
+            System.out.println("Location: " + playingSong.getLocation());
+            currentSong = createMedia(playingSong.getLocation());
+            nowPlaying.setText("Now Playing: " + playingSong.getTitle() + ", " + playingSong.getArtist() + ", " + playingSong.getAlbum());
+            return currentSong;
         }
         else
         {
-            return null;
+            /* WSHTF Functionality */
+            System.out.println("WHSTF Functionality");
+            if(getSongs.getSongs().length != 0)
+            {
+                Random rn = new Random();
+                int songID = rn.nextInt(getSongs.getSongs().length);
+                playingSong = getSongs.getSongs()[songID];
+                currentSong = createMedia(playingSong.getLocation());
+                nowPlaying.setText("Now Playing: " + getSongs.getSongs()[songID].getTitle() + ", " + getSongs.getSongs()[songID].getArtist() + ", " + getSongs.getSongs()[songID].getAlbum());
+                return currentSong;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
     
@@ -715,5 +771,24 @@ public class SongsApplet extends Application {
         {
             System.out.println("Failed to Delete Song");
         }
+    }
+    
+    /* Function called when a Jukebox is started and music needs to begin playing */
+    private void play() throws MalformedURLException
+    {
+        //make sure the now playing is not null
+        songToPlay();
+        //check again for null
+        jukebox = new MediaPlayer(currentSong);
+        //check for null/bad jukebox
+        playSong();
+        jukebox.setOnEndOfMedia(() -> {
+            try {
+                System.out.println("End of Song");
+                play();
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
     }
 }
