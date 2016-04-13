@@ -28,7 +28,8 @@ function HostCtrl($scope, $http, $cookieStore) {
         if (r == true) {
             $http.delete(server + "/playlists?id=" + $scope.playlist_id).then(
                 function(response) {
-                    location.reload();
+                    $scope.hasPlaylist = false;
+                    removeRoom($scope.playlist_id);
                 },
                 function(response) {
                     console.log("Server did not successfully complete request.");
@@ -48,20 +49,28 @@ function HostCtrl($scope, $http, $cookieStore) {
             };
             $http.post(server + '/playlists', data).then(
                 function(response) {
-                    room = data.playlist_name;
-                    console.log("Client side - Room: " + room);
-                    socket.emit('room', room);
-                    location.reload();
+                    console.log(response);
+                    $scope.hasPlaylist = true;
+                    $scope.playlist_name = data.playlist_name;
+                    $scope.playlist_id = response.data;
+                    createRoom(response.data);
                 },
                 function(response) {
                     console.log("Server did not successfully complete request.");
                 }
-            );  
-        } 
-        else {
+            );
+        } else {
             $scope.formErrors = true;
             $scope.formErrorMessage = "There was a problem with your input. Please try again.";
         }
+    }
+    var createRoom = function(playlistId) {
+        console.log("adding " + playlistId);
+        socket.emit("createRoom", playlistId);
+    }
+    var removeRoom = function(playlistId) {
+        console.log("removing " + playlistId);
+        socket.emit("removeRoom", playlistId);
     }
 
     // Function to get user information from ID
@@ -84,6 +93,8 @@ function HostCtrl($scope, $http, $cookieStore) {
             $scope.description = response.data.description;
             $scope.password = response.data.password;
         }
+        $('.spinner').addClass('hide');
+        $('.hostContainer').removeClass('hide');
     }
 
     // Account get request callback
