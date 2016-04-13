@@ -103,8 +103,8 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
         joinRoom($cookieStore.get('connectPlaylistUserId'));
     }
     $scope.getFreshSongs = function () {
-        $http.get(server + '/songs/active?user_account_id=' + $cookieStore.get('connectPlaylistUserId')).then(getSongsCallbackSuccess, errorCallback);
         $(".spinner").removeClass('hide');
+        $http.get(server + '/songs/active?user_account_id=' + $cookieStore.get('connectPlaylistUserId')).then(getSongsCallbackSuccess, errorCallback);
         $("#songList").addClass('hide');
         setTimeout(disableVotedSongs, 1500);
     }

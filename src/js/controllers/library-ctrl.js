@@ -27,7 +27,7 @@
     }
 
     var getSongsCallbackSuccess = function(response) {
-        $(".spinner").hide();
+        $(".spinner").addClass('hide');
         if (response.data.songs.length > 0) {
             $scope.songs = response.data.songs; 
         } else {

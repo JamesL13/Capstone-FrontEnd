@@ -59,7 +59,7 @@
 
         $http.get(server + '/playlists').success(function(jukebox) {
             $scope.jukeboxes = jukebox;
-            $(".spinner").hide();
+            $(".spinner").addClass('hide');
         }).then(getPlaylistSuccessCallback, errorCallback);
     };
 
