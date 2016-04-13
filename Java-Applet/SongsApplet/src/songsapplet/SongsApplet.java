@@ -162,7 +162,7 @@ public class SongsApplet extends Application {
         /* On Start Functions */        
         showAllSongs(titleList); 
         getJukeboxFromDB();
-        toggleJukeboxOnDB("stop", currentJukebox.getID());
+        toggleJukeboxOnDB("stop");
                 
         /* Event Handlers for Button Presses */
                 
@@ -393,7 +393,7 @@ public class SongsApplet extends Application {
     {
         if(jukeboxActive == true)
         {
-            toggleJukeboxOnDB("stop", currentJukebox.getID());
+            toggleJukeboxOnDB("stop");
             toggleAllSongsOnDB("out");
             jukebox.stop();
             jukeboxActive = false;
@@ -408,7 +408,7 @@ public class SongsApplet extends Application {
         }
         else
         {
-            toggleJukeboxOnDB("start", currentJukebox.getID());
+            toggleJukeboxOnDB("start");
             songTitles.setDisable(true);
             deleteSong.setDisable(true);
             upload.setDisable(true);
@@ -453,12 +453,12 @@ public class SongsApplet extends Application {
     
     /* Function which sends a PUT Request to the Database to change the Jukebox state */
     /* Return: A integer representing the number of Jukeboxes that state changed */
-    private void toggleJukeboxOnDB(String action, int jukeboxId) throws IOException
+    private void toggleJukeboxOnDB(String action) throws IOException
     {
         /* Create the PUT Body for the PUT Request */
         JsonObject putBody = new JsonObject();
         putBody.addProperty("action", action);
-        putBody.addProperty("id", jukeboxId);
+        putBody.addProperty("id", currentJukebox.getID());
         
         /* Write the PUT Body to the PUT Request */
         InputStream inputStream = new ByteArrayInputStream(putBody.toString().getBytes());
@@ -508,14 +508,14 @@ public class SongsApplet extends Application {
         getJukeboxFromDB();
     }
     
-    /* Function which sends a PUT Request to the Database to change the Jukebox state */
-    /* Return: A integer representing the number of Jukeboxes that state changed */
-    private void toggleSongOnDB(String action, int songId) throws IOException
+    /* Function which sends a PUT Request to the Database to change a Song's state */
+    /* Return: A integer representing the number of Songs that state changed */
+    private void toggleSongOnDB(String action) throws IOException
     {
         /* Create the PUT Body for the PUT Request */
         JsonObject putBody = new JsonObject();
         putBody.addProperty("action", action);
-        putBody.addProperty("id", songId);
+        putBody.addProperty("id", playingSong.getId());
         
         /* Write the PUT Body to the PUT Request */
         InputStream inputStream = new ByteArrayInputStream(putBody.toString().getBytes());
@@ -625,7 +625,7 @@ public class SongsApplet extends Application {
     
     /* Function which sends a GET Request to the Database */
     /* Return: A Song Object Array of all songs currently in the database */
-    private Song[] getSongsFromDB(int user_account_id) throws MalformedURLException 
+    private Song[] getSongsFromDB() throws MalformedURLException 
     {
         try {
             String server = "https://thomasscully.com/songs?user_account_id=" + user_account_id;
@@ -710,7 +710,7 @@ public class SongsApplet extends Application {
         //  put getSongsFromDB() in try catch block? 
         //
         //
-        Song[] songs = getSongsFromDB(user_account_id); //Get the most up to date list of songs
+        Song[] songs = getSongsFromDB(); //Get the most up to date list of songs
                 
         ObservableList<String> items = FXCollections.observableArrayList();
         for(Song song : songs)
@@ -879,7 +879,7 @@ public class SongsApplet extends Application {
         /* Remove Song from getSongs */
         if(deleteSongFromDB(getSongs.getSongs()[list_id].getId()) == true)
         {
-            getSongsFromDB(user_account_id);
+            getSongsFromDB();
             songTitles.getItems().remove(list_id);
             System.out.println("Song removed!");
         }
@@ -901,7 +901,7 @@ public class SongsApplet extends Application {
         jukebox.setOnEndOfMedia(() -> {
             try {
                 System.out.println("End of Song");
-                toggleSongOnDB("out", playingSong.getId());
+                toggleSongOnDB("out");
                 play();
             } catch (MalformedURLException ex) {
                 Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
