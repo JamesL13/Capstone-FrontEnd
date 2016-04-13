@@ -41,7 +41,6 @@
                     $cookieStore.put('jukeBoxid', $scope.currentId);
                     $cookieStore.put('hostid', $scope.hostId);
                 }
-                socket.emit('room', $scope.playlistname);
                 $cookieStore.put('isConnectedToPlaylist', true);
                 $cookieStore.put('connectPlaylistUserId', response.data);
                 $scope.modalInstance.dismiss();
@@ -49,6 +48,8 @@
             }
         }
     }
+
+
 
     var getPlaylistSuccessCallback = function (response) {
         // TO-DO

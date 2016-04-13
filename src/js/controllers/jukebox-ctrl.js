@@ -79,6 +79,11 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
         console.log(response);
     }
 
+    var joinRoom = function(playlistId) {
+        console.log("joining " + playlistId);
+        socket.emit("joinRoom", playlistId);
+    }
+
     var init = function() {
         if ($cookieStore.get('isConnectedToPlaylist') == undefined || !$cookieStore.get('isConnectedToPlaylist')) {
             window.location = "#/findhost"
@@ -96,6 +101,7 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
             $scope.playlistName = name[0];
         }).then(successCallback, errorCallback);
         $scope.getFreshSongs();
+        joinRoom($cookieStore.get('connectPlaylistUserId'));
     }
     $scope.getFreshSongs = function () {
         $http.get(server + '/songs/active?user_account_id=' + $cookieStore.get('connectPlaylistUserId')).then(getSongsCallbackSuccess, errorCallback);
