@@ -41,7 +41,8 @@
                     <td >{{jukebox.playlist_name}}</td>
                     <td class="text-center">{{jukebox.id}}</td>
                     <td class="text-center">
-                        <button type="button" class="btn btn-primary btn-sm btn-block" ng-click="open('sm', jukebox.user__account, jukebox.id)"><i class="fa fa-check-circle"></i> Connect</button>
+                        <button type="button" ng-show="jukebox.is_active==1" class="btn btn-primary btn-sm btn-block" ng-click="open('sm', jukebox.user__account, jukebox.id)"><i class="fa fa-check-circle"></i> Connect</button>
+                        <button type="button"  ng-show="jukebox.is_active==0 || jukebox.is_active == null" ng-disabled="jukebox.is_active == 0 || jukebox.is_active == null" class="btn btn-danger btn-sm btn-block" ng-click="open('sm', jukebox.user__account, jukebox.id)"><i class="fa fa-check-circle"></i> Offline</button>
                         <!--<button type="button" class="btn btn-primary btn-sm btn-block" ng-click="open('sm', jukebox.id, jukebox.playlist_name)"><i class="fa fa-check-circle"></i> Connect</button>-->
                     </td>
                 </tr>
