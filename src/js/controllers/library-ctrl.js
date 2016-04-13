@@ -20,7 +20,7 @@
             "id": songId
         };
         $http.put(server + '/toggle/song', data).success(function(response) {
-            $("#increaseButton_" + songId).html(' <button disabled type="button" id="increaseButton_{{song.id}}" class="btn btn-warning">+</button>');
+            $("#increaseButton_" + songId).html('<br><button disabled type="button" id="increaseButton_{{song.id}}" class="btn btn-warning">+</button>');
         }).error(function (response) {
             console.log(response);
         });
@@ -42,6 +42,7 @@
     }
 
     var init = function() {
+        $(".spinner").removeClass('hide');
         if ($cookieStore.get('isConnectedToPlaylist') == undefined || !$cookieStore.get('isConnectedToPlaylist')) {
             window.location = "#/findhost"
         } else {

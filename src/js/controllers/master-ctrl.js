@@ -48,4 +48,7 @@ function MasterCtrl($scope, $cookieStore) {
             $scope.isConnectedToPlaylist = true;
         }
     });
+    $('.nav a').on('click', function() {
+        $('.navbar-toggle').click();
+    });
 }
