@@ -57,11 +57,9 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
     var disableVotedSongs = function () {
         var songsArray = $cookieStore.get('haveVotedSongs');
         for (var i = 0; i < songsArray.length; i++) {
-
-            $('#hasNotVoted_' + songsArray[i]).addClass('hide');
-            $('#hasVoted_' + songsArray[i]).removeClass('hide');
+            $('#hasNotVoted_' + songsArray[i]).html('<br><h3><span class="glyphicon glyphicon-ok" aria-hidden="true">');
         }
-        $(".spinner").hide();
+        $(".spinner").addClass('hide');
         $("#songList").removeClass('hide');
     }
 
@@ -85,6 +83,7 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
     }
 
     var init = function() {
+        $(".spinner").removeClass("hide");
         if ($cookieStore.get('isConnectedToPlaylist') == undefined || !$cookieStore.get('isConnectedToPlaylist')) {
             window.location = "#/findhost"
         }
@@ -105,7 +104,7 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
     }
     $scope.getFreshSongs = function () {
         $http.get(server + '/songs/active?user_account_id=' + $cookieStore.get('connectPlaylistUserId')).then(getSongsCallbackSuccess, errorCallback);
-        $(".spinner").show();
+        $(".spinner").removeClass('hide');
         $("#songList").addClass('hide');
         setTimeout(disableVotedSongs, 1500);
     }
