@@ -394,6 +394,7 @@ public class SongsApplet extends Application {
         if(jukeboxActive == true)
         {
             toggleJukeboxOnDB("stop", currentJukebox.getID());
+            toggleAllSongsOnDB("out");
             jukebox.stop();
             jukeboxActive = false;
             songTitles.setDisable(false);
@@ -506,6 +507,121 @@ public class SongsApplet extends Application {
         }
         getJukeboxFromDB();
     }
+    
+    /* Function which sends a PUT Request to the Database to change the Jukebox state */
+    /* Return: A integer representing the number of Jukeboxes that state changed */
+    private void toggleSongOnDB(String action, int songId) throws IOException
+    {
+        /* Create the PUT Body for the PUT Request */
+        JsonObject putBody = new JsonObject();
+        putBody.addProperty("action", action);
+        putBody.addProperty("id", songId);
+        
+        /* Write the PUT Body to the PUT Request */
+        InputStream inputStream = new ByteArrayInputStream(putBody.toString().getBytes());
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+	BufferedReader br = new BufferedReader(inputStreamReader);
+	String jsonLine;
+        String json = "";
+        //put in try catch? or are we passing excepton along?
+	while ((jsonLine = br.readLine()) != null) {
+            json += jsonLine + "\n";
+	}
+        System.out.println("JSON read from file:");
+        System.out.println(json);  // print the json to output to see it was read correctly
+        
+        /* Make Connection with server and send PUT Request to the database */
+        URL url;
+        try {
+            url = new URL("https://thomasscully.com/toggle/song");
+        } catch (MalformedURLException mex) {
+            System.out.println("The URL is malformed: " + mex.getMessage());
+            return;
+        }
+        
+        try {
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("PUT");
+            conn.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
+            conn.setRequestProperty("Content-Type", "application/json");
+            OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+
+            writer.write(json);
+            writer.flush();
+            
+            System.out.println("JSON returned from server after request:");
+            
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            writer.close();
+            reader.close();
+        } catch (IOException ex) {
+            System.out.println("IO error: " + ex.getMessage());
+        }
+        getJukeboxFromDB();
+    }
+    
+    /* Function which sends a PUT Request to the Database to change the Active Songs state */
+    /* Return: A integer representing the number of Songs that state changed */
+    private void toggleAllSongsOnDB(String action) throws IOException
+    {
+        /* Create the PUT Body for the PUT Request */
+        JsonObject putBody = new JsonObject();
+        putBody.addProperty("action", action);
+        putBody.addProperty("id", user_account_id);
+        
+        /* Write the PUT Body to the PUT Request */
+        InputStream inputStream = new ByteArrayInputStream(putBody.toString().getBytes());
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+	BufferedReader br = new BufferedReader(inputStreamReader);
+	String jsonLine;
+        String json = "";
+        //put in try catch? or are we passing excepton along?
+	while ((jsonLine = br.readLine()) != null) {
+            json += jsonLine + "\n";
+	}
+        System.out.println("JSON read from file:");
+        System.out.println(json);  // print the json to output to see it was read correctly
+        
+        /* Make Connection with server and send PUT Request to the database */
+        URL url;
+        try {
+            url = new URL("https://thomasscully.com/toggle/all_songs");
+        } catch (MalformedURLException mex) {
+            System.out.println("The URL is malformed: " + mex.getMessage());
+            return;
+        }
+        
+        try {
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("PUT");
+            conn.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
+            conn.setRequestProperty("Content-Type", "application/json");
+            OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+
+            writer.write(json);
+            writer.flush();
+            
+            System.out.println("JSON returned from server after request:");
+            
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            writer.close();
+            reader.close();
+        } catch (IOException ex) {
+            System.out.println("IO error: " + ex.getMessage());
+        }
+        getJukeboxFromDB();
+    }
+    
     
     /* Function which sends a GET Request to the Database */
     /* Return: A Song Object Array of all songs currently in the database */
@@ -785,8 +901,11 @@ public class SongsApplet extends Application {
         jukebox.setOnEndOfMedia(() -> {
             try {
                 System.out.println("End of Song");
+                toggleSongOnDB("out", playingSong.getId());
                 play();
             } catch (MalformedURLException ex) {
+                Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
                 Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
