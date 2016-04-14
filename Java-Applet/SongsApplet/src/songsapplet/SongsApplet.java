@@ -30,6 +30,7 @@ import javafx.stage.FileChooser;
 import javafx.util.Pair;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.WindowEvent;
 
 /**
  *
@@ -162,7 +163,7 @@ public class SongsApplet extends Application {
         /* On Start Functions */        
         showAllSongs(titleList); 
         getJukeboxFromDB();
-        toggleJukeboxOnDB("stop", currentJukebox.getID());
+        toggleJukeboxOnDB("stop");
                 
         /* Event Handlers for Button Presses */
                 
@@ -173,7 +174,9 @@ public class SongsApplet extends Application {
                 @Override
                 public void handle(ActionEvent event)
                 {
-                    Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete the song '" + getSongs.getSongs()[new_val.intValue()].getTitle() + "'?");
+                    Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this song?");
+                    alert.setTitle("Delete Song");
+                    alert.setHeaderText("Delete '" + getSongs.getSongs()[new_val.intValue()].getTitle() + "'?");
                     Optional<ButtonType> deleteResult = alert.showAndWait();
                     if (deleteResult.isPresent() && deleteResult.get() == ButtonType.OK) {
                         try {
@@ -245,6 +248,28 @@ public class SongsApplet extends Application {
                     Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
                     Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to exit the applet?");
+                alert.setTitle("Exit");
+                alert.setHeaderText("Exit Applet?");
+                Optional<ButtonType> exitResult = alert.showAndWait();
+                if (exitResult.isPresent() && exitResult.get() == ButtonType.OK) {
+                    try {
+                        toggleJukeboxOnDB("stop");
+                        toggleAllSongsOnDB("out");
+                    } catch (Exception ex) {
+                        Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else
+                {
+                    event.consume();
                 }
             }
         });
@@ -393,21 +418,32 @@ public class SongsApplet extends Application {
     {
         if(jukeboxActive == true)
         {
-            toggleJukeboxOnDB("stop", currentJukebox.getID());
-            jukebox.stop();
-            jukeboxActive = false;
-            songTitles.setDisable(false);
-            deleteSong.setDisable(false);
-            hostManagement.setDisable(false);
-            upload.setDisable(false);
-            play.setDisable(true);
-            pause.setDisable(true);
-            stop.setText("Start Jukebox");
-            nowPlaying.setText("Now Playing:");
+            Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to stop your Jukebox?");
+            alert.setTitle("Stop Jukebox");
+            alert.setHeaderText("Stop Jukebox?");
+            Optional<ButtonType> stopResult = alert.showAndWait();
+            if (stopResult.isPresent() && stopResult.get() == ButtonType.OK) {
+                try {
+                    toggleJukeboxOnDB("stop");
+                    toggleAllSongsOnDB("out");
+                    jukebox.stop();
+                    jukeboxActive = false;
+                    songTitles.setDisable(false);
+                    deleteSong.setDisable(false);
+                    hostManagement.setDisable(false);
+                    upload.setDisable(false);
+                    play.setDisable(true);
+                    pause.setDisable(true);
+                    stop.setText("Start Jukebox");
+                    nowPlaying.setText("Now Playing:");
+                } catch (Exception ex) {
+                    Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
         else
         {
-            toggleJukeboxOnDB("start", currentJukebox.getID());
+            toggleJukeboxOnDB("start");
             songTitles.setDisable(true);
             deleteSong.setDisable(true);
             upload.setDisable(true);
@@ -452,12 +488,12 @@ public class SongsApplet extends Application {
     
     /* Function which sends a PUT Request to the Database to change the Jukebox state */
     /* Return: A integer representing the number of Jukeboxes that state changed */
-    private void toggleJukeboxOnDB(String action, int jukeboxId) throws IOException
+    private void toggleJukeboxOnDB(String action) throws IOException
     {
         /* Create the PUT Body for the PUT Request */
         JsonObject putBody = new JsonObject();
         putBody.addProperty("action", action);
-        putBody.addProperty("id", jukeboxId);
+        putBody.addProperty("id", currentJukebox.getID());
         
         /* Write the PUT Body to the PUT Request */
         InputStream inputStream = new ByteArrayInputStream(putBody.toString().getBytes());
@@ -507,9 +543,124 @@ public class SongsApplet extends Application {
         getJukeboxFromDB();
     }
     
+    /* Function which sends a PUT Request to the Database to change a Song's state */
+    /* Return: A integer representing the number of Songs that state changed */
+    private void toggleSongOnDB(String action) throws IOException
+    {
+        /* Create the PUT Body for the PUT Request */
+        JsonObject putBody = new JsonObject();
+        putBody.addProperty("action", action);
+        putBody.addProperty("id", playingSong.getId());
+        
+        /* Write the PUT Body to the PUT Request */
+        InputStream inputStream = new ByteArrayInputStream(putBody.toString().getBytes());
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+	BufferedReader br = new BufferedReader(inputStreamReader);
+	String jsonLine;
+        String json = "";
+        //put in try catch? or are we passing excepton along?
+	while ((jsonLine = br.readLine()) != null) {
+            json += jsonLine + "\n";
+	}
+        System.out.println("JSON read from file:");
+        System.out.println(json);  // print the json to output to see it was read correctly
+        
+        /* Make Connection with server and send PUT Request to the database */
+        URL url;
+        try {
+            url = new URL("https://thomasscully.com/toggle/song");
+        } catch (MalformedURLException mex) {
+            System.out.println("The URL is malformed: " + mex.getMessage());
+            return;
+        }
+        
+        try {
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("PUT");
+            conn.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
+            conn.setRequestProperty("Content-Type", "application/json");
+            OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+
+            writer.write(json);
+            writer.flush();
+            
+            System.out.println("JSON returned from server after request:");
+            
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            writer.close();
+            reader.close();
+        } catch (IOException ex) {
+            System.out.println("IO error: " + ex.getMessage());
+        }
+        getJukeboxFromDB();
+    }
+    
+    /* Function which sends a PUT Request to the Database to change the Active Songs state */
+    /* Return: A integer representing the number of Songs that state changed */
+    private void toggleAllSongsOnDB(String action) throws IOException
+    {
+        /* Create the PUT Body for the PUT Request */
+        JsonObject putBody = new JsonObject();
+        putBody.addProperty("action", action);
+        putBody.addProperty("id", user_account_id);
+        
+        /* Write the PUT Body to the PUT Request */
+        InputStream inputStream = new ByteArrayInputStream(putBody.toString().getBytes());
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+	BufferedReader br = new BufferedReader(inputStreamReader);
+	String jsonLine;
+        String json = "";
+        //put in try catch? or are we passing excepton along?
+	while ((jsonLine = br.readLine()) != null) {
+            json += jsonLine + "\n";
+	}
+        System.out.println("JSON read from file:");
+        System.out.println(json);  // print the json to output to see it was read correctly
+        
+        /* Make Connection with server and send PUT Request to the database */
+        URL url;
+        try {
+            url = new URL("https://thomasscully.com/toggle/all_songs");
+        } catch (MalformedURLException mex) {
+            System.out.println("The URL is malformed: " + mex.getMessage());
+            return;
+        }
+        
+        try {
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("PUT");
+            conn.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
+            conn.setRequestProperty("Content-Type", "application/json");
+            OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+
+            writer.write(json);
+            writer.flush();
+            
+            System.out.println("JSON returned from server after request:");
+            
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            writer.close();
+            reader.close();
+        } catch (IOException ex) {
+            System.out.println("IO error: " + ex.getMessage());
+        }
+        getJukeboxFromDB();
+    }
+    
+    
     /* Function which sends a GET Request to the Database */
     /* Return: A Song Object Array of all songs currently in the database */
-    private Song[] getSongsFromDB(int user_account_id) throws MalformedURLException 
+    private Song[] getSongsFromDB() throws MalformedURLException 
     {
         try {
             String server = "https://thomasscully.com/songs?user_account_id=" + user_account_id;
@@ -594,7 +745,7 @@ public class SongsApplet extends Application {
         //  put getSongsFromDB() in try catch block? 
         //
         //
-        Song[] songs = getSongsFromDB(user_account_id); //Get the most up to date list of songs
+        Song[] songs = getSongsFromDB(); //Get the most up to date list of songs
                 
         ObservableList<String> items = FXCollections.observableArrayList();
         for(Song song : songs)
@@ -763,7 +914,7 @@ public class SongsApplet extends Application {
         /* Remove Song from getSongs */
         if(deleteSongFromDB(getSongs.getSongs()[list_id].getId()) == true)
         {
-            getSongsFromDB(user_account_id);
+            getSongsFromDB();
             songTitles.getItems().remove(list_id);
             System.out.println("Song removed!");
         }
@@ -785,8 +936,11 @@ public class SongsApplet extends Application {
         jukebox.setOnEndOfMedia(() -> {
             try {
                 System.out.println("End of Song");
+                toggleSongOnDB("out");
                 play();
             } catch (MalformedURLException ex) {
+                Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
                 Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
