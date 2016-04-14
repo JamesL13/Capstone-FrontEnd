@@ -30,6 +30,7 @@ import javafx.stage.FileChooser;
 import javafx.util.Pair;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
+import javafx.stage.WindowEvent;
 
 /**
  *
@@ -173,7 +174,9 @@ public class SongsApplet extends Application {
                 @Override
                 public void handle(ActionEvent event)
                 {
-                    Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete the song '" + getSongs.getSongs()[new_val.intValue()].getTitle() + "'?");
+                    Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this song?");
+                    alert.setTitle("Delete Song");
+                    alert.setHeaderText("Delete '" + getSongs.getSongs()[new_val.intValue()].getTitle() + "'?");
                     Optional<ButtonType> deleteResult = alert.showAndWait();
                     if (deleteResult.isPresent() && deleteResult.get() == ButtonType.OK) {
                         try {
@@ -245,6 +248,23 @@ public class SongsApplet extends Application {
                     Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
                     Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to exit the applet?");
+                alert.setTitle("Exit");
+                alert.setHeaderText("Exit Applet?");
+                Optional<ButtonType> exitResult = alert.showAndWait();
+                if (exitResult.isPresent() && exitResult.get() == ButtonType.OK) {
+                    try {
+                        
+                    } catch (Exception ex) {
+                        Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
         });
@@ -393,18 +413,28 @@ public class SongsApplet extends Application {
     {
         if(jukeboxActive == true)
         {
-            toggleJukeboxOnDB("stop");
-            toggleAllSongsOnDB("out");
-            jukebox.stop();
-            jukeboxActive = false;
-            songTitles.setDisable(false);
-            deleteSong.setDisable(false);
-            hostManagement.setDisable(false);
-            upload.setDisable(false);
-            play.setDisable(true);
-            pause.setDisable(true);
-            stop.setText("Start Jukebox");
-            nowPlaying.setText("Now Playing:");
+            Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to stop your Jukebox?");
+            alert.setTitle("Stop Jukebox");
+            alert.setHeaderText("Stop Jukebox?");
+            Optional<ButtonType> stopResult = alert.showAndWait();
+            if (stopResult.isPresent() && stopResult.get() == ButtonType.OK) {
+                try {
+                    toggleJukeboxOnDB("stop");
+                    toggleAllSongsOnDB("out");
+                    jukebox.stop();
+                    jukeboxActive = false;
+                    songTitles.setDisable(false);
+                    deleteSong.setDisable(false);
+                    hostManagement.setDisable(false);
+                    upload.setDisable(false);
+                    play.setDisable(true);
+                    pause.setDisable(true);
+                    stop.setText("Start Jukebox");
+                    nowPlaying.setText("Now Playing:");
+                } catch (Exception ex) {
+                    Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
         else
         {
