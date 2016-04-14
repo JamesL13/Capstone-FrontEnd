@@ -261,10 +261,15 @@ public class SongsApplet extends Application {
                 Optional<ButtonType> exitResult = alert.showAndWait();
                 if (exitResult.isPresent() && exitResult.get() == ButtonType.OK) {
                     try {
-                        
+                        toggleJukeboxOnDB("stop");
+                        toggleAllSongsOnDB("out");
                     } catch (Exception ex) {
                         Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                }
+                else
+                {
+                    event.consume();
                 }
             }
         });
