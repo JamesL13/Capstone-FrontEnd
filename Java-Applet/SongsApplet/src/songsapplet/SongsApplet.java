@@ -69,6 +69,9 @@ public class SongsApplet extends Application {
     /* Songs of Applet */
     Songs getSongs = new Songs(null);
     
+    /* List of Files Not Found */
+    List<String> filesNotFound = new ArrayList<String>();
+    
     /* Labels of Applet */
     Label nowPlaying = new Label("Now Playing: ");
     
@@ -161,7 +164,7 @@ public class SongsApplet extends Application {
         }
         
         /* On Start Functions */        
-        showAllSongs(titleList); 
+        showAllSongs(titleList);
         getJukeboxFromDB();
         toggleJukeboxOnDB("stop");
                 
@@ -443,15 +446,32 @@ public class SongsApplet extends Application {
         }
         else
         {
-            toggleJukeboxOnDB("start");
-            songTitles.setDisable(true);
-            deleteSong.setDisable(true);
-            upload.setDisable(true);
-            hostManagement.setDisable(true);
-            pause.setDisable(false);
-            stop.setText("Stop Jukebox");
-            jukeboxActive = true;
-            play();
+            if(validateFileLocations())
+            {
+                try {
+                    play();
+                    toggleJukeboxOnDB("start");
+                    songTitles.setDisable(true);
+                    deleteSong.setDisable(true);
+                    upload.setDisable(true);
+                    hostManagement.setDisable(true);
+                    pause.setDisable(false);
+                    stop.setText("Stop Jukebox");
+                    jukeboxActive = true;
+                }
+                catch (Exception e) {
+                    System.out.println("Exception: " + e);
+                }
+            }
+            else
+            {
+                System.out.println("The following Files could not be found:");
+                for(String title: filesNotFound)
+                {
+                    System.out.println(title);
+                }
+                filesNotFound.clear();
+            }
         }
     }
     
@@ -924,6 +944,26 @@ public class SongsApplet extends Application {
         }
     }
     
+    /* Function that checks that all Files potentially to be played exist */
+    private boolean validateFileLocations()
+    {
+        boolean valid = true;
+        for (Song song: getSongs.getSongs())
+        {
+            File file = new File(song.getLocation());
+            if(!file.exists())
+            {
+                filesNotFound.add(song.getTitle());
+                valid = false;
+            }
+            else
+            {
+                System.out.println(song.getTitle() + " exist!");
+            }
+        }
+        return valid;
+    }
+    
     /* Function called when a Jukebox is started and music needs to begin playing */
     private void play() throws MalformedURLException
     {
@@ -933,6 +973,7 @@ public class SongsApplet extends Application {
         jukebox = new MediaPlayer(currentSong);
         //check for null/bad jukebox
         playSong();
+        
         jukebox.setOnEndOfMedia(() -> {
             try {
                 System.out.println("End of Song");
