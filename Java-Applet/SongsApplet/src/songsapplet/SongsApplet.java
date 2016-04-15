@@ -465,11 +465,31 @@ public class SongsApplet extends Application {
             }
             else
             {
-                System.out.println("The following Files could not be found:");
-                for(String title: filesNotFound)
-                {
-                    System.out.println(title);
-                }
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Files Not Found");
+                alert.setHeaderText("Files Not Found");
+                alert.setContentText("View details to see which files could not be found");
+                
+                TextArea textArea = new TextArea();
+                filesNotFound.stream().forEach((file) -> {
+                    textArea.appendText(file + "\n");
+                });
+                textArea.setEditable(false);
+                textArea.setWrapText(true);
+
+                textArea.setMaxWidth(Double.MAX_VALUE);
+                textArea.setMaxHeight(Double.MAX_VALUE);
+                GridPane.setVgrow(textArea, Priority.ALWAYS);
+                GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+                GridPane filesNotFoundList = new GridPane();
+                filesNotFoundList.setMaxWidth(Double.MAX_VALUE);
+                filesNotFoundList.add(textArea, 0, 1);
+
+                // Set expandable Exception into the dialog pane.
+                alert.getDialogPane().setExpandableContent(filesNotFoundList);
+                
+                alert.showAndWait();
                 filesNotFound.clear();
             }
         }
