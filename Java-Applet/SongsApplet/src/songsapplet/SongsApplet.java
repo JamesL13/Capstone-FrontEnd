@@ -1018,14 +1018,40 @@ public class SongsApplet extends Application {
         
         List<File> duplicateSongs = new ArrayList<File>();
         
-        
-        
+        for(File file: uploadedFiles)
+        {
+            Mp3File mp3File = new Mp3File(file.getAbsolutePath());
+            for(Song song: getSongs.getSongs())
+            {
+                /* MP3 Files can have ID3v1 or ID3v2 tags, no real way to distigunish other than checking both */
+                if(mp3File.hasId3v1Tag())
+                {
+                    if(mp3File.getId3v1Tag().getTitle().equals(song.getTitle()) && mp3File.getId3v1Tag().getArtist().equals(song.getArtist()))
+                    {
+                        System.out.println("Song is duplicate");
+                        /* If a duplicate delete the Song from the Database */
+                        deleteSongFromDB(song.getId());
+                    }
+                }
+                /* MP3 Files can have ID3v1 or ID3v2 tags, no real way to distigunish other than checking both */                
+                if(mp3File.hasId3v2Tag())
+                {
+                    if(mp3File.getId3v2Tag().getTitle().equals(song.getTitle()) && mp3File.getId3v2Tag().getArtist().equals(song.getArtist()))
+                    {
+                        System.out.println("Song is duplicate");
+                        /* If a duplicate delete the Song from the Database */
+                        deleteSongFromDB(song.getId());
+                    }
+                }
+            }
+        }
     }
     
     /* Function called when the Upload Button is clicked */
     private void upload(Stage stage, StackPane titleList) throws IOException, UnsupportedTagException, InvalidDataException, Exception
     {
         //check for all lists to make sure they contain correct data and try catch the error prone areas to better handle errors
+        
         /* Clear All to avoid duplicate Uploads */
         uploadedFiles = new ArrayList<File>();
         uploadedSongs = new JsonArray();
@@ -1033,7 +1059,7 @@ public class SongsApplet extends Application {
         /* Open File Chooser, POST the files that are selected, Display an updated list of Song Titles */
         uploadedFiles = uploadSongs.showOpenMultipleDialog(stage);
         
-        /* Check for duplicate songs in the songs to be uploaded */
+        /* Check for duplicate songs in the files selected to be uploaded */
         searchForDuplicatesInDB();
         
         if(uploadedFiles == null)
