@@ -707,7 +707,7 @@ public class SongsApplet extends Application {
         /* Create the PUT Body for the PUT Request */
         JsonObject putBody = new JsonObject();
         putBody.addProperty("user_account_id", user_account_id);
-        putBody.addProperty("new_location_in_filesystem", "'" + update.getAbsolutePath() + "'");
+        putBody.addProperty("new_location_in_filesystem", update.getAbsolutePath());
         
         /* Use either ID3v1 Tags or ID3v2 Tags depending on what the File has */
         if(updateFile.hasId3v1Tag())
@@ -1027,6 +1027,12 @@ public class SongsApplet extends Application {
             createJsonObject(uploadedFiles, uploadedSongs);
         }
         showAllSongs(titleList);
+    }
+    
+    /* Function called when the Upload Button is clicked and duplicate songs are added */
+    private void update()
+    {
+        
     }
     
     /* Function called when a Song is selected to be deleted */
