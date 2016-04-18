@@ -1029,6 +1029,27 @@ public class SongsApplet extends Application {
         showAllSongs(titleList);
     }
     
+    private List<File> searchForDuplicatesInDB(List<File> songsToUpload) throws IOException, UnsupportedTagException, InvalidDataException
+    {
+        List<File> duplicateSongs = new ArrayList<File>();
+        
+        for(File file: songsToUpload)
+        {
+            Mp3File testFile = new Mp3File(file.getAbsolutePath());
+            for(Song song: getSongs.getSongs())
+            {
+                if(testFile.getId3v1Tag().getTitle().equals(song.getTitle()) && testFile.getId3v1Tag().getArtist().equals(song.getAlbum()))
+                {
+                    duplicateSongs.add(file);
+                    songsToUpload.remove(file);
+                    break;
+                }
+            }
+        }
+        
+        return duplicateSongs;
+    }
+    
     /* Function called when the Upload Button is clicked and duplicate songs are added */
     private void update()
     {
