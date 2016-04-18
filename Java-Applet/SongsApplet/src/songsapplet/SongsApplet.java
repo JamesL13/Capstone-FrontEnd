@@ -957,6 +957,18 @@ public class SongsApplet extends Application {
         postSongsToDB(array);
     }
     
+    /* Function called to update all neccesary Songs file locations on the database */
+    private void updateAllSongsOnDB(List<File> filesToUpdate) throws IOException, UnsupportedTagException, InvalidDataException
+    {
+        if(filesToUpdate != null)
+        {
+            for (File file: filesToUpdate)
+            {
+                updateSongOnDB(file);
+            }
+        }
+    }
+    
     /* Function called when the Show All Songs Button is clicked */
     private void showAllSongs(StackPane titleList) throws Exception
     {
