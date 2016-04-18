@@ -1012,13 +1012,14 @@ public class SongsApplet extends Application {
         }
     }
     
-    private void searchForDuplicatesInDB(List<File> songsToUpload) throws IOException, UnsupportedTagException, InvalidDataException
+    private void searchForDuplicatesInDB() throws IOException, UnsupportedTagException, InvalidDataException
     {
         System.out.println("Search for Duplicates in Database");
         
         List<File> duplicateSongs = new ArrayList<File>();
-
-        //return duplicateSongs;
+        
+        
+        
     }
     
     /* Function called when the Upload Button is clicked */
@@ -1033,7 +1034,7 @@ public class SongsApplet extends Application {
         uploadedFiles = uploadSongs.showOpenMultipleDialog(stage);
         
         /* Check for duplicate songs in the songs to be uploaded */
-        searchForDuplicatesInDB(uploadedFiles);
+        searchForDuplicatesInDB();
         
         if(uploadedFiles == null)
         {
