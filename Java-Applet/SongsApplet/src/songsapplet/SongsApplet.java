@@ -697,6 +697,75 @@ public class SongsApplet extends Application {
         getJukeboxFromDB();
     }
     
+    /* Function which sends a PUT Request to the Database to change a Song's state */
+    /* Return: A integer representing the number of Songs that state changed */
+    private void updateSongOnDB(File update) throws IOException, UnsupportedTagException, InvalidDataException
+    {
+        /* Create MP3 File to ensure correct Song Title */
+        Mp3File updateFile = new Mp3File(update.getAbsolutePath());
+        
+        /* Create the PUT Body for the PUT Request */
+        JsonObject putBody = new JsonObject();
+        putBody.addProperty("user_account_id", user_account_id);
+        putBody.addProperty("new_location_in_filesystem", "'" + update.getAbsolutePath() + "'");
+        
+        /* Use either ID3v1 Tags or ID3v2 Tags depending on what the File has */
+        if(updateFile.hasId3v1Tag())
+        {
+            putBody.addProperty("song_title", updateFile.getId3v1Tag().getTitle());
+        }
+        else
+        {
+            putBody.addProperty("song_title", updateFile.getId3v2Tag().getTitle());
+        }
+        
+        /* Write the PUT Body to the PUT Request */
+        InputStream inputStream = new ByteArrayInputStream(putBody.toString().getBytes());
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+	BufferedReader br = new BufferedReader(inputStreamReader);
+	String jsonLine;
+        String json = "";
+        //put in try catch? or are we passing excepton along?
+	while ((jsonLine = br.readLine()) != null) {
+            json += jsonLine + "\n";
+	}
+        System.out.println("JSON read from file:");
+        System.out.println(json);  // print the json to output to see it was read correctly
+        
+        /* Make Connection with server and send PUT Request to the database */
+        URL url;
+        try {
+            url = new URL("https://thomasscully.com/songs/location");
+        } catch (MalformedURLException mex) {
+            System.out.println("The URL is malformed: " + mex.getMessage());
+            return;
+        }
+        
+        try {
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setDoOutput(true);
+            conn.setRequestMethod("PUT");
+            conn.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
+            conn.setRequestProperty("Content-Type", "application/json");
+            OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+
+            writer.write(json);
+            writer.flush();
+            
+            System.out.println("JSON returned from server after request:");
+            
+            String line;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            writer.close();
+            reader.close();
+        } catch (IOException ex) {
+            System.out.println("IO error: " + ex.getMessage());
+        }
+        getJukeboxFromDB();
+    }
     
     /* Function which sends a GET Request to the Database */
     /* Return: A Song Object Array of all songs currently in the database */
