@@ -197,7 +197,7 @@ public class SongsApplet extends Application {
             @Override
             public void handle(ActionEvent event) {
                 try {
-                    upload(primaryStage, uploadedFiles, uploadedSongs, titleList);
+                    upload(primaryStage, titleList);
                 } catch (IOException ex) {
                     Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (UnsupportedTagException ex) {
@@ -932,7 +932,7 @@ public class SongsApplet extends Application {
     }
     
     /* Function called when the Upload Button is clicked */
-    private void upload(Stage stage, List<File> uploadedFiles, JsonArray uploadedSongs, StackPane titleList) throws IOException, UnsupportedTagException, InvalidDataException, Exception
+    private void upload(Stage stage, StackPane titleList) throws IOException, UnsupportedTagException, InvalidDataException, Exception
     {
         //check for all lists to make sure they contain correct data and try catch the error prone areas to better handle errors
         /* Clear All to avoid duplicate Uploads */
