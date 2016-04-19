@@ -106,7 +106,8 @@ public class SongsApplet extends Application {
 
         // Set the button types.
         ButtonType loginButtonType = new ButtonType("Login", ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+        ButtonType cancelButtonType = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, cancelButtonType);
 
         // Create the username and password labels and fields.
         GridPane grid = new GridPane();
@@ -140,7 +141,8 @@ public class SongsApplet extends Application {
 
         // Convert the result to a username-password-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == loginButtonType) {
+            if (dialogButton == loginButtonType) 
+            {
                 return new Pair<>(userEmail.getText(), password.getText());
             }
             return null;
@@ -149,8 +151,19 @@ public class SongsApplet extends Application {
         Optional<Pair<String, String>> result = dialog.showAndWait();
 
         // Gather the user_email and user_password
-        String user_email = result.get().getKey();
-        String user_password = result.get().getValue();
+        String user_email = null;
+        String user_password = null;
+        
+        /* Catches a No Such Element Exception that is thrown on the Cancel Button being clicked */
+        try {
+            user_email = result.get().getKey();
+            user_password = result.get().getValue();
+        }
+        catch (NoSuchElementException e)
+        {   
+            /* Terminates the Start method on the Cancel Button being clicked */
+            return;
+        }
         
         /* Authenticate the user login attempt */
         boolean loggedIn = authenticateLogin(user_email, user_password);
