@@ -324,7 +324,11 @@ public class SongsApplet extends Application {
                 jsonString.append(inputLine);
                 System.out.println("Number of rows deleted: " + inputLine);
             }
-            in.close();            
+            in.close();
+            
+            /* Get the most up to date Songs from the DB */
+            getSongsFromDB();
+            
         } catch (IOException ex) {
             //Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Deletion Failed");
@@ -468,7 +472,7 @@ public class SongsApplet extends Application {
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Files Not Found");
                 alert.setHeaderText("Files Not Found");
-                alert.setContentText("View details to see which files could not be found");
+                alert.setContentText("View details to see which files could not be found. Either delete the songs from the library or upload again to continue.");
                 
                 TextArea textArea = new TextArea();
                 filesNotFound.stream().forEach((file) -> {
@@ -1031,6 +1035,11 @@ public class SongsApplet extends Application {
     /* Function called when a Jukebox is started and music needs to begin playing */
     private void play() throws MalformedURLException
     {
+        /* Makes sure no old data is present */
+        jukebox = null;
+        currentSong = null;
+        playingSong = null;
+        
         //make sure the now playing is not null
         songToPlay();
         //check again for null
