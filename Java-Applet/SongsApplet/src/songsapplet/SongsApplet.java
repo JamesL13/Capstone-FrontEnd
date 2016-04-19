@@ -169,11 +169,27 @@ public class SongsApplet extends Application {
         boolean loggedIn = authenticateLogin(user_email, user_password);
         while(loggedIn == false)
         {
+            /* Creates an Alert upon a invalid Login attempt */
             dialog.setHeaderText("Invalid Login Credentials. Try Again.");
-            result = dialog.showAndWait();
-            user_email = result.get().getKey();
-            user_password = result.get().getValue();
-            loggedIn = authenticateLogin(user_email, user_password);
+            Alert failedLogin = new Alert(AlertType.WARNING, "Click 'OK' to try again");
+            failedLogin.setTitle("Invalid Login");
+            failedLogin.setHeaderText("Invalid Login!");
+            Optional<ButtonType> failedResults = failedLogin.showAndWait();
+            if(failedResults.isPresent() && failedResults.get() == ButtonType.OK)
+            {
+                result = dialog.showAndWait();
+                /* Catches a No Such Element Exception that is thrown on the Cancel Button being clicked */
+                try {
+                    user_email = result.get().getKey();
+                    user_password = result.get().getValue();
+                }
+                catch (NoSuchElementException e)
+                {   
+                    /* Terminates the Start method on the Cancel Button being clicked */
+                    return;
+                }
+                loggedIn = authenticateLogin(user_email, user_password);
+            }
         }
         
         /* On Start Functions */        
