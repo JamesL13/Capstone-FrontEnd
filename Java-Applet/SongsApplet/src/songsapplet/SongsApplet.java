@@ -69,6 +69,9 @@ public class SongsApplet extends Application {
     /* Songs of Applet */
     Songs getSongs = new Songs(null);
     
+    /* List of Files Not Found */
+    List<String> filesNotFound = new ArrayList<String>();
+    
     /* Labels of Applet */
     Label nowPlaying = new Label("Now Playing: ");
     
@@ -161,7 +164,7 @@ public class SongsApplet extends Application {
         }
         
         /* On Start Functions */        
-        showAllSongs(titleList); 
+        showAllSongs(titleList);
         getJukeboxFromDB();
         toggleJukeboxOnDB("stop");
                 
@@ -194,7 +197,7 @@ public class SongsApplet extends Application {
             @Override
             public void handle(ActionEvent event) {
                 try {
-                    upload(primaryStage, uploadedFiles, uploadedSongs, titleList);
+                    upload(primaryStage, titleList);
                 } catch (IOException ex) {
                     Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (UnsupportedTagException ex) {
@@ -321,7 +324,11 @@ public class SongsApplet extends Application {
                 jsonString.append(inputLine);
                 System.out.println("Number of rows deleted: " + inputLine);
             }
-            in.close();            
+            in.close();
+            
+            /* Get the most up to date Songs from the DB */
+            getSongsFromDB();
+            
         } catch (IOException ex) {
             //Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Deletion Failed");
@@ -443,15 +450,52 @@ public class SongsApplet extends Application {
         }
         else
         {
-            toggleJukeboxOnDB("start");
-            songTitles.setDisable(true);
-            deleteSong.setDisable(true);
-            upload.setDisable(true);
-            hostManagement.setDisable(true);
-            pause.setDisable(false);
-            stop.setText("Stop Jukebox");
-            jukeboxActive = true;
-            play();
+            if(validateFileLocations())
+            {
+                try {
+                    play();
+                    toggleJukeboxOnDB("start");
+                    songTitles.setDisable(true);
+                    deleteSong.setDisable(true);
+                    upload.setDisable(true);
+                    hostManagement.setDisable(true);
+                    pause.setDisable(false);
+                    stop.setText("Stop Jukebox");
+                    jukeboxActive = true;
+                }
+                catch (Exception e) {
+                    System.out.println("Exception: " + e);
+                }
+            }
+            else
+            {
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Files Not Found");
+                alert.setHeaderText("Files Not Found");
+                alert.setContentText("View details to see which files could not be found. Either delete the songs from the library or upload again to continue.");
+                
+                TextArea textArea = new TextArea();
+                filesNotFound.stream().forEach((file) -> {
+                    textArea.appendText(file + "\n");
+                });
+                textArea.setEditable(false);
+                textArea.setWrapText(true);
+
+                textArea.setMaxWidth(Double.MAX_VALUE);
+                textArea.setMaxHeight(Double.MAX_VALUE);
+                GridPane.setVgrow(textArea, Priority.ALWAYS);
+                GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+                GridPane filesNotFoundList = new GridPane();
+                filesNotFoundList.setMaxWidth(Double.MAX_VALUE);
+                filesNotFoundList.add(textArea, 0, 1);
+
+                // Set expandable Exception into the dialog pane.
+                alert.getDialogPane().setExpandableContent(filesNotFoundList);
+                
+                alert.showAndWait();
+                filesNotFound.clear();
+            }
         }
     }
     
@@ -656,7 +700,6 @@ public class SongsApplet extends Application {
         }
         getJukeboxFromDB();
     }
-    
     
     /* Function which sends a GET Request to the Database */
     /* Return: A Song Object Array of all songs currently in the database */
@@ -891,16 +934,61 @@ public class SongsApplet extends Application {
         }
     }
     
+    private void searchForDuplicatesInDB() throws IOException, UnsupportedTagException, InvalidDataException
+    {
+        System.out.println("Search for Duplicates in Database");
+        
+        List<File> duplicateSongs = new ArrayList<File>();
+        
+        for(File file: uploadedFiles)
+        {
+            Mp3File mp3File = new Mp3File(file.getAbsolutePath());
+            for(Song song: getSongs.getSongs())
+            {
+                /* MP3 Files can have ID3v1 or ID3v2 tags, no real way to distigunish other than checking both */
+                if(mp3File.hasId3v1Tag())
+                {
+                    if(mp3File.getId3v1Tag().getTitle().equals(song.getTitle()) && mp3File.getId3v1Tag().getArtist().equals(song.getArtist()))
+                    {
+                        System.out.println("Song is duplicate");
+                        /* If a duplicate delete the Song from the Database */
+                        deleteSongFromDB(song.getId());
+                    }
+                }
+                /* MP3 Files can have ID3v1 or ID3v2 tags, no real way to distigunish other than checking both */                
+                if(mp3File.hasId3v2Tag())
+                {
+                    if(mp3File.getId3v2Tag().getTitle().equals(song.getTitle()) && mp3File.getId3v2Tag().getArtist().equals(song.getArtist()))
+                    {
+                        System.out.println("Song is duplicate");
+                        /* If a duplicate delete the Song from the Database */
+                        deleteSongFromDB(song.getId());
+                    }
+                }
+            }
+        }
+    }
+    
     /* Function called when the Upload Button is clicked */
-    private void upload(Stage stage, List<File> uploadedFiles, JsonArray uploadedSongs, StackPane titleList) throws IOException, UnsupportedTagException, InvalidDataException, Exception
+    private void upload(Stage stage, StackPane titleList) throws IOException, UnsupportedTagException, InvalidDataException, Exception
     {
         //check for all lists to make sure they contain correct data and try catch the error prone areas to better handle errors
+        
         /* Clear All to avoid duplicate Uploads */
         uploadedFiles = new ArrayList<File>();
         uploadedSongs = new JsonArray();
         
         /* Open File Chooser, POST the files that are selected, Display an updated list of Song Titles */
         uploadedFiles = uploadSongs.showOpenMultipleDialog(stage);
+        
+        /* Check for duplicate songs in the files selected to be uploaded */
+        searchForDuplicatesInDB();
+        
+        if(uploadedFiles == null)
+        {
+            System.out.println("Uploaded Files are empty");
+        }
+        
         if(uploadedFiles != null)
         {
             createJsonObject(uploadedFiles, uploadedSongs);
@@ -924,15 +1012,41 @@ public class SongsApplet extends Application {
         }
     }
     
+    /* Function that checks that all Files potentially to be played exist */
+    private boolean validateFileLocations()
+    {
+        boolean valid = true;
+        for (Song song: getSongs.getSongs())
+        {
+            File file = new File(song.getLocation());
+            if(!file.exists())
+            {
+                filesNotFound.add(song.getTitle());
+                valid = false;
+            }
+            else
+            {
+                System.out.println(song.getTitle() + " exist!");
+            }
+        }
+        return valid;
+    }
+    
     /* Function called when a Jukebox is started and music needs to begin playing */
     private void play() throws MalformedURLException
     {
+        /* Makes sure no old data is present */
+        jukebox = null;
+        currentSong = null;
+        playingSong = null;
+        
         //make sure the now playing is not null
         songToPlay();
         //check again for null
         jukebox = new MediaPlayer(currentSong);
         //check for null/bad jukebox
         playSong();
+        
         jukebox.setOnEndOfMedia(() -> {
             try {
                 System.out.println("End of Song");
