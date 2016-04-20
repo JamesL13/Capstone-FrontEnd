@@ -194,6 +194,7 @@ public class SongsApplet extends Application {
         
         /* On Start Functions */        
         showAllSongs(titleList);
+        songTitles.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         getJukeboxFromDB();
         toggleJukeboxOnDB("stop");
                 
@@ -201,18 +202,27 @@ public class SongsApplet extends Application {
                 
         /* Prompt an alert, on confirmation DELETE song from Database, update the ListView */           
         songTitles.getSelectionModel().selectedIndexProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
+            ObservableList<String> selectedSongs = songTitles.getSelectionModel().getSelectedItems();
             deleteSong.setDisable(false);
             deleteSong.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event)
                 {
-                    Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this song?");
+                    Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete the select song(s)?");
                     alert.setTitle("Delete Song");
                     alert.setHeaderText("Delete '" + getSongs.getSongs()[new_val.intValue()].getTitle() + "'?");
                     Optional<ButtonType> deleteResult = alert.showAndWait();
                     if (deleteResult.isPresent() && deleteResult.get() == ButtonType.OK) {
                         try {
-                            delete(new_val.intValue());
+                            if(selectedSongs.size() == 1)
+                            {
+                                delete(new_val.intValue());
+                            }
+                            else if(selectedSongs.size() > 1)
+                            {
+                                System.out.println("Multiple Songs Selected!");
+                                multipleDelete(selectedSongs);
+                            }
                         } catch (Exception ex) {
                             Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -354,9 +364,6 @@ public class SongsApplet extends Application {
                 System.out.println("Number of rows deleted: " + inputLine);
             }
             in.close();
-            
-            /* Get the most up to date Songs from the DB */
-            getSongsFromDB();
             
         } catch (IOException ex) {
             //Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
@@ -1039,6 +1046,27 @@ public class SongsApplet extends Application {
         {
             System.out.println("Failed to Delete Song");
         }
+    }
+    
+    /* Function called when multiple Songs are selected to be deleted */
+    private void multipleDelete(List<String> itemsToDelete) throws Exception
+    {
+        for(String item: itemsToDelete)
+        {
+            int index = songTitles.getItems().indexOf(item);
+            if(deleteSongFromDB(getSongs.getSongs()[index].getId()) == true)
+            {
+                System.out.println("Song deleted: " + item);
+                songTitles.getItems().removeAll(itemsToDelete);
+            }
+            else
+            {
+                System.out.println("Failed to Delete Song");
+            }
+        }
+        
+        /* Pull the most up to date Songs from the DB */
+        getSongsFromDB();
     }
     
     /* Function that checks that all Files potentially to be played exist */
