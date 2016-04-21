@@ -11,27 +11,22 @@ function searchApp ($rootScope, $location, $http) {
         'Accept': "application/json, text/plain, */*"
     };
     var songs = [];
+    var hosts = [];
 
     var getSongsCallbackSuccess = function (response) {
-        //$(".spinner").addClass('hide');
         if (response.data.songs.length > 0) {
-            //console.log(response.data);
+            songs = [];
             response.data.songs.forEach(function (index){
-                //console.log(index.song_title);
                 if(index.song_title.search($rootScope.searchFor) > -1) {
-                    //console.log("Success");
-                    //console.log(index);
-                    songs.push(index);
-                    //console.log(songs);
-                    $rootScope.$broadcast("searchAttempted", { myParam: $rootScope.songs});
+                        songs.push(index);
                 } else {
                     console.log("Song is not going to be returned");
                 }
             });
         } else {
-            //$("#no-songs-message").removeClass('hide');
             //DO NOTHING
         }
+        $rootScope.$broadcast("searchAttempted", { myParam: $rootScope.songs});
     };
 
         var errorCallback = function(response) {
@@ -41,10 +36,20 @@ function searchApp ($rootScope, $location, $http) {
 
         var getPlaylistSuccessCallback = function (response) {
             console.log(response);
-            /*if (response.data.playlists.length > 0) {
-                console.log("Here");
-            }*/
-        }
+            if (response.data.length > 0) {
+                hosts = [];
+                response.data.forEach(function (index) {
+                    if(index.playlist_name.search($rootScope.searchFor) > -1) {
+                        hosts.push(index);
+                    } else {
+                        console.log("Host is not going to be returned");
+                    }
+                });
+            } else {
+                //Do Nothing
+            }
+            $rootScope.$broadcast("hostSearchAttempted", { myParam: $rootScope.songs});
+        };
 
     return {
         findWhatToSearch: function (id, searchee) {
@@ -69,6 +74,10 @@ function searchApp ($rootScope, $location, $http) {
 
         getAllSongs: function () {
             return songs;
+        },
+
+        getAllJukeboxes: function () {
+            return hosts;
         }
     }
 };

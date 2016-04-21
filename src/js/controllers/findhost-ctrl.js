@@ -2,9 +2,9 @@
  * Find Host Controller
  */
 
- angular.module('Songs').controller('FindHostCtrl', ['$scope','$http', '$uibModal', '$cookieStore', FindHostCtrl]);
+ angular.module('Songs').controller('FindHostCtrl', ['$scope','$http', '$uibModal', '$cookieStore', 'searchApp', FindHostCtrl]);
 
- function FindHostCtrl($scope, $http, $uibModal, $cookieStore) {
+ function FindHostCtrl($scope, $http, $uibModal, $cookieStore, searchApp) {
     var server = 'https://thomasscully.com';
     $scope.modalInstance = null;
     $scope.animationsEnabled = true;
@@ -91,5 +91,19 @@
     };
 
     init();
+
+     $scope.$on("hostSearchAttempted", function(event, args) {
+         var songsFromSearch = searchApp.getAllJukeboxes();
+         console.log(songsFromSearch);
+         if (songsFromSearch.length > 0) {
+             $scope.jukeboxes = [];
+             $scope.jukeboxes = songsFromSearch;
+         } else {
+             $scope.jukeboxes = [];
+             $("#no-songs-message").removeClass('hide');
+         }
+
+
+     })
 
 }
