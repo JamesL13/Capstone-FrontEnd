@@ -6,40 +6,24 @@
 <div class="row">
     <div class="col-xs-12">
         <h3>Find a Host</h3>
-        <h5>Find a host near you to partcipate in voting</h5>
-        <p>
-            <div class="input-group">
-                <span class="input-group-addon" id="sizing-addon2"><i class="fa fa-search"></i></span>
-                <input type="text" class="form-control" placeholder="Search for Host" aria-describedby="sizing-addon2">
-            </div>
-        </p>
-    </div>
+        <small>Song[s] allows you to connect to a local business and help pick the music. Vote on your favorite songs and watch them rise to the top. Ready to get started? Connet to an available host below.
+    </small></div>
 </div>
-<div class="row">
-    <div class="col-xs-12 checkbox">
-        <label>
-            <input type="checkbox"> Only show public playlists
-        </label>
-    </div>
-</div>
+<hr>
 <div class="row" data-ng-controller="FindHostCtrl">
     <div class="col-xs-12">
         <table class="table">
-            <caption>Hosts Near Me</caption>
+            <h3>All Hosts
             <thead>
                 <tr>
-                    <th>Host Account</th>
-                    <th>PlayList Name</th>
-                    <th>PlayList Id</th>
+                    <th>Jukebox</th>
                     <th>Connect</th>
                 </tr>
             </thead>
             <div class="spinner"></div>
             <tbody>
                 <tr ng-repeat="jukebox in jukeboxes">
-                    <td class="text-center">{{jukebox.user__account}}</td>
                     <td>{{jukebox.playlist_name}}</td>
-                    <td class="text-center">{{jukebox.id}}</td>
                     <td class="text-center">
                         <button type="button" ng-show="jukebox.is_active==1" class="btn btn-primary btn-sm btn-block" ng-click="open('sm', jukebox.user__account, jukebox.id)"><i class="fa fa-check-circle"></i> Connect</button>
                         <button type="button" ng-show="jukebox.is_active==0 || jukebox.is_active == null" ng-disabled="jukebox.is_active == 0 || jukebox.is_active == null" class="btn btn-danger btn-sm btn-block" ng-click="open('sm', jukebox.user__account, jukebox.id)"><i class="fa fa-check-circle"></i> Offline</button>
@@ -47,6 +31,6 @@
                     </td>
                 </tr>
             </tbody>
-        </table>
+        </h3></table>
     </div>
 </div>
