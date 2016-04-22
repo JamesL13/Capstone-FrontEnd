@@ -817,7 +817,7 @@ public class SongsApplet extends Application {
     private boolean getNextSongFromDB()
     {
         try {
-            String server = "https://thomasscully.com/songs/top_song?user_account_id=" + user_account_id + "&roomNumber=" + currentJukebox.getID();
+            String server = "https://thomasscully.com/songs/top_song?user_account_id=" + user_account_id + "&roomNumber=" + user_account_id;
             URL url = new URL(server);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             // optional default is GET
