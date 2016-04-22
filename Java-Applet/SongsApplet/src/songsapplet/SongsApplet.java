@@ -517,7 +517,15 @@ public class SongsApplet extends Application {
         }
         else
         {
-            if(validateFileLocations())
+            if(getSongs.getSongs().length == 0)
+            {
+                Alert alert = new Alert(AlertType.INFORMATION);
+                alert.setTitle("Empty Library");
+                alert.setHeaderText("No Songs In Your Library!");
+                alert.setContentText("You can not start a Jukebox without songs in your library. Upload songs to begin playing music.");
+                alert.showAndWait();
+            }
+            else if(validateFileLocations())
             {
                 try {
                     play();
