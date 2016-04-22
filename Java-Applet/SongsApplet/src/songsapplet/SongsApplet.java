@@ -809,7 +809,7 @@ public class SongsApplet extends Application {
     private boolean getNextSongFromDB()
     {
         try {
-            String server = "https://thomasscully.com/songs/top_song?user_account_id=" + user_account_id;
+            String server = "https://thomasscully.com/songs/top_song?user_account_id=" + user_account_id + "&roomNumber=" + currentJukebox.getID();
             URL url = new URL(server);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             // optional default is GET
@@ -841,6 +841,7 @@ public class SongsApplet extends Application {
             }
             
         } catch (IOException ex) {
+            System.out.println("Exception: " + ex);
             return false;
         }
     }
