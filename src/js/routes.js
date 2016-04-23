@@ -19,8 +19,8 @@ angular.module('Songs').config(['$stateProvider', '$urlRouterProvider',
                 url: '/findhost',
                 templateUrl: 'templates/findHost.html'
             })
-            .state('libary', {
-                url: '/libary',
+            .state('library', {
+                url: '/library',
                 templateUrl: 'templates/library.html'
             })
             .state('jukebox', {
