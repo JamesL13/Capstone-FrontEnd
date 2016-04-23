@@ -37,8 +37,8 @@
     }
 
     var errorCallback = function(response) {
-        console.log("Error:");
-        console.log(response);
+/*        console.log("Error:");
+        console.log(response);*/
     }
 
     var init = function() {
@@ -53,7 +53,6 @@
 
      $scope.$on("searchAttempted", function(event, args) {
          var songsFromSearch = searchApp.getAllSongs();
-         console.log(songsFromSearch);
          if (songsFromSearch.length > 0) {
              $scope.songs = [];
              $scope.songs = songsFromSearch;

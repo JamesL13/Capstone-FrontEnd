@@ -17,7 +17,7 @@ function searchApp ($rootScope, $location, $http) {
         if (response.data.songs.length > 0) {
             songs = [];
             response.data.songs.forEach(function (index){
-                if(index.song_title.search($rootScope.searchFor) > -1) {
+                if(index.song_title.toLowerCase().search($rootScope.searchFor.toLowerCase()) > -1) {
                         songs.push(index);
                 } else {
                     console.log("Song is not going to be returned");
@@ -30,16 +30,15 @@ function searchApp ($rootScope, $location, $http) {
     };
 
         var errorCallback = function(response) {
-            console.log("Error:");
-            console.log(response);
+            /*console.log("Error:");
+            console.log(response);*/
         };
 
         var getPlaylistSuccessCallback = function (response) {
-            console.log(response);
             if (response.data.length > 0) {
                 hosts = [];
                 response.data.forEach(function (index) {
-                    if(index.playlist_name.search($rootScope.searchFor) > -1) {
+                    if(index.playlist_name.toLowerCase().search($rootScope.searchFor.toLowerCase()) > -1) {
                         hosts.push(index);
                     } else {
                         console.log("Host is not going to be returned");
@@ -55,20 +54,14 @@ function searchApp ($rootScope, $location, $http) {
         findWhatToSearch: function (id, searchee) {
             $rootScope.searchFor = searchee;
             var url = $location.absUrl();
-            //console.log(url.search("library"));
             if (url.search("library") > -1 || url.search("jukebox") > -1) {
                 $http.get(server + '/songs?user_account_id=' + id).then(getSongsCallbackSuccess, errorCallback);
             }
             else if (url.search("findhost")) {
-                /*$http.get(server + '/playlists').success(function(jukebox) {
-                    $scope.jukeboxes = jukebox;
-                    $(".spinner").addClass('hide');
-                }).then(getPlaylistSuccessCallback, errorCallback);
-            };*/
                 $http.get(server + '/playlists').then(getPlaylistSuccessCallback, errorCallback);
             }
             else {
-                alert("Hi");
+                //alert("Please search on either the Host, Jukebox");
             }
         },
 

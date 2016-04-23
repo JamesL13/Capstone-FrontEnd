@@ -21,8 +21,8 @@
     $scope.jukeboxes = [];
 
     var errorCallback = function (response) {
-        console.log("failure");
-        console.log(response);
+/*        console.log("failure");
+        console.log(response);*/
     }
 
     var hostConnectSuccessCallback = function (response) {
@@ -37,7 +37,6 @@
             else {
                 isConnectedChecker = $cookieStore.get('isConnectedToPlaylist');
                 if (isConnectedChecker = true){
-                    //$cookieStore.put('jukeBoxid', '');
                     $cookieStore.put('jukeBoxid', $scope.currentId);
                     $cookieStore.put('hostid', $scope.hostId);
                 }
