@@ -69,6 +69,9 @@ public class SongsApplet extends Application {
     /* Songs of Applet */
     Songs getSongs = new Songs(null);
     
+    /* List of Files Not Found */
+    List<String> filesNotFound = new ArrayList<String>();
+    
     /* Labels of Applet */
     Label nowPlaying = new Label("Now Playing: ");
     
@@ -103,7 +106,8 @@ public class SongsApplet extends Application {
 
         // Set the button types.
         ButtonType loginButtonType = new ButtonType("Login", ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+        ButtonType cancelButtonType = new ButtonType("Cancel", ButtonData.CANCEL_CLOSE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, cancelButtonType);
 
         // Create the username and password labels and fields.
         GridPane grid = new GridPane();
@@ -137,7 +141,8 @@ public class SongsApplet extends Application {
 
         // Convert the result to a username-password-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
-            if (dialogButton == loginButtonType) {
+            if (dialogButton == loginButtonType) 
+            {
                 return new Pair<>(userEmail.getText(), password.getText());
             }
             return null;
@@ -146,22 +151,50 @@ public class SongsApplet extends Application {
         Optional<Pair<String, String>> result = dialog.showAndWait();
 
         // Gather the user_email and user_password
-        String user_email = result.get().getKey();
-        String user_password = result.get().getValue();
+        String user_email = null;
+        String user_password = null;
+        
+        /* Catches a No Such Element Exception that is thrown on the Cancel Button being clicked */
+        try {
+            user_email = result.get().getKey();
+            user_password = result.get().getValue();
+        }
+        catch (NoSuchElementException e)
+        {   
+            /* Terminates the Start method on the Cancel Button being clicked */
+            return;
+        }
         
         /* Authenticate the user login attempt */
         boolean loggedIn = authenticateLogin(user_email, user_password);
         while(loggedIn == false)
         {
+            /* Creates an Alert upon a invalid Login attempt */
             dialog.setHeaderText("Invalid Login Credentials. Try Again.");
-            result = dialog.showAndWait();
-            user_email = result.get().getKey();
-            user_password = result.get().getValue();
-            loggedIn = authenticateLogin(user_email, user_password);
+            Alert failedLogin = new Alert(AlertType.WARNING, "Click 'OK' to try again");
+            failedLogin.setTitle("Invalid Login");
+            failedLogin.setHeaderText("Invalid Login!");
+            Optional<ButtonType> failedResults = failedLogin.showAndWait();
+            if(failedResults.isPresent() && failedResults.get() == ButtonType.OK)
+            {
+                result = dialog.showAndWait();
+                /* Catches a No Such Element Exception that is thrown on the Cancel Button being clicked */
+                try {
+                    user_email = result.get().getKey();
+                    user_password = result.get().getValue();
+                }
+                catch (NoSuchElementException e)
+                {   
+                    /* Terminates the Start method on the Cancel Button being clicked */
+                    return;
+                }
+                loggedIn = authenticateLogin(user_email, user_password);
+            }
         }
         
         /* On Start Functions */        
-        showAllSongs(titleList); 
+        showAllSongs(titleList);
+        songTitles.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         getJukeboxFromDB();
         toggleJukeboxOnDB("stop");
                 
@@ -169,20 +202,60 @@ public class SongsApplet extends Application {
                 
         /* Prompt an alert, on confirmation DELETE song from Database, update the ListView */           
         songTitles.getSelectionModel().selectedIndexProperty().addListener((ObservableValue<? extends Number> ov, Number old_val, Number new_val) -> {
+            ObservableList<String> selectedSongs = songTitles.getSelectionModel().getSelectedItems();
             deleteSong.setDisable(false);
             deleteSong.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event)
                 {
-                    Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete this song?");
-                    alert.setTitle("Delete Song");
-                    alert.setHeaderText("Delete '" + getSongs.getSongs()[new_val.intValue()].getTitle() + "'?");
-                    Optional<ButtonType> deleteResult = alert.showAndWait();
-                    if (deleteResult.isPresent() && deleteResult.get() == ButtonType.OK) {
-                        try {
-                            delete(new_val.intValue());
-                        } catch (Exception ex) {
-                            Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+                    if(selectedSongs.size() == 1)
+                    {
+                        Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to delete the following song?");
+                        alert.setTitle("Delete Song");
+                        alert.setHeaderText("Delete '" + getSongs.getSongs()[new_val.intValue()].getTitle() + "'?");
+                        Optional<ButtonType> deleteResult = alert.showAndWait();
+                        if (deleteResult.isPresent() && deleteResult.get() == ButtonType.OK) {
+                            try {
+                                delete(new_val.intValue());
+                            } catch (Exception ex) {
+                                Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    }
+                    else if(selectedSongs.size() > 1)
+                    {
+                        Alert alert = new Alert(AlertType.CONFIRMATION);
+                        alert.setTitle("Delete Songs");
+                        alert.setHeaderText("Delete Multiple Songs?");
+                        alert.setContentText("Are you sure you want to delete the following songs?");
+
+                        TextArea textArea = new TextArea();
+                        selectedSongs.stream().forEach((file) -> {
+                            textArea.appendText(file + "\n");
+                        });
+                        textArea.setEditable(false);
+                        textArea.setWrapText(true);
+
+                        textArea.setMaxWidth(Double.MAX_VALUE);
+                        textArea.setMaxHeight(Double.MAX_VALUE);
+                        GridPane.setVgrow(textArea, Priority.ALWAYS);
+                        GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+                        GridPane selectedSongsList = new GridPane();
+                        selectedSongsList.setMaxWidth(Double.MAX_VALUE);
+                        selectedSongsList.add(textArea, 0, 1);
+
+                        // Set expandable Exception into the dialog pane.
+                        alert.getDialogPane().setExpandableContent(selectedSongsList);
+                        alert.getDialogPane().setExpanded(true);
+
+                        Optional<ButtonType> deleteResult = alert.showAndWait();
+                        if (deleteResult.isPresent() && deleteResult.get() == ButtonType.OK) {
+                            try {
+                                multipleDelete(selectedSongs);
+                            } catch (Exception ex) {
+                                Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         }
                     }
                 }
@@ -194,7 +267,7 @@ public class SongsApplet extends Application {
             @Override
             public void handle(ActionEvent event) {
                 try {
-                    upload(primaryStage, uploadedFiles, uploadedSongs, titleList);
+                    upload(primaryStage, titleList);
                 } catch (IOException ex) {
                     Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (UnsupportedTagException ex) {
@@ -321,7 +394,8 @@ public class SongsApplet extends Application {
                 jsonString.append(inputLine);
                 System.out.println("Number of rows deleted: " + inputLine);
             }
-            in.close();            
+            in.close();
+            
         } catch (IOException ex) {
             //Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Deletion Failed");
@@ -443,15 +517,61 @@ public class SongsApplet extends Application {
         }
         else
         {
-            toggleJukeboxOnDB("start");
-            songTitles.setDisable(true);
-            deleteSong.setDisable(true);
-            upload.setDisable(true);
-            hostManagement.setDisable(true);
-            pause.setDisable(false);
-            stop.setText("Stop Jukebox");
-            jukeboxActive = true;
-            play();
+            if(getSongs.getSongs().length == 0)
+            {
+                Alert alert = new Alert(AlertType.INFORMATION);
+                alert.setTitle("Empty Library");
+                alert.setHeaderText("No Songs In Your Library!");
+                alert.setContentText("You can not start a Jukebox without songs in your library. Upload songs to begin playing music.");
+                alert.showAndWait();
+            }
+            else if(validateFileLocations())
+            {
+                try {
+                    play();
+                    toggleJukeboxOnDB("start");
+                    songTitles.setDisable(true);
+                    deleteSong.setDisable(true);
+                    upload.setDisable(true);
+                    hostManagement.setDisable(true);
+                    pause.setDisable(false);
+                    stop.setText("Stop Jukebox");
+                    jukeboxActive = true;
+                }
+                catch (Exception e) {
+                    System.out.println("Exception: " + e);
+                }
+            }
+            else
+            {
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Files Not Found");
+                alert.setHeaderText("Files Not Found");
+                alert.setContentText("View details to see which files could not be found. Either delete the songs from the library or upload again to continue.");
+                
+                TextArea textArea = new TextArea();
+                filesNotFound.stream().forEach((file) -> {
+                    textArea.appendText(file + "\n");
+                });
+                textArea.setEditable(false);
+                textArea.setWrapText(true);
+
+                textArea.setMaxWidth(Double.MAX_VALUE);
+                textArea.setMaxHeight(Double.MAX_VALUE);
+                GridPane.setVgrow(textArea, Priority.ALWAYS);
+                GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+                GridPane filesNotFoundList = new GridPane();
+                filesNotFoundList.setMaxWidth(Double.MAX_VALUE);
+                filesNotFoundList.add(textArea, 0, 1);
+
+                // Set expandable Exception into the dialog pane.
+                alert.getDialogPane().setExpandableContent(filesNotFoundList);
+                alert.getDialogPane().setExpanded(true);
+
+                alert.showAndWait();
+                filesNotFound.clear();
+            }
         }
     }
     
@@ -657,7 +777,6 @@ public class SongsApplet extends Application {
         getJukeboxFromDB();
     }
     
-    
     /* Function which sends a GET Request to the Database */
     /* Return: A Song Object Array of all songs currently in the database */
     private Song[] getSongsFromDB() throws MalformedURLException 
@@ -698,7 +817,7 @@ public class SongsApplet extends Application {
     private boolean getNextSongFromDB()
     {
         try {
-            String server = "https://thomasscully.com/songs/top_song?user_account_id=" + user_account_id;
+            String server = "https://thomasscully.com/songs/top_song?user_account_id=" + user_account_id + "&roomNumber=" + currentJukebox.getID();
             URL url = new URL(server);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             // optional default is GET
@@ -730,6 +849,7 @@ public class SongsApplet extends Application {
             }
             
         } catch (IOException ex) {
+            System.out.println("Exception: " + ex);
             return false;
         }
     }
@@ -891,16 +1011,61 @@ public class SongsApplet extends Application {
         }
     }
     
+    private void searchForDuplicatesInDB() throws IOException, UnsupportedTagException, InvalidDataException
+    {
+        System.out.println("Search for Duplicates in Database");
+        
+        List<File> duplicateSongs = new ArrayList<File>();
+        
+        for(File file: uploadedFiles)
+        {
+            Mp3File mp3File = new Mp3File(file.getAbsolutePath());
+            for(Song song: getSongs.getSongs())
+            {
+                /* MP3 Files can have ID3v1 or ID3v2 tags, no real way to distigunish other than checking both */
+                if(mp3File.hasId3v1Tag())
+                {
+                    if(mp3File.getId3v1Tag().getTitle().equals(song.getTitle()) && mp3File.getId3v1Tag().getArtist().equals(song.getArtist()))
+                    {
+                        System.out.println("Song is duplicate");
+                        /* If a duplicate delete the Song from the Database */
+                        deleteSongFromDB(song.getId());
+                    }
+                }
+                /* MP3 Files can have ID3v1 or ID3v2 tags, no real way to distigunish other than checking both */                
+                if(mp3File.hasId3v2Tag())
+                {
+                    if(mp3File.getId3v2Tag().getTitle().equals(song.getTitle()) && mp3File.getId3v2Tag().getArtist().equals(song.getArtist()))
+                    {
+                        System.out.println("Song is duplicate");
+                        /* If a duplicate delete the Song from the Database */
+                        deleteSongFromDB(song.getId());
+                    }
+                }
+            }
+        }
+    }
+    
     /* Function called when the Upload Button is clicked */
-    private void upload(Stage stage, List<File> uploadedFiles, JsonArray uploadedSongs, StackPane titleList) throws IOException, UnsupportedTagException, InvalidDataException, Exception
+    private void upload(Stage stage, StackPane titleList) throws IOException, UnsupportedTagException, InvalidDataException, Exception
     {
         //check for all lists to make sure they contain correct data and try catch the error prone areas to better handle errors
+        
         /* Clear All to avoid duplicate Uploads */
         uploadedFiles = new ArrayList<File>();
         uploadedSongs = new JsonArray();
         
         /* Open File Chooser, POST the files that are selected, Display an updated list of Song Titles */
         uploadedFiles = uploadSongs.showOpenMultipleDialog(stage);
+        
+        /* Check for duplicate songs in the files selected to be uploaded */
+        searchForDuplicatesInDB();
+        
+        if(uploadedFiles == null)
+        {
+            System.out.println("Uploaded Files are empty");
+        }
+        
         if(uploadedFiles != null)
         {
             createJsonObject(uploadedFiles, uploadedSongs);
@@ -924,15 +1089,69 @@ public class SongsApplet extends Application {
         }
     }
     
+    /* Function called when multiple Songs are selected to be deleted */
+    private void multipleDelete(List<String> itemsToDelete) throws Exception
+    {
+        List<String> successfullyDeleted = new ArrayList<String>();
+        
+        for(String item: itemsToDelete)
+        {
+            int index = songTitles.getItems().indexOf(item);
+            if(deleteSongFromDB(getSongs.getSongs()[index].getId()) == true)
+            {
+                System.out.println("Song deleted: " + item);
+                successfullyDeleted.add(item);
+            }
+            else
+            {
+                System.out.println("Failed to Delete Song");
+                continue;
+            }
+        }
+        
+        /* Pull the most up to date Songs from the DB */
+        getSongsFromDB();
+        
+        /* Only deletes the Songs from the List View that were successfully deleted */
+        songTitles.getItems().removeAll(successfullyDeleted);
+        
+    }
+    
+    /* Function that checks that all Files potentially to be played exist */
+    private boolean validateFileLocations()
+    {
+        boolean valid = true;
+        for (Song song: getSongs.getSongs())
+        {
+            File file = new File(song.getLocation());
+            if(!file.exists())
+            {
+                filesNotFound.add(song.getTitle());
+                valid = false;
+            }
+            else
+            {
+                System.out.println(song.getTitle() + " exist!");
+            }
+        }
+        return valid;
+    }
+    
     /* Function called when a Jukebox is started and music needs to begin playing */
     private void play() throws MalformedURLException
     {
+        /* Makes sure no old data is present */
+        jukebox = null;
+        currentSong = null;
+        playingSong = null;
+        
         //make sure the now playing is not null
         songToPlay();
         //check again for null
         jukebox = new MediaPlayer(currentSong);
         //check for null/bad jukebox
         playSong();
+        
         jukebox.setOnEndOfMedia(() -> {
             try {
                 System.out.println("End of Song");
