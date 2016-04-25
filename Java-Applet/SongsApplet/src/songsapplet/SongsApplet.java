@@ -854,6 +854,12 @@ public class SongsApplet extends Application {
         }
     }
     
+    /* Function that will toggle the Current Song on the Database */
+    /* Return: The Song will be set to Current or change from Current to in-active */
+    private void setCurrentSongOnDB()
+    {
+        
+    }
     
     /* Function that creates a ListView of song titles */
     /* Return: A ListView of all Song Titles currently in the Database */
@@ -1003,6 +1009,7 @@ public class SongsApplet extends Application {
                 currentSong = createMedia(playingSong.getLocation());
                 
                 /* Set the Current Song on the Database */
+                /* setCurrentSongOnDB(); */
                 
                 nowPlaying.setText("Now Playing: " + getSongs.getSongs()[songID].getTitle() + ", " + getSongs.getSongs()[songID].getArtist() + ", " + getSongs.getSongs()[songID].getAlbum());
                 return currentSong;
