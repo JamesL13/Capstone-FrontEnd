@@ -19,7 +19,7 @@ function HostCtrl($scope, $http, $cookieStore) {
     }
 
     socket.on('message', function(data) {
-        console.log('Incoming message:', data);
+        //console.log('Incoming message:', data);
     });
 
     // Delete playlist function
@@ -32,7 +32,7 @@ function HostCtrl($scope, $http, $cookieStore) {
                     removeRoom($scope.playlist_id);
                 },
                 function(response) {
-                    console.log("Server did not successfully complete request.");
+                    //console.log("Server did not successfully complete request.");
                 }
             );
         }
@@ -49,14 +49,14 @@ function HostCtrl($scope, $http, $cookieStore) {
             };
             $http.post(server + '/playlists', data).then(
                 function(response) {
-                    console.log(response);
+                    //console.log(response);
                     $scope.hasPlaylist = true;
                     $scope.playlist_name = data.playlist_name;
                     $scope.playlist_id = response.data;
                     createRoom(response.data);
                 },
                 function(response) {
-                    console.log("Server did not successfully complete request.");
+                    //console.log("Server did not successfully complete request.");
                 }
             );
         } else {
@@ -65,11 +65,11 @@ function HostCtrl($scope, $http, $cookieStore) {
         }
     }
     var createRoom = function(playlistId) {
-        console.log("adding " + $cookieStore.get('userId'));
+        //console.log("adding " + $cookieStore.get('userId'));
         socket.emit("createRoom", $cookieStore.get('userId'));
     }
     var removeRoom = function(playlistId) {
-        console.log("removing " + $cookieStore.get('userId'));
+        //console.log("removing " + $cookieStore.get('userId'));
         socket.emit("removeRoom", $cookieStore.get('userId'));
     }
 
@@ -105,7 +105,7 @@ function HostCtrl($scope, $http, $cookieStore) {
         $scope.businessName = single_object.business;
     }
     var errorCallback = function(response) {
-        console.log("Something went wrong.");
+        //console.log("Something went wrong.");
     }
     var init = function() {
         if (!$cookieStore.get('isLoggedIn')) {

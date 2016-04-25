@@ -93,7 +93,7 @@
 
      $scope.$on("hostSearchAttempted", function(event, args) {
          var songsFromSearch = searchApp.getAllJukeboxes();
-         console.log(songsFromSearch);
+         //console.log(songsFromSearch);
          if (songsFromSearch.length > 0) {
              $scope.jukeboxes = [];
              $scope.jukeboxes = songsFromSearch;
