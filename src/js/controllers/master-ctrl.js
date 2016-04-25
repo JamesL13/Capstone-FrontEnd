@@ -3,10 +3,9 @@
  */
 
 angular.module('Songs')
-    .controller('MasterCtrl', ['$scope', '$cookieStore', MasterCtrl]);
+    .controller('MasterCtrl', ['$scope', '$cookieStore', 'searchApp', MasterCtrl]);
 
-function MasterCtrl($scope, $cookieStore) {
-
+function MasterCtrl($scope, $cookieStore, searchApp) {
     var mobileView = 992;
     $scope.greeting = 'Hola!';
     $scope.getWidth = function() {
@@ -51,4 +50,11 @@ function MasterCtrl($scope, $cookieStore) {
     $('.nav a').on('click', function() {
         $('.navbar-toggle').click();
     });
+
+    //Send Necessary info to Service
+    $scope.search = function(searchee) {
+        var id = $cookieStore.get('connectPlaylistUserId');
+        searchApp.findWhatToSearch(id, searchee);
+        //console.dir(searchApp.findWhatToSearch(id,searchee));
+    }
 }

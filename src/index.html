@@ -40,7 +40,15 @@
                     <ul class="nav navbar-nav">
                         <li><a href="#/findhost"><span class="menu-icon fa fa-map-o text-center"></span> Find Host</a></li>
                         <li ng-show="isConnectedToPlaylist"><a href="#/jukebox"><span class="menu-icon fa fa-music text-center"></span> Jukebox</a></li>
-                        <li ng-show="isConnectedToPlaylist"><a href="#/libary"><span class="menu-icon fa fa-list text-center"></span> Library</a></li>
+                        <li ng-show="isConnectedToPlaylist"><a href="#/library"><span class="menu-icon fa fa-list text-center"></span> Library</a></li>
+                        <li>
+                            <div class="navbar-form navbar-left" role="search">
+                                <div class="form-group">
+                                    <input ng-model="searchee" type="text" class="form-control" placeholder="Search">
+                                </div>
+                                <button type="Search" class="btn btn-default" ng-click="search(searchee)">Search</button>
+                            </div>
+                        </li>
                         <li ng-show="isLoggedIn"><a href="#/host"><span class="menu-icon fa fa-user text-center"></span> Account</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">

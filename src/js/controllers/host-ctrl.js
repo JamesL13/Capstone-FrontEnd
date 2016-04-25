@@ -65,12 +65,12 @@ function HostCtrl($scope, $http, $cookieStore) {
         }
     }
     var createRoom = function(playlistId) {
-        console.log("adding " + playlistId);
-        socket.emit("createRoom", playlistId);
+        console.log("adding " + $cookieStore.get('userId'));
+        socket.emit("createRoom", $cookieStore.get('userId'));
     }
     var removeRoom = function(playlistId) {
-        console.log("removing " + playlistId);
-        socket.emit("removeRoom", playlistId);
+        console.log("removing " + $cookieStore.get('userId'));
+        socket.emit("removeRoom", $cookieStore.get('userId'));
     }
 
     // Function to get user information from ID

@@ -2,9 +2,9 @@
  * Library Controller
  */
 
- angular.module('Songs').controller('LibraryCtrl', ['$scope', '$http', '$cookieStore', '$window', LibraryCtrl]);
+ angular.module('Songs').controller('LibraryCtrl', ['$scope', '$http', '$cookieStore', 'searchApp', LibraryCtrl]);
 
- function LibraryCtrl($scope, $http, $cookieStore, $window) {
+ function LibraryCtrl($scope, $http, $cookieStore, searchApp) {
     var server = 'https://thomasscully.com';
     $http.defaults.headers.common = {
         'secret-token': 'aBcDeFgHiJkReturnOfTheSixToken666666',
@@ -37,8 +37,8 @@
     }
 
     var errorCallback = function(response) {
-        console.log("Error:");
-        console.log(response);
+/*        console.log("Error:");
+        console.log(response);*/
     }
 
     var init = function() {
@@ -50,4 +50,17 @@
         }
     }
     init();
+
+     $scope.$on("searchAttempted", function(event, args) {
+         var songsFromSearch = searchApp.getAllSongs();
+         if (songsFromSearch.length > 0) {
+             $scope.songs = [];
+             $scope.songs = songsFromSearch;
+         } else {
+             $scope.songs = [];
+             $("#no-songs-message").removeClass('hide');
+         }
+
+
+     })
 }
