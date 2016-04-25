@@ -1,7 +1,7 @@
 /**
  * Jukebox Controller
  */
-var app = angular.module( "Songs");
+var app = angular.module("Songs");
 app.controller('JukeboxCtrl', ['$scope', '$http', '$cookieStore', '$timeout', JukeboxCtrl]);
 
 function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
@@ -14,7 +14,7 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
     $scope.businessName;
     $scope.playlistName;
 
-    $scope.upvote = function (songId) {
+    $scope.upvote = function(songId) {
         var songsArray = $cookieStore.get('haveVotedSongs');
         songsArray.push(songId);
         $cookieStore.put('haveVotedSongs', songsArray);
@@ -29,7 +29,7 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
             var temp = voteBlock.html();
             temp++;
             voteBlock.html(temp);
-        }).error(function (response) {
+        }).error(function(response) {
             console.log(response);
         });
     }
@@ -49,12 +49,12 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
             var temp = voteBlock.html();
             temp--;
             voteBlock.html(temp);
-        }).error(function (response) {
+        }).error(function(response) {
             console.log(response);
         });
     }
 
-    var disableVotedSongs = function () {
+    var disableVotedSongs = function() {
         var songsArray = $cookieStore.get('haveVotedSongs');
         for (var i = 0; i < songsArray.length; i++) {
             $('#hasNotVoted_' + songsArray[i]).html('<br><h3><span class="glyphicon glyphicon-ok" aria-hidden="true">');
@@ -69,7 +69,7 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
         } else {
             $("#no-songs-message").removeClass('hide');
         }
-        
+
     }
 
     var errorCallback = function(response) {
@@ -78,8 +78,8 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
     }
 
     var joinRoom = function(playlistId) {
-        console.log("joining " + playlistId);
-        socket.emit("joinRoom", playlistId);
+        console.log("joining " + $cookieStore.get('connectPlaylistUserId'));
+        socket.emit("joinRoom", $cookieStore.get('connectPlaylistUserId'));
     }
 
     var init = function() {
@@ -96,25 +96,36 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
         $http.get(server + '/accounts?' + "account__id=" + hostId).success(function(name) {
             $scope.businessName = name[0];
         }).then(successCallback, errorCallback);
-        $http.get(server + '/playlists?'+ "account__id=" + hostId).success(function(name) {
+        $http.get(server + '/playlists?' + "account__id=" + hostId).success(function(name) {
             $scope.playlistName = name[0];
         }).then(successCallback, errorCallback);
+        $http.get(server + '/songs/current_song').success(function(response) {
+            $scope.now_playing = response;
+        });
         $scope.getFreshSongs();
         joinRoom($cookieStore.get('connectPlaylistUserId'));
     }
-    $scope.getFreshSongs = function () {
+
+    socket.on('newSongPlaying', function(currentSong) {
+        console.log("song change");
+        console.log(currentSong);
+        $scope.now_playing.name = currentSong.name;
+        $scope.now_playing.artist = currentSong.artist;
+        $scope.now_playing.album = currentSong.album;
+    });
+
+    $scope.getFreshSongs = function() {
         $(".spinner").removeClass('hide');
         $http.get(server + '/songs/active?user_account_id=' + $cookieStore.get('connectPlaylistUserId')).then(getSongsCallbackSuccess, errorCallback);
         $("#songList").addClass('hide');
         setTimeout(disableVotedSongs, 1500);
     }
-    var errorCallback = function (response) {
+    var errorCallback = function(response) {
         console.log("failure");
         console.log(response);
     }
 
-    var successCallback = function (response) {
-    }
+    var successCallback = function(response) {}
 
     init();
 }

@@ -1,52 +1,69 @@
 <div class="container-fluid" data-ng-controller="JukeboxCtrl">
-    <div class="row">
-        <div class="col-xs-12">
-            <h1>{{businessName.business}} Jukebox</h1>
-            <small>Vote on the songs you want to hear. The songs with the highest vote count will get played next.
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
-            <h5>Want the latest rankings?</h5>
-            <button type="button" ng-click="getFreshSongs()" class="btn btn-primary btn-sm btn-inline">Update</button>
-        </div>
-    </div>
-    <hr/>
-    <div class="row">
-        <div class="col-xs-12">
+   <div class="row">
+      <div class="col-xs-12">
+         <h1>{{businessName.business}} Jukebox</h1>
+         <small>Vote on the songs you want to hear. The songs with the highest vote count will get played next.
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-xs-12">
+         <h5>Want the latest rankings?</h5>
+         <button type="button" ng-click="getFreshSongs()" class="btn btn-primary btn-sm btn-inline">Update</button>
+      </div>
+   </div>
+   <hr/>
+   <div class="hide" id="songList">
+      <div class="row">
+         <div class="col-xs-12">
+            <h4>
+            Now Playing
+         </div>
+      </div>
+      <div class="row">
+         <div class="col-xs-8">
+            <br>
+            <h5>
+            {{now_playing.name}} - {{now_playing.artist}}
+            <h6>
+            {{now_playing.album}}
+         </div>
+      </div>
+      <hr>
+      <div class="row">
+         <div class="col-xs-12">
             <h4>
             Current Songs in Rotation
-        </div>
-    </div>
-    <div class="hide" id="songList">
-        <div class="row text-center" ng-show="songs.length">
-            <div class="col-xs-2"># Votes</div>
-            <div class="col-xs-2">Song Title</div>
-            <div class="col-xs-offset-6 col-xs-1">Your Vote</div>
-        </div>
-        <div class="row song-item" ng-repeat="song in songs">
-            <div class="col-xs-2">
-                <br/>
-                <h4 id="songVoteCount_{{song.id}}">
-                {{song.votes}}</h4>
-            </div>
-            <div class="col-xs-8">
-                <br>
-                <h5>
-                {{song.song_title}} - {{song.song_artist}}
-                <h6>
-                {{song.song_album}}
-            </div>
-            <div class="col-xs-1" id="hasNotVoted_{{song.id}}">
-                <br/>
-                <div><button id="upvote_{{song.id}}" type="button" ng-click="upvote(song.id, $event)" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button></div>
-                <br/>
-                <div> <button id="downvote_{{song.id}}" type="button" ng-click="downvote(song.id, $event)" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button></div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xs-12 text-center hide" id="no-songs-message" ng-hide="songs.length">
-        No songs in the Jukebox
-        <br> :(
-    </div>
+         </div>
+      </div>
+      <div class="row text-center" ng-show="songs.length">
+         <div class="col-xs-2"># Votes</div>
+         <div class="col-xs-2">Song Title</div>
+         <div class="col-xs-offset-6 col-xs-1">Your Vote</div>
+      </div>
+      <div class="row song-item" ng-repeat="song in songs">
+         <div class="col-xs-2">
+            <br/>
+            <h4 id="songVoteCount_{{song.id}}">
+               {{song.votes}}
+            </h4>
+         </div>
+         <div class="col-xs-8">
+            <br>
+            <h5>
+            {{song.song_title}} - {{song.song_artist}}
+            <h6>
+            {{song.song_album}}
+         </div>
+         <div class="col-xs-1" id="hasNotVoted_{{song.id}}">
+            <br/>
+            <div><button id="upvote_{{song.id}}" type="button" ng-click="upvote(song.id, $event)" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-up"></i></button></div>
+            <br/>
+            <div> <button id="downvote_{{song.id}}" type="button" ng-click="downvote(song.id, $event)" class="btn btn-primary btn-xs btn-inline"><i class="fa fa-arrow-down"></i></button></div>
+         </div>
+      </div>
+   </div>
+   <div class="col-xs-12 text-center hide" id="no-songs-message" ng-hide="songs.length">
+      No songs in the Jukebox
+      <br> :(
+   </div>
 </div>
