@@ -81,7 +81,7 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
                 callback(id);
             },
             onError: function(error) {
-                console.log(error);
+                //console.log(error);
             }
         });
     };
@@ -122,7 +122,7 @@ function ManageJukeboxCtrl($scope, $http, $cookieStore) {
     successCallback = function(response) {
     }
     errorCallback = function(error) {
-        console.dir(error);
+        //console.dir(error);
     }
 
     /*

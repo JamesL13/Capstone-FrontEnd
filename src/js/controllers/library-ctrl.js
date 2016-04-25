@@ -22,7 +22,7 @@
         $http.put(server + '/toggle/song', data).success(function(response) {
             $("#increaseButton_" + songId).html('<br><button disabled type="button" id="increaseButton_{{song.id}}" class="btn btn-warning">+</button>');
         }).error(function (response) {
-            console.log(response);
+            //console.log(response);
         });
     }
 

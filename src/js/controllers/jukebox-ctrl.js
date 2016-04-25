@@ -30,7 +30,7 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
             temp++;
             voteBlock.html(temp);
         }).error(function(response) {
-            console.log(response);
+            //console.log(response);
         });
     }
 
@@ -50,7 +50,7 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
             temp--;
             voteBlock.html(temp);
         }).error(function(response) {
-            console.log(response);
+            //console.log(response);
         });
     }
 
@@ -73,12 +73,12 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
     }
 
     var errorCallback = function(response) {
-        console.log("Error:");
-        console.log(response);
+        //console.log("Error:");
+        //console.log(response);
     }
 
     var joinRoom = function(playlistId) {
-        console.log("joining " + $cookieStore.get('connectPlaylistUserId'));
+        //console.log("joining " + $cookieStore.get('connectPlaylistUserId'));
         socket.emit("joinRoom", $cookieStore.get('connectPlaylistUserId'));
     }
 
@@ -107,8 +107,8 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
     }
 
     socket.on('newSongPlaying', function(currentSong) {
-        console.log("song change");
-        console.log(currentSong);
+        //console.log("song change");
+        //console.log(currentSong);
         $scope.now_playing.name = currentSong.name;
         $scope.now_playing.artist = currentSong.artist;
         $scope.now_playing.album = currentSong.album;
@@ -121,8 +121,8 @@ function JukeboxCtrl($scope, $http, $cookieStore, $timeout) {
         setTimeout(disableVotedSongs, 1500);
     }
     var errorCallback = function(response) {
-        console.log("failure");
-        console.log(response);
+        //console.log("failure");
+        //console.log(response);
     }
 
     var successCallback = function(response) {}
