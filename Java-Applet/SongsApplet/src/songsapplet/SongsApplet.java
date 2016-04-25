@@ -1001,6 +1001,9 @@ public class SongsApplet extends Application {
                 int songID = rn.nextInt(getSongs.getSongs().length);
                 playingSong = getSongs.getSongs()[songID];
                 currentSong = createMedia(playingSong.getLocation());
+                
+                /* Set the Current Song on the Database */
+                
                 nowPlaying.setText("Now Playing: " + getSongs.getSongs()[songID].getTitle() + ", " + getSongs.getSongs()[songID].getArtist() + ", " + getSongs.getSongs()[songID].getAlbum());
                 return currentSong;
             }
@@ -1014,9 +1017,7 @@ public class SongsApplet extends Application {
     private void searchForDuplicatesInDB() throws IOException, UnsupportedTagException, InvalidDataException
     {
         System.out.println("Search for Duplicates in Database");
-        
-        List<File> duplicateSongs = new ArrayList<File>();
-        
+                
         for(File file: uploadedFiles)
         {
             Mp3File mp3File = new Mp3File(file.getAbsolutePath());
