@@ -281,7 +281,7 @@ public class SongsApplet extends Application {
             @Override
             public void handle(ActionEvent event) {
                 try {
-                    Desktop.getDesktop().browse(new URI("http://localhost:8888/#/manageaccount"));
+                    Desktop.getDesktop().browse(new URI("https://capstone-songs-front.herokuapp.com/#/host"));
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 } catch (URISyntaxException e1) {

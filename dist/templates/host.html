@@ -43,14 +43,25 @@
     </div>
     <div class="row" ng-show="hasPlaylist">
         <div class="col-xs-12">
-            <h4>Manage Playlist</h4></div>
-    </div>
-    <div class="row" ng-show="hasPlaylist">
-        <div class="col-md-4">Playlist Name: {{playlist_name}}</div>
-        <div class="col-md-4">
-            <button type="button" class="btn btn-primary" ng-click="deletePlaylist()"><i class="fa fa-trash-o"></i> Delete</button>
+            <h2>Account Management</h2>
         </div>
     </div>
+    <div class="row" ng-show="hasPlaylist">
+        <div class="col-md-12">
+            <h3>Jukebox Name</h3>
+            <h4>{{playlist_name}}</h4>
+        </div>
+        <div class="row"> 
+            <div class="col-md-12">
+                <h4>Song[s] Applet</h4>
+                <a type="button" target="_blank" class="btn btn-primary" href="https://www.dropbox.com/s/x96chwikc3l8202/SongsApplet-1.0.dmg?dl=0"><i class="fa fa-cloud-download" aria-hidden="true"></i> Download (OS X) - 67 MB</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Remove playlist</h4>
+                <button type="button" class="btn btn-primary" ng-click="deletePlaylist()"><i class="fa fa-trash"></i> Delete Playlist</button>
+            </div>
+        </div>
     </div>
-    
-</div>
+</div></div>
