@@ -863,7 +863,30 @@ public class SongsApplet extends Application {
     /* Return: The Song will be set to Current or change from Current to in-active */
     private void setCurrentSongOnDB()
     {
-        
+        try {
+            /* Encode GET Parameters */
+            String server = "https://thomasscully.com/songs/change_current_song?title=" + java.net.URLEncoder.encode(playingSong.getTitle(), "UTF-8").replace("+", "%20") + "&artist=" + java.net.URLEncoder.encode(playingSong.getArtist(), "UTF-8").replace("+", "%20") + "&album=" + java.net.URLEncoder.encode(playingSong.getAlbum(), "UTF-8").replace("+", "%20") + "&roomNumber=" + currentJukebox.getID();
+            URL url = new URL(server);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            
+            /* Set Request Method */
+            con.setRequestMethod("GET");
+            
+            /* Add Request Header */
+            con.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
+            con.setRequestProperty("Content-Type", "application/json");
+            
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer jsonString = new StringBuffer();
+            
+            while ((inputLine = in.readLine()) != null) {
+                jsonString.append(inputLine);
+            }
+            in.close();
+        } catch (IOException ex) {
+            Logger.getLogger(SongsApplet.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     /* Function that creates a ListView of song titles */
@@ -997,7 +1020,7 @@ public class SongsApplet extends Application {
                 currentSong = createMedia(playingSong.getLocation());
                 
                 /* Set the Current Song on the Database */
-                /* setCurrentSongOnDB(); */
+                setCurrentSongOnDB();
                 
                 nowPlaying.setText("Now Playing: " + getSongs.getSongs()[songID].getTitle() + ", " + getSongs.getSongs()[songID].getArtist() + ", " + getSongs.getSongs()[songID].getAlbum());
                 return currentSong;
