@@ -20,7 +20,7 @@ function searchApp ($rootScope, $location, $http) {
                 if(index.song_title.toLowerCase().search($rootScope.searchFor.toLowerCase()) > -1) {
                         songs.push(index);
                 } else {
-                    console.log("Song is not going to be returned");
+                    //console.log("Song is not going to be returned");
                 }
             });
         } else {
@@ -41,7 +41,7 @@ function searchApp ($rootScope, $location, $http) {
                     if(index.playlist_name.toLowerCase().search($rootScope.searchFor.toLowerCase()) > -1) {
                         hosts.push(index);
                     } else {
-                        console.log("Host is not going to be returned");
+                        //console.log("Host is not going to be returned");
                     }
                 });
             } else {
