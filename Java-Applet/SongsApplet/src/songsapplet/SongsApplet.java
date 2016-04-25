@@ -374,14 +374,14 @@ public class SongsApplet extends Application {
             URL url = new URL(server);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             
-            //Set Request Method
+            /* Set Request Method */
             con.setRequestMethod("DELETE");
             
-            //Add Request Header
+            /* Add Request Header */
             con.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
             con.setRequestProperty("Content-Type", "application/json");
             
-            //Read the Request Response
+            /* Read the Request Response */
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             StringBuffer jsonString = new StringBuffer();
@@ -431,6 +431,7 @@ public class SongsApplet extends Application {
         try {
             URLConnection conn = url.openConnection();
             conn.setDoOutput(true);
+            /* Add Request Header */
             conn.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
             conn.setRequestProperty("Content-Type", "application/json");
             OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
@@ -482,6 +483,7 @@ public class SongsApplet extends Application {
     
     private void startStopJukebox() throws MalformedURLException, IOException
     {
+        /* If the Jukebox is Active toggle all elements that are used while a Jukebox is active */
         if(jukeboxActive == true)
         {
             Alert alert = new Alert(AlertType.CONFIRMATION, "Are you sure you want to stop your Jukebox?");
@@ -509,6 +511,7 @@ public class SongsApplet extends Application {
         }
         else
         {
+            /* If the Current Library is empty do not start the Jukebox */
             if(getSongs.getSongs().length == 0)
             {
                 Alert alert = new Alert(AlertType.INFORMATION);
@@ -517,6 +520,7 @@ public class SongsApplet extends Application {
                 alert.setContentText("You can not start a Jukebox without songs in your library. Upload songs to begin playing music.");
                 alert.showAndWait();
             }
+            /* Before starting the Jukebox check that all Songs in the library can be found on the machine */
             else if(validateFileLocations())
             {
                 try {
@@ -536,6 +540,7 @@ public class SongsApplet extends Application {
             }
             else
             {
+                /* Display an alert with a list of any files that can not be found */
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Files Not Found");
                 alert.setHeaderText("Files Not Found");
@@ -557,7 +562,7 @@ public class SongsApplet extends Application {
                 filesNotFoundList.setMaxWidth(Double.MAX_VALUE);
                 filesNotFoundList.add(textArea, 0, 1);
 
-                // Set expandable Exception into the dialog pane.
+                /* Set expandable Exception into the dialog pane. */
                 alert.getDialogPane().setExpandableContent(filesNotFoundList);
                 alert.getDialogPane().setExpanded(true);
 
@@ -576,8 +581,10 @@ public class SongsApplet extends Application {
             URL url = new URL(server);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             
+            /* Set Request Method */
             con.setRequestMethod("GET");
             
+            /* Add Request Header */
             con.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
             con.setRequestProperty("Content-Type", "application/json");
             
@@ -629,7 +636,11 @@ public class SongsApplet extends Application {
         try {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
+            
+            /* Set Request Method */
             conn.setRequestMethod("PUT");
+            
+            /* Add Request Header */
             conn.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
             conn.setRequestProperty("Content-Type", "application/json");
             OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
@@ -684,7 +695,11 @@ public class SongsApplet extends Application {
         try {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
+            
+            /* Set Request Method */
             conn.setRequestMethod("PUT");
+            
+            /* Add Request Header */
             conn.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
             conn.setRequestProperty("Content-Type", "application/json");
             OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
@@ -739,7 +754,11 @@ public class SongsApplet extends Application {
         try {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setDoOutput(true);
+            
+            /* Set Request Method */
             conn.setRequestMethod("PUT");
+            
+            /* Add Request Header */
             conn.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
             conn.setRequestProperty("Content-Type", "application/json");
             OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
@@ -770,8 +789,11 @@ public class SongsApplet extends Application {
             String server = "https://thomasscully.com/songs?user_account_id=" + user_account_id;
             URL url = new URL(server);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            
+            /* Set Request Method */
             con.setRequestMethod("GET");
             
+            /* Add Request Header */
             con.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
             con.setRequestProperty("Content-Type", "application/json");
             
@@ -803,8 +825,11 @@ public class SongsApplet extends Application {
             String server = "https://thomasscully.com/songs/top_song?user_account_id=" + user_account_id + "&roomNumber=" + user_account_id;
             URL url = new URL(server);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            
+            /* Set Request Method */
             con.setRequestMethod("GET");
             
+            /* Add Request Header */
             con.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
             con.setRequestProperty("Content-Type", "application/json");
             
@@ -889,8 +914,11 @@ public class SongsApplet extends Application {
         try {
             URLConnection conn = url.openConnection();
             conn.setDoOutput(true);
+            
+            /* Add Request Header */
             conn.setRequestProperty("secret-token", "aBcDeFgHiJkReturnOfTheSixToken666666");
             conn.setRequestProperty("Content-Type", "application/json");
+            
             OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
 
             writer.write(json);
@@ -950,6 +978,7 @@ public class SongsApplet extends Application {
     /* Function called to start the host's Jukebox */
     private Media songToPlay() throws MalformedURLException
     {
+        /* Returns true when the request was successfully made and the next song to play was returned */
         if(getNextSongFromDB())
         {
             currentSong = createMedia(playingSong.getLocation());
@@ -959,6 +988,7 @@ public class SongsApplet extends Application {
         else
         {
             /* WSHTF Functionality */
+            /* Runs if there are any issues with getting a song to play from the database */
             if(getSongs.getSongs().length != 0)
             {
                 Random rn = new Random();
@@ -1025,7 +1055,6 @@ public class SongsApplet extends Application {
         {
             /* Check for duplicate songs in the files selected to be uploaded */
             searchForDuplicatesInDB();
-        
             createJsonObject(uploadedFiles, uploadedSongs);
         }
         showAllSongs(titleList);
@@ -1042,6 +1071,7 @@ public class SongsApplet extends Application {
         }
         else
         {
+            /* Deletion Failed */
             Alert alert = new Alert(AlertType.WARNING, "This song could not be deleted. Click 'OK' to continue");
             alert.setTitle("Deletion Failed");
             alert.setContentText("Deltion Failed");
@@ -1071,6 +1101,7 @@ public class SongsApplet extends Application {
         
         if(failedToDelete.size() > 0)
         {
+            /* Multiple Deletion Failed */
             Alert alert = new Alert(AlertType.WARNING, "The following songs could not be deleted. Click 'OK' to continue.");
             alert.setTitle("Deletion Failed");
             alert.setHeaderText("Deletion Failed");
@@ -1125,11 +1156,12 @@ public class SongsApplet extends Application {
     /* Function called when a Jukebox is started and music needs to begin playing */
     private void play() throws MalformedURLException
     {
-        /* Makes sure no old data is present */
+        /* Clear any potential stored data */
         jukebox = null;
         currentSong = null;
         playingSong = null;
         
+        /* Gets the next song to play either based on votes of users or WSHTF functionality */
         songToPlay();
         jukebox = new MediaPlayer(currentSong);
         playSong();
