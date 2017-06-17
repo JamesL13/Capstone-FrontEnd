@@ -73,3 +73,5 @@ Java-Applet/SongsApplet/dist/*
 
 *.jar
 /Java-Applet/SongsApplet/nbproject/private/
+
+node_modules/
